@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>java9-模块化和jshell初次体验 | 平常心cz</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="JAVA9新特性之模块化系统和jshell体验 JAVA8在2014年3月份推出。  Java8 主要从语法层面通过lambda表达式和stream API进行了改进。lambda表达式仿照了python语言使JAVA语言更加轻量级；stream API是对现有api的补充，方便程序猿从内存层面上操作数组或集合。  JAVA9在2017年9月21号发布。  JAVA9主要的改变有模块化系统、jsh">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java9-模块化和jshell初次体验">
+<meta property="og:url" content="http://yoursite.com/2018/03/22/java9-模块化和jshell初次体验/index.html">
+<meta property="og:site_name" content="平常心cz">
+<meta property="og:description" content="JAVA9新特性之模块化系统和jshell体验 JAVA8在2014年3月份推出。  Java8 主要从语法层面通过lambda表达式和stream API进行了改进。lambda表达式仿照了python语言使JAVA语言更加轻量级；stream API是对现有api的补充，方便程序猿从内存层面上操作数组或集合。  JAVA9在2017年9月21号发布。  JAVA9主要的改变有模块化系统、jsh">
+<meta property="og:image" content="http://yoursite.com/2018/03/22/img/1.png">
+<meta property="og:image" content="http://yoursite.com/2018/03/22/img/2.png">
+<meta property="og:image" content="http://yoursite.com/2018/03/22/img/5.png">
+<meta property="og:image" content="http://yoursite.com/2018/03/22/img/3.png">
+<meta property="og:image" content="http://yoursite.com/2018/03/22/img/6.png">
+<meta property="og:image" content="http://yoursite.com/2018/03/22/img/7.png">
+<meta property="og:image" content="http://yoursite.com/2018/03/22/img/8.png">
+<meta property="og:image" content="http://yoursite.com/2018/03/22/img/9.png">
+<meta property="og:image" content="http://yoursite.com/2018/03/22/img/10.png">
+<meta property="og:updated_time" content="2018-03-22T11:00:22.829Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="java9-模块化和jshell初次体验">
+<meta name="twitter:description" content="JAVA9新特性之模块化系统和jshell体验 JAVA8在2014年3月份推出。  Java8 主要从语法层面通过lambda表达式和stream API进行了改进。lambda表达式仿照了python语言使JAVA语言更加轻量级；stream API是对现有api的补充，方便程序猿从内存层面上操作数组或集合。  JAVA9在2017年9月21号发布。  JAVA9主要的改变有模块化系统、jsh">
+<meta name="twitter:image" content="http://yoursite.com/2018/03/22/img/1.png">
+  
+    <link rel="alternate" href="/atom.xml" title="平常心cz" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">平常心cz</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-java9-模块化和jshell初次体验" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/03/22/java9-模块化和jshell初次体验/" class="article-date">
+  <time datetime="2018-03-22T10:37:31.000Z" itemprop="datePublished">2018-03-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      java9-模块化和jshell初次体验
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="JAVA9新特性之模块化系统和jshell体验"><a href="#JAVA9新特性之模块化系统和jshell体验" class="headerlink" title="JAVA9新特性之模块化系统和jshell体验"></a>JAVA9新特性之模块化系统和jshell体验</h3><blockquote>
+<p>JAVA8在2014年3月份推出。</p>
+</blockquote>
+<p>Java8 主要从语法层面通过lambda表达式和stream API进行了改进。lambda表达式仿照了python语言使JAVA语言更加轻量级；stream API是对现有api的补充，方便程序猿从内存层面上操作数组或集合。</p>
+<blockquote>
+<p>JAVA9在2017年9月21号发布。</p>
+</blockquote>
+<p>JAVA9主要的改变有模块化系统、jshell工具、jdk编译工具、JAVA公共API和私有API增强。</p>
+<p>JAVA从JAVA9开始每六个月发布一次新版本，像昨天发布的JAVA10命名为JAVA 18.3，下一版本将会在18年的6月份发布。（发布模式以特性驱动转变为以时间驱动转变-小步快跑，快速迭代）</p>
+<p>昨天在看公众号文章的时候知道了两个词：JEP和JSR</p>
+<ul>
+<li>J EP(JDK Enhancement Proposals):jdk 改进提案，JAVA改进的非正式的规范(specification)，被正式认可的 JEP 正式写进 JDK 的发展路线图并分配版本号。</li>
+<li>JSR(Java Specification Requests):java 规范提案，新特性的规范出现在这一阶段，是指向 JCP(Java Community Process)提出新增一个标准化技术规范的正式请求。请求可以来自于小组/项目、JEP、JCP成员或者 java 社区(community)成员的提案，每个 java 版本都由相应的 JSR 支持。</li>
+</ul>
+<p>JAVA的每一次版本升级都布对应的发布JEP，像<a href="http://openjdk.java.net/jeps/0" target="_blank" rel="noopener">JAVA9的改进提案</a>,通过阅读官方的改进提案可以熟悉JAVA改进的地方，比如<a href="http://openjdk.java.net/jeps/200" target="_blank" rel="noopener">java9的模块化改进提案</a>。</p>
+<h3 id="1-JAVA9-模块化系统"><a href="#1-JAVA9-模块化系统" class="headerlink" title="1.JAVA9-模块化系统"></a>1.JAVA9-模块化系统</h3><p>JAVA在1995年发布第一个版本后，经过了20多年的更新迭代，暴露出一些问题：</p>
+<blockquote>
+<ul>
+<li>java 运行环境的臃肿，每次JAVA虚拟机启动时都要占用30-60M的内存空间加载JAVA 运行时环境rt.jar。模块化解决只加载需要的类。</li>
+<li>后期引入的jar包，不同版本的类库交叉依赖导致引入的jar越来越多，然而好多jar的功能并没有用。</li>
+</ul>
+</blockquote>
+<p>如上问题，还有很多很多。为了解决此类问题，JAVA9 推出了模块化系统。模块化系统本身叫jigsaw，后叫modularity。</p>
+<p><img src="..\img\1.png" alt="1"></p>
+<p>java9中的模块将由通常的类和新的模块声明文件(module-info.java)组成。该文件是位于 java 代码结构的顶层，该模块描述符明确地定义了我们的模块需要什么依赖关系，以及哪些模块被外部使用。在 exports 子句中未提及的所有包默认情况下将封装在模块中，不能在外部使用。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">module java9-1&#123;</span><br><span class="line">    exports com.pcx.bean;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>exports:控制着哪些包可以被其它模块访问到。所有不被导出的包默认都被封装在模块里面。</p>
+<p>而我们在另一个module里面需要使用requires指定指明对其他module的依赖，才可以使用对应的方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">module java9-2&#123;</span><br><span class="line">    requires java9-1;</span><br><span class="line">    requires  junit;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-JAVA9-jshell"><a href="#2-JAVA9-jshell" class="headerlink" title="2.JAVA9-jshell"></a>2.JAVA9-jshell</h3><p>①调出jshell：cmd输入jshell</p>
+<p><img src="..\img\2.png" alt="2"></p>
+<p>②查看帮助：/help intro</p>
+<p><img src="..\img\5.png" alt="5"></p>
+<p>③简单使用：</p>
+<p><img src="..\img\3.png" alt="3"></p>
+<p>④导入指定包：</p>
+<p><img src="..\img\6.png" alt="6"></p>
+<p>⑤查看已经导入的包：/imports</p>
+<p><img src="..\img\7.png" alt="7"></p>
+<p>⑥查看当前对话中的代码：/list</p>
+<p><img src="..\img\8.png" alt="8"></p>
+<p>⑦查看当前会话中创建的变量：/var</p>
+<p><img src="..\img\9.png" alt="9"></p>
+<p>⑧查看当前会话中创建的方法：/methods</p>
+<p>⑨使用外部编辑器编写代码：/edit</p>
+<p><img src="..\img\10.png" alt="10"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/03/22/java9-模块化和jshell初次体验/" data-id="cjf2eptps0002swtyo00cb41n" class="article-share-link">Teilen</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2018/03/21/docker初次体验/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">docker初次体验</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/03/22/java9-模块化和jshell初次体验/">java9-模块化和jshell初次体验</a>
+          </li>
+        
+          <li>
+            <a href="/2018/03/21/docker初次体验/">docker初次体验</a>
+          </li>
+        
+          <li>
+            <a href="/2018/03/21/hello-hexo/">hello hexo</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 程志<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
