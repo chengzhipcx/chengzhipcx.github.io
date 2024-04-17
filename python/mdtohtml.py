@@ -2,6 +2,7 @@ from markdown import markdown
 import os
 from datetime import datetime
 import argparse
+from insertlist import insert_tag
 
 def replace_multiple(html_file, replacements,target_file):
     with open(html_file, 'r',encoding='utf-8') as file:
@@ -44,6 +45,7 @@ if __name__=="__main__":
     replace_multiple(tempfile, replacements,targetfile)
     # with open('ret.html', 'w', encoding='utf-8') as file:
     #     file.write(html)
+    insert_tag(target_name,dtail="如果你愿意一层一层的剥开我的心……")
 
 
 
