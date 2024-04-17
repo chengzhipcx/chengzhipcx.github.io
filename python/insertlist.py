@@ -15,8 +15,6 @@ html_doc = open(os.path.join(parent_path,'site','index.html'),'r',encoding='utf-
 # 解析HTML
 soup = BeautifulSoup(html_doc, 'html.parser')
 
-title='爱你'
-detial='我爱你啊'
 def insert_tag(title,dtail):
     date=str(datetime.now().date())
     image_num=random.randint(1, 11)
@@ -46,4 +44,6 @@ def insert_tag(title,dtail):
     with open(os.path.join(parent_path,'site','index.html'),'w',encoding='utf-8') as file:
         file.write(soup.prettify())
 
+title='爱你'
+detial='我爱你啊'
 insert_tag(title,detial)
