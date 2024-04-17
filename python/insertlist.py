@@ -24,7 +24,7 @@ def insert_tag(title,dtail):
     new_html = '''
             <div class="art-model">
             <h3><a href="'''+title+'''.html" target="_blank">'''+title+'''</a></h3>
-            <p class="dateview"> <span>发布时间：'''+date+'''</span> <span>作者：程志</span> <span>分类：网络</span> </p>
+            <p class="dateview"> <span>发布时间：'''+date+'''</span> <span>作者：个人</span> <span>分类：网络</span> </p>
             <dl class="img-txt">
                 <dt> <a href="'''+title+'''.html"><img src="images/'''+str(image_num)+'''.jpg" alt="'''+title+'''"
                     title="'''+title+'''"></a> </dt>
@@ -46,4 +46,4 @@ def insert_tag(title,dtail):
     with open(os.path.join(parent_path,'site','index.html'),'w',encoding='utf-8') as file:
         file.write(soup.prettify())
 
-insert_tag(title,date,detial)
+insert_tag(title,detial)
