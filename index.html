@@ -1,221 +1,239 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>给你的一封信</title>	    
-        <link type="text/css" rel="stylesheet" href="./file/default.css">
-		<script type="text/javascript" src="./file/jquery.min.js"></script>
-		<script type="text/javascript" src="./file/jscex.min.js"></script>
-		<script type="text/javascript" src="./file/jscex-parser.js"></script>
-		<script type="text/javascript" src="./file/jscex-jit.js"></script>
-		<script type="text/javascript" src="./file/jscex-builderbase.min.js"></script>
-		<script type="text/javascript" src="./file/jscex-async.min.js"></script>
-		<script type="text/javascript" src="./file/jscex-async-powerpack.min.js"></script>
-		<script type="text/javascript" src="./file/functions.js" charset="utf-8"></script>
-		<script type="text/javascript" src="./file/love.js" charset="utf-8"></script>
-	    <style type="text/css">
-        </style>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>coder程 - 程序员成长之路 | 技术分享</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 </head>
-    <body>
-        <div id="main">
-            <div id="error">本页面采用HTML5编辑，目前您的浏览器无法显示，请换成谷歌(<a href="http://www.google.cn/chrome/intl/zh-CN/landing_chrome.html?hl=zh-CN&brand=CHMI">Chrome</a>)或者火狐(<a href="http://firefox.com.cn/download/">Firefox</a>)浏览器，或者其他游览器的最新版本。</div>
-            <audio autoplay="autoplay" height="100" width="100">
-                    <source src="renxi.mp3" type="audio/mp3" />
-                    <embed height="100" width="100" src="renxi.mp3" />
-            </audio>
-            <div id="wrap">
-                <div id="text">
-                    <div id="code"> <font color="#FF0000"> <span class="say">亲爱的薇：</span><br>
-                      <span class="say">还记得，我们在去年九月一号说的第一句话："hello"，"放学了没"……</span><br>
-					  <span class="say">我们的缘分就此开启</span><br>
-					  <span class="say">我们一起熟悉着对方的脾气,一起规划着未来</span><br>
-					  <span class="say">认识你是我最大的幸运，你的博学多识、你给我的温暖和安心</span><br> 
-                      <span class="say">我超级喜欢你这位亦师亦友的恋人</span><br>  
-                      <span class="say">因为我太爱你了，所以我害怕失去你</span><br>					  
-                      <span class="say">有些东西因为越在乎所以越怕失去</span><br>
-                      <span class="say">我总是让你失望，我真诚的向你道歉</span><br>
-					  <span class="say">我在努力了，在努力走近你，努力和你同频共振</span><br>
-                      <span class="say">因为我太爱你了，所以我会觉得自卑</span><br>
-                      <span class="say">我愿努力为你，为了我们</span><br>
-                      <span class="say">努力挣钱，养你和孩子</span><br>
-                      <span class="say">努力和你站在一起，同舟共济</span><br>
-                      <span class="say">给你最高的尊重，永远珍惜，不离不弃</span><br>
-                      <span class="say"><span class="space"></span> -- 爱你的程志</span> </font>
-                          <br />
-                          <br />
-                      </p>
-                    </div>
-                  </div>
-                <div id="clock-box">
-                    <span class="STYLE1"></span><font color="#33CC00">亲爱的，我喜欢你</font>
-<span class="STYLE1">已经是……</span>
-                  <div id="clock"></div>
-
-              </div>
-                <canvas id="canvas" width="1100" height="680"></canvas>
-
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <span class="brand-code">&lt;/&gt;</span>
+                <span class="brand-name">coder程</span>
             </div>
-            <br>
-            <br>
-            <div style=" text-align: center;font-size: larger;">
-                <a href="site/index.html">点击查看 我对薇的碎碎念</a>
+            <ul class="nav-menu">
+                <li><a href="#home" class="active">首页</a></li>
+                <li><a href="#about">关于</a></li>
+                <li><a href="#content">内容</a></li>
+                <li><a href="#contact">联系</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
         </div>
-    
-    <script>
-    </script>
+    </nav>
 
-    <script>
-    (function(){
-        var canvas = $('#canvas');
-		
-        if (!canvas[0].getContext) {
-            $("#error").show();
-            return false;        }
+    <!-- Hero 区域 -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">🚀 程序员成长之路</div>
+                <h1 class="hero-title">
+                    <span class="typing-text">Hello, I'm </span>
+                    <span class="highlight">coder程</span>
+                </h1>
+                <p class="hero-subtitle">
+                    分享技术干货 · 记录成长历程 · 探索代码世界
+                </p>
+                <p class="hero-description">
+                    专注于编程技术、职场成长、效率工具的分享<br>
+                    在这里，我们一起成为更好的程序员
+                </p>
+                <div class="hero-buttons">
+                    <a href="#content" class="btn btn-primary">浏览内容</a>
+                    <a href="#contact" class="btn btn-outline">关注我</a>
+                </div>
+                <div class="code-window">
+                    <div class="code-header">
+                        <span class="dot red"></span>
+                        <span class="dot yellow"></span>
+                        <span class="dot green"></span>
+                        <span class="code-title">coder_cheng.py</span>
+                    </div>
+                    <div class="code-body">
+                        <pre><code><span class="code-keyword">class</span> <span class="code-class">CoderCheng</span>:
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(self):
+        self.name = <span class="code-string">"coder程"</span>
+        self.passions = [<span class="code-string">"Coding"</span>, <span class="code-string">"Sharing"</span>, <span class="code-string">"Growing"</span>]
+        
+    <span class="code-keyword">def</span> <span class="code-function">dream</span>(self):
+        <span class="code-keyword">return</span> <span class="code-string">"用代码改变世界，用文字传递价值"</span></code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-bg">
+            <div class="gradient-orb orb-1"></div>
+            <div class="gradient-orb orb-2"></div>
+            <div class="gradient-orb orb-3"></div>
+        </div>
+    </section>
 
-        var width = canvas.width();
-        var height = canvas.height();        
-        canvas.attr("width", width);
-        canvas.attr("height", height);
-        var opts = {
-            seed: {
-                x: width / 2 - 20,
-                color: "rgb(190, 26, 37)",
-                scale: 2
-            },
-            branch: [
-                [535, 680, 570, 250, 500, 200, 30, 100, [
-                    [540, 500, 455, 417, 340, 400, 13, 100, [
-                        [450, 435, 434, 430, 394, 395, 2, 40]
-                    ]],
-                    [550, 445, 600, 356, 680, 345, 12, 100, [
-                        [578, 400, 648, 409, 661, 426, 3, 80]
-                    ]],
-                    [539, 281, 537, 248, 534, 217, 3, 40],
-                    [546, 397, 413, 247, 328, 244, 9, 80, [
-                        [427, 286, 383, 253, 371, 205, 2, 40],
-                        [498, 345, 435, 315, 395, 330, 4, 60]
-                    ]],
-                    [546, 357, 608, 252, 678, 221, 6, 100, [
-                        [590, 293, 646, 277, 648, 271, 2, 80]
-                    ]]
-                ]] 
-            ],
-            bloom: {
-                num: 700,
-                width: 1080,
-                height: 650,
-            },
-            footer: {
-                width: 1200,
-                height: 5,
-                speed: 10,
-            }
-        }
+    <!-- 关于区域 -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">关于我</span>
+                <h2 class="section-title">谁是 <span class="highlight">coder程</span>？</h2>
+            </div>
+            <div class="about-grid">
+                <div class="about-card">
+                    <div class="about-icon">💻</div>
+                    <h3>技术分享者</h3>
+                    <p>专注于编程语言、框架、工具的学习与实践，用通俗易懂的方式讲解复杂的技术概念</p>
+                </div>
+                <div class="about-card">
+                    <div class="about-icon">📝</div>
+                    <h3>内容创作者</h3>
+                    <p>在多平台持续输出高质量内容，累计帮助数万程序员解决技术难题，突破成长瓶颈</p>
+                </div>
+                <div class="about-card">
+                    <div class="about-icon">🎯</div>
+                    <h3>成长记录者</h3>
+                    <p>记录程序员的成长轨迹，分享职场经验、学习方法和效率工具，陪伴你一起成长</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        var tree = new Tree(canvas[0], width, height, opts);
-        var seed = tree.seed;
-        var foot = tree.footer;
-        var hold = 1;
+    <!-- 内容平台区域 -->
+    <section id="content" class="platforms">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">全平台同名</span>
+                <h2 class="section-title">关注 <span class="highlight">coder程</span></h2>
+                <p class="section-subtitle">在所有平台搜索"coder程"即可找到我</p>
+            </div>
+            <div class="platform-grid">
+                <a href="#" class="platform-card wechat" target="_blank">
+                    <div class="platform-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348zM5.785 5.991c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178A1.17 1.17 0 0 1 4.623 7.17c0-.651.52-1.18 1.162-1.18zm5.813 0c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178 1.17 1.17 0 0 1-1.162-1.178c0-.651.52-1.18 1.162-1.18zm5.34 2.867c-1.797-.052-3.746.512-5.28 1.786-1.72 1.428-2.687 3.72-1.78 6.22.942 2.453 3.666 4.229 6.884 4.229.826 0 1.622-.12 2.361-.336a.722.722 0 0 1 .598.082l1.584.926a.272.272 0 0 0 .14.047c.134 0 .24-.111.24-.247 0-.06-.023-.12-.038-.177l-.327-1.233a.582.582 0 0 1-.023-.156.49.49 0 0 1 .201-.398C23.024 18.48 24 16.82 24 14.98c0-3.21-2.931-5.837-6.656-6.088V8.89c-.135-.01-.27-.027-.407-.032zm-2.53 3.274c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.97-.982zm4.844 0c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.969-.982z"/>
+                        </svg>
+                    </div>
+                    <h3>公众号</h3>
+                    <p>深度技术文章<br>独家原创内容</p>
+                    <span class="platform-btn">扫码关注</span>
+                </a>
 
-        canvas.click(function(e) {
-            var offset = canvas.offset(), x, y;
-            x = e.pageX - offset.left;
-            y = e.pageY - offset.top;
-            if (seed.hover(x, y)) {
-                hold = 0; 
-                canvas.unbind("click");
-                canvas.unbind("mousemove");
-                canvas.removeClass('hand');
-            }
-        }).mousemove(function(e){
-            var offset = canvas.offset(), x, y;
-            x = e.pageX - offset.left;
-            y = e.pageY - offset.top;
-            canvas.toggleClass('hand', seed.hover(x, y));
-        });
+                <a href="#" class="platform-card zhihu" target="_blank">
+                    <div class="platform-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M5.721 0C2.251 0 0 2.25 0 5.719V18.28C0 21.751 2.252 24 5.721 24h12.56C21.751 24 24 21.75 24 18.281V5.72C24 2.249 21.75 0 18.281 0zm1.964 4.078c-.271.73-.5 1.434-.68 2.11h4.587c.545-.006.445 1.168.445 1.168H6.283a58.104 58.104 0 0 1-.028 3.97h3.842c.446.222.372 1.137.372 1.137H5.936c.222.876.504 1.75.838 2.613h4.153c-.333-.929-.54-1.839-.626-2.73 0 0 2.66-.087 3.454-.393-.347 2.36-1.463 4.087-2.536 5.19-.929-.862-1.706-1.96-2.308-3.259H5.96c.612 1.31 1.405 2.442 2.37 3.395 1.418 1.32 3.13 1.92 5.02 1.77 1.876.15 3.588-.45 5.006-1.77a9.578 9.578 0 0 0 2.037-2.613H15.98c-.602 1.31-1.428 2.405-2.468 3.29 1.073-1.097 2.125-2.83 2.472-5.19.794.306 3.454.393 3.454.393-.086.89-.293 1.8-.626 2.73h4.153c.334-.863.616-1.737.838-2.613h-4.533s-.074-.915.372-1.137h3.842a58.104 58.104 0 0 1-.028-3.97H13.77s-.1-1.174.445-1.168h4.587c-.18-.676-.41-1.38-.68-2.11H10.868l-.667-3.33H7.303l.334 3.33H3.72c.086.298.19.604.31.916h.162l-.003-.008c.122.323.262.648.418.973l1.174 2.207zm3.987 3.164c.366-.012.733.01 1.1.062l-.995 1.862-.997-1.902c.298-.014.596-.022.892-.022z"/>
+                        </svg>
+                    </div>
+                    <h3>知乎</h3>
+                    <p>技术问答<br>深度讨论</p>
+                    <span class="platform-btn">查看主页</span>
+                </a>
 
-        var seedAnimate = eval(Jscex.compile("async", function () {
-            seed.draw();
-            while (hold) {
-                $await(Jscex.Async.sleep(10));
-            }
-            while (seed.canScale()) {
-                seed.scale(0.95);
-                $await(Jscex.Async.sleep(10));
-            }
-            while (seed.canMove()) {
-                seed.move(0, 2);
-                foot.draw();
-                $await(Jscex.Async.sleep(10));
-            }
-        }));
+                <a href="#" class="platform-card xiaohongshu" target="_blank">
+                    <div class="platform-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.615 14.923h-2.462v-3.692h-4.306v3.692H7.385V7.077h2.462v3.692h4.306V7.077h2.462v9.846z"/>
+                        </svg>
+                    </div>
+                    <h3>小红书</h3>
+                    <p>技术笔记<br>学习干货</p>
+                    <span class="platform-btn">查看笔记</span>
+                </a>
 
-        var growAnimate = eval(Jscex.compile("async", function () {
-            do {
-    	        tree.grow();
-                $await(Jscex.Async.sleep(10));
-            } while (tree.canGrow());
-        }));
+                <a href="#" class="platform-card video" target="_blank">
+                    <div class="platform-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17.813 4.653h.854c1.51.054 2.769.578 3.773 1.574 1.004.995 1.524 2.249 1.56 3.76v7.36c-.036 1.51-.556 2.769-1.56 3.773s-2.262 1.524-3.773 1.56H5.333c-1.51-.036-2.769-.556-3.773-1.56S.036 18.858 0 17.347v-7.36c.036-1.511.556-2.765 1.56-3.76 1.004-.996 2.262-1.52 3.773-1.574h.774l-.174-.546c-.18-.56-.266-1.014-.26-1.36.006-.346.18-.613.52-.8.34-.187.72-.16 1.14.08.42.24.8.6 1.14 1.08.34.48.62 1.08.84 1.8l.174.546h6.934l.174-.546c.22-.72.5-1.32.84-1.8.34-.48.72-.84 1.14-1.08.42-.24.8-.267 1.14-.08.34.187.514.454.52.8.006.346-.08.8-.26 1.36l-.174.546zM7.333 9.893c-.373 0-.693.133-.96.4-.267.267-.4.587-.4.96v5.333c0 .373.133.693.4.96.267.267.587.4.96.4.373 0 .693-.133.96-.4.267-.267.4-.587.4-.96V11.253c0-.373-.133-.693-.4-.96-.267-.267-.587-.4-.96-.4zm9.334 0c-.373 0-.693.133-.96.4-.267.267-.4.587-.4.96v5.333c0 .373.133.693.4.96.267.267.587.4.96.4.373 0 .693-.133.96-.4.267-.267.4-.587.4-.96V11.253c0-.373-.133-.693-.4-.96-.267-.267-.587-.4-.96-.4z"/>
+                        </svg>
+                    </div>
+                    <h3>视频号</h3>
+                    <p>技术视频<br>实战教程</p>
+                    <span class="platform-btn">观看视频</span>
+                </a>
+            </div>
+        </div>
+    </section>
 
-        var flowAnimate = eval(Jscex.compile("async", function () {
-            do {
-    	        tree.flower(2);
-                $await(Jscex.Async.sleep(10));
-            } while (tree.canFlower());
-        }));
+    <!-- 特色内容区域 -->
+    <section class="features">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">内容特色</span>
+                <h2 class="section-title">你将获得什么</h2>
+            </div>
+            <div class="features-list">
+                <div class="feature-item">
+                    <div class="feature-number">01</div>
+                    <div class="feature-content">
+                        <h3>实战项目经验</h3>
+                        <p>真实的项目案例，从零到一的完整开发流程，让你快速积累实战经验</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-number">02</div>
+                    <div class="feature-content">
+                        <h3>技术深度解析</h3>
+                        <p>不止于表面，深入底层原理，帮你建立扎实的技术知识体系</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-number">03</div>
+                    <div class="feature-content">
+                        <h3>职场成长指南</h3>
+                        <p>从技术到职场的全方位成长建议，助你成为更优秀的工程师</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-number">04</div>
+                    <div class="feature-content">
+                        <h3>高效学习法则</h3>
+                        <p>分享学习方法和效率工具，让你的学习之路事半功倍</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        var moveAnimate = eval(Jscex.compile("async", function () {
-            tree.snapshot("p1", 240, 0, 610, 680);
-            while (tree.move("p1", 500, 0)) {
-                foot.draw();
-                $await(Jscex.Async.sleep(10));
-            }
-            foot.draw();
-            tree.snapshot("p2", 500, 0, 610, 680);
+    <!-- 联系方式区域 -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="contact-card">
+                <div class="contact-content">
+                    <h2>与 coder程 一起成长</h2>
+                    <p>订阅获取最新技术文章、学习资源和独家福利</p>
+                    <div class="contact-form">
+                        <input type="email" placeholder="输入你的邮箱地址" class="email-input">
+                        <button class="btn btn-primary">立即订阅</button>
+                    </div>
+                    <p class="contact-note">关注公众号"coder程"，回复"资料"获取学习大礼包 🎁</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-            // 会有闪烁不得意这样做, (＞﹏＜)
-            canvas.parent().css("background", "url(" + tree.toDataURL('image/png') + ")");
-            canvas.css("background", "#ffe");
-            $await(Jscex.Async.sleep(300));
-            canvas.css("background", "none");
-        }));
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-brand">
+                <span class="brand-code">&lt;/&gt;</span>
+                <span class="brand-name">coder程</span>
+            </div>
+            <p class="footer-slogan">用代码改变世界，用文字传递价值</p>
+            <div class="footer-social">
+                <a href="#" class="social-link" title="公众号">📱</a>
+                <a href="#" class="social-link" title="知乎">💡</a>
+                <a href="#" class="social-link" title="小红书">📕</a>
+                <a href="#" class="social-link" title="视频号">🎬</a>
+            </div>
+            <p class="footer-copyright">© 2025 coder程. All rights reserved.</p>
+        </div>
+    </footer>
 
-        var jumpAnimate = eval(Jscex.compile("async", function () {
-            var ctx = tree.ctx;
-            while (true) {
-                tree.ctx.clearRect(0, 0, width, height);
-                tree.jump();
-                foot.draw();
-                $await(Jscex.Async.sleep(25));
-            }
-        }));
-
-        var textAnimate = eval(Jscex.compile("async", function () {
-		    var together = new Date();
-		    together.setFullYear(2023,9 , 1); 			//时间年月日
-		    together.setHours(5);						//小时	
-		    together.setMinutes(53);					//分钟
-		    together.setSeconds(0);					//秒前一位
-		    together.setMilliseconds(2);				//秒第二位
-
-		    $("#code").show().typewriter();
-            $("#clock-box").fadeIn(500);
-            while (true) {
-                timeElapse(together);
-                $await(Jscex.Async.sleep(1000));
-            }
-        }));
-
-        var runAsync = eval(Jscex.compile("async", function () {
-            $await(seedAnimate());
-            $await(growAnimate());
-            $await(flowAnimate());
-            $await(moveAnimate());
-
-            textAnimate().start();
-
-            $await(jumpAnimate());
-        }));
-
-        runAsync().start();
-    })();
-    </script></body></html>
+    <script src="script.js"></script>
+</body>
+</html>
