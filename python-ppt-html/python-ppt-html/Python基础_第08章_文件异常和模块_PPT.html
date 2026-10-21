@@ -156,6 +156,17 @@
     }
     .code-copy-btn:hover { opacity: 1; background: rgba(255,255,255,0.22); }
     .code-copy-btn.copied { color: #4ade80; border-color: #4ade80; }
+
+    /* 幻灯片溢出滚动修复 */
+    .slide { overflow-y: auto; }
+    .slide-inner {
+      margin: auto;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 60px; /* 避开底部固定翻页按钮 */
+    }
 </style>
     </head>
     <body>
@@ -685,6 +696,18 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
     block.appendChild(btn);
+  });
+});
+</script>
+
+<script>
+// 幻灯片溢出滚动修复：包裹一层 .slide-inner 实现安全居中
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.slide').forEach(function (s) {
+    var inner = document.createElement('div');
+    inner.className = 'slide-inner';
+    while (s.firstChild) inner.appendChild(s.firstChild);
+    s.appendChild(inner);
   });
 });
 </script>
