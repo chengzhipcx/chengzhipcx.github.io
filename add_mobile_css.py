@@ -29,7 +29,7 @@ MOBILE_CSS = """
 
 MARKER = "移动端竖屏适配"
 
-files = sorted(glob.glob("python-ppt-html/Python基础_*_PPT.html"))
+files = sorted(glob.glob("python-ppt-html/**/Python基础_*_PPT.html", recursive=True))
 print("found %d chapter files" % len(files))
 
 for path in files:
