@@ -171,6 +171,28 @@
   .copy-btn:hover { background: rgba(255,255,255,0.25); color: #fff; }
   .copy-btn.copied { color: #4ec9b0; border-color: #4ec9b0; background: rgba(78,201,176,0.15); opacity: 1; }
 
+
+    /* 移动端竖屏适配 */
+    @media (max-width: 768px) and (orientation: portrait) {
+      html, body { overflow-y: auto !important; }
+      .slide { padding: 24px 20px !important; justify-content: flex-start !important; overflow-y: auto !important; }
+      .slide h1 { font-size: 1.7rem !important; letter-spacing: 1px !important; }
+      .slide h2 { font-size: 1.35rem !important; margin-bottom: 18px !important; }
+      .slide h3 { font-size: 1.05rem !important; }
+      .slide p, .slide li { font-size: 0.95rem !important; line-height: 1.6 !important; }
+      .slide li { margin-bottom: 10px !important; padding-left: 24px !important; }
+      .slide .code { font-size: 0.72rem !important; padding: 10px 12px !important; margin-top: 12px !important; }
+      .slide .grid { grid-template-columns: 1fr !important; gap: 14px !important; }
+      .slide .card { padding: 14px !important; }
+      .slide table, .compare-table { font-size: 0.78rem !important; }
+      .slide th, .slide td, .compare-table th, .compare-table td { padding: 6px 8px !important; }
+      .wx-promo { margin-top: 24px !important; padding-top: 16px !important; }
+      .wx-promo-images { flex-direction: column !important; gap: 10px !important; }
+      .wx-promo-images img { width: 100% !important; max-width: 280px !important; height: auto !important; }
+      .nav { bottom: 14px !important; gap: 6px !important; }
+      .nav button { padding: 8px 14px !important; font-size: 12px !important; }
+      .nav .page-num { font-size: 12px !important; padding: 0 10px !important; line-height: 32px !important; }
+    }
 </style>
     </head>
     <body>
