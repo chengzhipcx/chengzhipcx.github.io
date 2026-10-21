@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python 基础 — 第八章 · 文件、异常和模块</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; overflow: hidden; }
+    .slides { width: 100%; height: 100%; position: relative; }
+    .slide {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      display: none; flex-direction: column; justify-content: center; align-items: center;
+      padding: 60px 80px; transition: opacity 0.3s;
+    }
+    .slide.active { display: flex; }
+
+    /* 封面 */
+    .slide-cover { background: linear-gradient(135deg, #1a2a6c 0%, #2d5a87 50%, #007acc 100%); color: white; }
+    .slide-cover h1 { font-size: 52px; font-weight: 700; margin-bottom: 16px; letter-spacing: 2px; }
+    .slide-cover .subtitle { font-size: 24px; opacity: 0.85; margin-bottom: 40px; }
+    .slide-cover .tag { display: inline-block; background: rgba(255,255,255,0.15); padding: 8px 20px; border-radius: 20px; font-size: 14px; }
+
+    /* 内容页 */
+    .slide-content { background: #f8f9fa; color: #222; }
+    .slide-content h2 { font-size: 36px; color: #1a2a6c; margin-bottom: 40px; border-left: 6px solid #007acc; padding-left: 20px; }
+    .slide-content ul { list-style: none; width: 100%; max-width: 900px; }
+    .slide-content li { font-size: 22px; line-height: 1.8; margin-bottom: 20px; padding-left: 32px; position: relative; }
+    .slide-content li::before { content: "▸"; position: absolute; left: 0; color: #007acc; font-weight: bold; }
+    .slide-content .highlight { background: #fff3cd; padding: 2px 8px; border-radius: 4px; }
+    .slide-content .code { background: #1e1e1e; color: #d4d4d4; padding: 20px 24px; border-radius: 8px; font-family: "Consolas", "Monaco", monospace; font-size: 16px; line-height: 1.6; width: 100%; max-width: 900px; margin-top: 20px; overflow-x: auto; white-space: pre; }
+    .slide-content .code .comment { color: #6a9955; }
+    .slide-content .code .cmd { color: #ce9178; }
+    .slide-content .code .keyword { color: #569cd6; }
+    .slide-content .code .string { color: #ce9178; }
+    .slide-content .code .number { color: #b5cea8; }
+    .slide-content .code .function { color: #dcdcaa; }
+    .slide-content .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; width: 100%; max-width: 900px; }
+    .slide-content .card { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .slide-content .card h3 { font-size: 20px; color: #1a2a6c; margin-bottom: 12px; }
+    .slide-content .card p { font-size: 16px; color: #555; line-height: 1.7; }
+
+    /* 总结 */
+    .slide-end { background: linear-gradient(135deg, #2d5a87 0%, #007acc 100%); color: white; }
+    .slide-end h2 { font-size: 40px; margin-bottom: 30px; }
+    .slide-end p { font-size: 22px; opacity: 0.9; }
+
+    /* 导航 */
+    .nav { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 100; }
+    .nav button {
+      background: rgba(0,0,0,0.3); color: white; border: none; padding: 10px 24px;
+      border-radius: 6px; cursor: pointer; font-size: 14px; backdrop-filter: blur(4px);
+    }
+    .nav button:hover { background: rgba(0,0,0,0.5); }
+    .nav .page-num { background: #007acc; color: white; font-size: 14px; line-height: 36px; padding: 0 14px; border-radius: 6px; margin: 0 10px; }
+    .progress { position: fixed; top: 0; left: 0; height: 3px; background: #007acc; transition: width 0.3s; z-index: 100; }
+    @media (max-width: 900px) and (orientation: landscape) {
+      .slide { padding: 20px 30px !important; }
+      .slide h1 { font-size: 1.8rem !important; }
+      .slide h2 { font-size: 1.4rem !important; }
+      .slide h3 { font-size: 1.1rem !important; }
+      .slide p, .slide li { font-size: 0.9rem !important; line-height: 1.5 !important; }
+      .slide-content .code { font-size: 0.75rem !important; padding: 10px !important; }
+      .nav button { padding: 6px 14px !important; font-size: 12px !important; }
+      .nav .page-num { font-size: 12px !important; padding: 0 10px !important; }
+    }
+  
+    /* 微信公众号推荐 */
+    .wx-promo {
+      margin-top: auto;
+      padding-top: 30px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .wx-promo-text {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+    .wx-promo-images {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+    }
+    .wx-promo-images img {
+      width: 360px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 2px solid rgba(0, 122, 204, 0.3);
+    }
+    .slide-cover .wx-promo-text,
+    .slide-end .wx-promo-text {
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .slide-cover .wx-promo-images img,
+    .slide-end .wx-promo-images img {
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+  
+  /* ===== 代码复制按钮 ===== */
+  pre { position: relative; }
+  .copy-btn {
+    position: absolute; top: 8px; right: 8px;
+    padding: 4px 10px; font-size: 12px; line-height: 1.4;
+    color: #ccc; background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 4px;
+    cursor: pointer; opacity: 0; transition: opacity 0.2s, background 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    z-index: 10;
+  }
+  pre:hover .copy-btn { opacity: 1; }
+  .copy-btn:hover { background: rgba(255,255,255,0.25); color: #fff; }
+  .copy-btn.copied { color: #4ec9b0; border-color: #4ec9b0; background: rgba(78,201,176,0.15); opacity: 1; }
+
+</style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+
+  <div class="slides">
+    <!-- Slide 1: 封面 -->
+    <div class="slide slide-cover active">
+      <h1>Python 基础</h1>
+      <p class="subtitle">第八章 · 文件、异常和模块</p>
+      <span class="tag">配合机器学习系列课程</span>
+      </div>
+
+      <div class="wx-promo">
+        <p class="wx-promo-text">欢迎关注微信公众号</p>
+        <div class="wx-promo-images">
+          <img src="../asset/coder程.png" alt="coder程">
+          <img src="../asset/查令十街84号.png" alt="查令十街84号">
+        </div>
+      </div>
+</div>
+
+    <!-- Slide 2: 目录 -->
+    <div class="slide slide-content">
+      <h2>本章目录</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>1. 文件读写</h3>
+          <p>打开文件、读写模式、上下文管理器 with</p>
+        </div>
+        <div class="card">
+          <h3>2. 异常处理</h3>
+          <p>try/except/finally、常见异常类型、自定义异常</p>
+        </div>
+        <div class="card">
+          <h3>3. 模块导入</h3>
+          <p>import 语法、模块搜索路径、__name__ 机制</p>
+        </div>
+      </div>
+      </div>
+</div>
+
+    <!-- Slide 3: 文件读写基础 -->
+    <div class="slide slide-content">
+      <h2>文件读写基础</h2>
+      <ul>
+        <li>使用 <span class="highlight">open()</span> 函数打开文件，返回文件对象</li>
+        <li>模式参数：<span class="highlight">r</span> 读、<span class="highlight">w</span> 写（覆盖）、<span class="highlight">a</span> 追加、<span class="highlight">b</span> 二进制</li>
+        <li>读写完成后必须调用 <span class="highlight">close()</span> 关闭文件</li>
+        <li>推荐用 <span class="highlight">with</span> 语句自动管理资源关闭</li>
+      </ul>
+      <div class="code">
+<span class="comment"># 基础写法（不推荐）</span>
+f = <span class="function">open</span> ( <span class="string">'data.txt'</span> , <span class="string">'r'</span> , encoding= <span class="string">'utf-8'</span> ) text = f. <span class="function">read</span> () f. <span class="function">close</span> ()
+<span class="comment"># 推荐写法：with 上下文管理器</span>
+<span class="keyword">with</span> <span class="function">open</span> ( <span class="string">'data.txt'</span> , <span class="string">'r'</span> , encoding= <span class="string">'utf-8'</span> ) <span class="keyword">as</span> f: text = f. <span class="function">read</span> ()
+<span class="comment"># 自动关闭文件，即使发生异常</span>
+</div>
+      </div>
+</div>
+
+    <!-- Slide 4: 文件读写方法 -->
+    <div class="slide slide-content">
+      <h2>文件读写方法详解</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>读取方法</h3>
+          <p><strong>read()</strong> — 读取全部内容</p>
+          <p><strong>readline()</strong> — 读取一行</p>
+          <p><strong>readlines()</strong> — 读取为列表</p>
+          <p><strong>for line in f</strong> — 逐行迭代</p>
+        </div>
+        <div class="card">
+          <h3>写入方法</h3>
+          <p><strong>write()</strong> — 写入字符串</p>
+          <p><strong>writelines()</strong> — 写入列表</p>
+        </div>
+      </div>
+      <div class="code">
+<span class="comment"># 逐行读取大文件（推荐）</span>
+<span class="keyword">with</span> <span class="function">open</span> ( <span class="string">'big_file.txt'</span> , <span class="string">'r'</span> )
+<span class="keyword">as</span> f:
+<span class="keyword">for</span> line <span class="keyword">in</span> f:
+<span class="function">print</span> (line. <span class="function">strip</span> ())
+<span class="comment"># 写入多行</span>
+lines = [ <span class="string">'line1\n'</span> , <span class="string">'line2\n'</span> , <span class="string">'line3\n'</span> ] <span class="keyword">with</span> <span class="function">open</span> ( <span class="string">'output.txt'</span> , <span class="string">'w'</span> ) <span class="keyword">as</span> f: f. <span class="function">writelines</span> (lines)
+</div>
+      </div>
+</div>
+
+    <!-- Slide 5: 文件读写示例 -->
+    <div class="slide slide-content">
+      <h2>文件读写完整示例</h2>
+      <div class="code">
+<span class="comment"># 读取 CSV 数据并计算平均值</span>
+<span class="keyword">def</span> <span class="function">calc_average</span> (filename): total = <span class="number">0</span> count = <span class="number">0</span>
+<span class="keyword">with</span> <span class="function">open</span> (filename, <span class="string">'r'</span> , encoding= <span class="string">'utf-8'</span> ) <span class="keyword">as</span> f: <span class="keyword">for</span> line <span class="keyword">in</span> f: line = line. <span class="function">strip</span> () <span class="keyword">if</span> line <span class="keyword">and</span> <span class="keyword">not</span> line. <span class="function">startswith</span> ( <span class="string">'#'</span> ): total += <span class="function">float</span> (line) count += <span class="number">1</span>
+<span class="keyword">return</span> total / count
+<span class="keyword">if</span> count &gt; <span class="number">0</span>
+<span class="keyword">else</span> <span class="number">0</span>
+<span class="comment"># 复制二进制文件</span>
+<span class="keyword">with</span> <span class="function">open</span> ( <span class="string">'source.jpg'</span> , <span class="string">'rb'</span> )
+<span class="keyword">as</span> src: data = src. <span class="function">read</span> ()
+<span class="keyword">with</span> <span class="function">open</span> ( <span class="string">'copy.jpg'</span> , <span class="string">'wb'</span> )
+<span class="keyword">as</span> dst: dst. <span class="function">write</span> (data)
+</div>
+      </div>
+</div>
+
+    <!-- Slide 6: 异常处理基础 -->
+    <div class="slide slide-content">
+      <h2>异常处理基础</h2>
+      <ul>
+        <li>程序运行时发生的错误称为<span class="highlight">异常（Exception）</span></li>
+        <li>不处理异常会导致程序崩溃并终止执行</li>
+        <li>使用 <span class="highlight">try/except</span> 捕获并处理异常</li>
+        <li><span class="highlight">finally</span> 块中的代码无论是否异常都会执行</li>
+      </ul>
+      <div class="code">
+<span class="keyword">try</span> : x = <span class="function">int</span> ( <span class="function">input</span> ( <span class="string">"请输入一个数字："</span> )) result = <span class="number">100</span> / x <span class="function">print</span> ( <span class="string">f"结果是:</span> {result} <span class="string">"</span> ) <span class="keyword">except</span> <span class="function">ValueError</span> : <span class="function">print</span> ( <span class="string">"输入无效，请输入数字"</span> ) <span class="keyword">except</span> <span class="function">ZeroDivisionError</span> : <span class="function">print</span> ( <span class="string">"不能除以零"</span> ) <span class="keyword">finally</span> : <span class="function">print</span> ( <span class="string">"程序执行完毕"</span> )
+</div>
+      </div>
+</div>
+
+    <!-- Slide 7: 常见异常类型 -->
+    <div class="slide slide-content">
+      <h2>常见异常类型</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>内置异常</h3>
+          <p><strong>ValueError</strong> — 值类型错误</p>
+          <p><strong>TypeError</strong> — 类型不匹配</p>
+          <p><strong>IndexError</strong> — 索引越界</p>
+          <p><strong>KeyError</strong> — 字典键不存在</p>
+        </div>
+        <div class="card">
+          <h3>IO 相关</h3>
+          <p><strong>FileNotFoundError</strong> — 文件不存在</p>
+          <p><strong>PermissionError</strong> — 权限不足</p>
+          <p><strong>IOError</strong> — 输入输出错误</p>
+        </div>
+      </div>
+      <div class="code">
+<span class="comment"># 捕获多个异常 + else 子句</span>
+<span class="keyword">try</span> :
+<span class="keyword">with</span> <span class="function">open</span> ( <span class="string">'config.json'</span> , <span class="string">'r'</span> )
+<span class="keyword">as</span> f: data = json. <span class="function">load</span> (f)
+<span class="keyword">except</span> ( <span class="function">FileNotFoundError</span> , <span class="function">PermissionError</span> )
+<span class="keyword">as</span> e:
+<span class="function">print</span> ( <span class="string">f"文件访问失败:</span> {e} <span class="string">"</span> )
+<span class="keyword">except</span> json.JSONDecodeError:
+<span class="function">print</span> ( <span class="string">"JSON 格式错误"</span> )
+<span class="keyword">else</span> :
+<span class="function">print</span> ( <span class="string">"读取成功！"</span> , data)
+</div>
+      </div>
+</div>
+
+    <!-- Slide 8: 自定义异常与 raise -->
+    <div class="slide slide-content">
+      <h2>自定义异常与 raise</h2>
+      <ul>
+        <li>继承 <span class="highlight">Exception</span> 类可自定义业务异常</li>
+        <li>使用 <span class="highlight">raise</span> 主动抛出异常</li>
+        <li>用异常传递错误信息，比返回错误码更清晰</li>
+      </ul>
+      <div class="code">
+<span class="keyword">class</span> <span class="function">ValidationError</span> ( <span class="function">Exception</span> ): <span class="string">"""参数验证失败时抛出"""</span> <span class="keyword">pass</span> <span class="keyword">def</span> <span class="function">set_age</span> (age): <span class="keyword">if</span> <span class="keyword">not</span> <span class="function">isinstance</span> (age, <span class="function">int</span> )
+<span class="keyword">or</span> age <span class="number">0</span> :
+<span class="keyword">raise</span> <span class="function">ValidationError</span> ( <span class="string">"年龄必须是正整数"</span> )
+<span class="keyword">return</span> age
+<span class="keyword">try</span> : set_age(- <span class="number">5</span> ) <span class="keyword">except</span> <span class="function">ValidationError</span> <span class="keyword">as</span> e: <span class="function">print</span> ( <span class="string">f"验证失败:</span> {e} <span class="string">"</span> )
+</div>
+      </div>
+</div>
+
+    <!-- Slide 9: 模块导入 -->
+    <div class="slide slide-content">
+      <h2>模块导入</h2>
+      <ul>
+        <li>模块（Module）是一个包含 Python 代码的 .py 文件</li>
+        <li>包（Package）是包含 <span class="highlight">__init__.py</span> 的文件夹</li>
+        <li>使用 <span class="highlight">import</span> 导入模块，使用 <span class="highlight">from...import</span> 导入指定内容</li>
+      </ul>
+      <div class="code">
+<span class="comment"># 导入整个模块</span>
+<span class="keyword">import</span> math
+<span class="function">print</span> (math. <span class="function">sqrt</span> ( <span class="number">16</span> ))
+<span class="comment"># 导入模块中的特定函数</span>
+<span class="keyword">from</span> math <span class="keyword">import</span> sqrt, pi <span class="function">print</span> (sqrt( <span class="number">16</span> ), pi)
+<span class="comment"># 给模块起别名</span>
+<span class="keyword">import</span> numpy <span class="keyword">as</span> np <span class="function">print</span> (np. <span class="function">array</span> ([ <span class="number">1</span> , <span class="number">2</span> , <span class="number">3</span> ]))
+<span class="comment"># 导入所有内容（不推荐）</span>
+<span class="keyword">from</span> math <span class="keyword">import</span> *
+</div>
+      </div>
+</div>
+
+    <!-- Slide 10: __name__ 与模块搜索路径 -->
+    <div class="slide slide-content">
+      <h2>__name__ 与模块搜索路径</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>__name__ 机制</h3>
+          <p>直接运行模块时，<strong>__name__ == "__main__"</strong></p>
+          <p>被导入时，<strong>__name__ == 模块名</strong></p>
+          <p>用于编写可测试的模块</p>
+        </div>
+        <div class="card">
+          <h3>搜索路径</h3>
+          <p>1. 当前目录</p>
+          <p>2. PYTHONPATH 环境变量</p>
+          <p>3. 标准库路径</p>
+          <p>用 sys.path 查看</p>
+        </div>
+      </div>
+      <div class="code">
+<span class="comment"># mymodule.py — 标准模块模板</span>
+<span class="keyword">def</span> <span class="function">hello</span> (name):
+<span class="keyword">return</span> <span class="string">f"Hello,</span> {name} <span class="string">!"</span>
+<span class="keyword">if</span> __name__ == <span class="string">"__main__"</span> :
+<span class="comment"># 直接运行时的测试代码</span>
+<span class="function">print</span> (hello( <span class="string">"World"</span> ))
+<span class="function">print</span> (hello( <span class="string">"Python"</span> ))
+</div>
+      </div>
+</div>
+
+    <!-- Slide 11: 总结 -->
+    <div class="slide slide-end">
+      <h2>本章总结</h2>
+      <div style="max-width: 800px;">
+        <p style="margin-bottom: 16px;">▸ 文件读写：open() + with 语句，掌握 r/w/a/b 四种模式</p>
+        <p style="margin-bottom: 16px;">▸ 异常处理：try/except/finally，精准捕获，优雅降级</p>
+        <p style="margin-bottom: 16px;">▸ 模块导入：import / from...import，理解 __name__ 机制</p>
+        <p style="margin-bottom: 16px;">▸ 好习惯：用 with 管理资源，自定义异常提升代码质量</p>
+      </div>
+      
+      <div class="wx-promo">
+        <p class="wx-promo-text">欢迎关注微信公众号</p>
+        <div class="wx-promo-images">
+          <img src="../asset/coder程.png" alt="coder程">
+          <img src="../asset/查令十街84号.png" alt="查令十街84号">
+        </div>
+      </div>
+</div>
+</div>
+  </div>
+
+  <div class="nav">
+    <button onclick="prevSlide()">◀ 上一页</button>
+    <span class="page-num"><span id="current">1</span> / <span id="total">11</span></span>
+    <button onclick="nextSlide()">下一页 ▶</button>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    let current = 0;
+    const total = slides.length;
+    document.getElementById('total').textContent = total;
+
+    function showSlide(n) {
+      slides.forEach(s => s.classList.remove('active'));
+      slides[n].classList.add('active');
+      document.getElementById('current').textContent = n + 1;
+      document.getElementById('progress').style.width = ((n + 1) / total * 100) + '%';
+    }
+
+    function nextSlide() {
+      if (current < total - 1) { current++; showSlide(current); }
+    }
+
+    function prevSlide() {
+      if (current > 0) { current--; showSlide(current); }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+      if (e.key === 'ArrowLeft') prevSlide();
+    });
+
+    showSlide(0);
+  
+  // ===== 代码复制功能 =====
+  document.querySelectorAll('pre').forEach(pre => {
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '复制';
+    btn.type = 'button';
+    btn.addEventListener('click', () => {
+      const code = pre.querySelector('code');
+      const text = code ? code.innerText : pre.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 1500);
+      }).catch(() => {
+        // fallback
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta);
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+  <html lang="zh-CN">
+    <head>
+      <meta charset="utf-8"/>
+      <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+      <title>Python 基础 — 第九章 · 有益的探索
+      </title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; overflow: hidden; }
+    .slides { width: 100%; height: 100%; position: relative; }
+    .slide {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      display: none; flex-direction: column; justify-content: center; align-items: center;
+      padding: 60px 80px; transition: opacity 0.3s;
+    }
+    .slide.active { display: flex; }
+
+    /* 封面 */
+    .slide-cover { background: linear-gradient(135deg, #1a2a6c 0%, #2d5a87 50%, #007acc 100%); color: white; }
+    .slide-cover h1 { font-size: 52px; font-weight: 700; margin-bottom: 16px; letter-spacing: 2px; }
+    .slide-cover .subtitle { font-size: 24px; opacity: 0.85; margin-bottom: 40px; }
+    .slide-cover .tag { display: inline-block; background: rgba(255,255,255,0.15); padding: 8px 20px; border-radius: 20px; font-size: 14px; }
+
+    /* 内容页 */
+    .slide-content { background: #f8f9fa; color: #222; }
+    .slide-content h2 { font-size: 36px; color: #1a2a6c; margin-bottom: 40px; border-left: 6px solid #007acc; padding-left: 20px; }
+    .slide-content ul { list-style: none; width: 100%; max-width: 900px; }
+    .slide-content li { font-size: 22px; line-height: 1.8; margin-bottom: 20px; padding-left: 32px; position: relative; }
+    .slide-content li::before { content: "▸"; position: absolute; left: 0; color: #007acc; font-weight: bold; }
+    .slide-content .highlight { background: #fff3cd; padding: 2px 8px; border-radius: 4px; }
+    .slide-content .code { background: #1e1e1e; color: #d4d4d4; padding: 20px 24px; border-radius: 8px; font-family: "Consolas", "Monaco", monospace; font-size: 16px; line-height: 1.6; width: 100%; max-width: 900px; margin-top: 20px; overflow-x: auto; white-space: pre; }
+    .slide-content .code .comment { color: #6a9955; }
+    .slide-content .code .cmd { color: #ce9178; }
+    .slide-content .code .keyword { color: #569cd6; }
+    .slide-content .code .string { color: #ce9178; }
+    .slide-content .code .number { color: #b5cea8; }
+    .slide-content .code .function { color: #dcdcaa; }
+    .slide-content .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; width: 100%; max-width: 900px; }
+    .slide-content .card { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .slide-content .card h3 { font-size: 20px; color: #1a2a6c; margin-bottom: 12px; }
+    .slide-content .card p { font-size: 16px; color: #555; line-height: 1.7; }
+
+    /* 总结 */
+    .slide-end { background: linear-gradient(135deg, #2d5a87 0%, #007acc 100%); color: white; }
+    .slide-end h2 { font-size: 40px; margin-bottom: 30px; }
+    .slide-end p { font-size: 22px; opacity: 0.9; }
+    .nav { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 100; }
+    .nav button {
+      background: rgba(0,0,0,0.3); color: white; border: none; padding: 10px 24px;
+      border-radius: 6px; cursor: pointer; font-size: 14px; backdrop-filter: blur(4px);
+    }
+    .nav button:hover { background: rgba(0,0,0,0.5); }
+    .nav .page-num { background: #007acc; color: white; font-size: 14px; line-height: 36px; padding: 0 14px; border-radius: 6px; margin: 0 10px; }
+    @media (max-width: 900px) and (orientation: landscape) {
+      .slide { padding: 20px 30px !important; }
+      .slide h1 { font-size: 1.8rem !important; }
+      .slide h2 { font-size: 1.4rem !important; }
+      .slide h3 { font-size: 1.1rem !important; }
+      .slide p, .slide li { font-size: 0.9rem !important; line-height: 1.5 !important; }
+      .slide-content .code { font-size: 0.75rem !important; padding: 10px !important; }
+      .nav button { padding: 6px 14px !important; font-size: 12px !important; }
+      .nav .page-num { font-size: 12px !important; padding: 0 10px !important; }
+    }
+  
+    /* 微信公众号推荐 */
+    .wx-promo {
+      margin-top: 40px;
+      padding-top: 30px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .wx-promo-text {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+    .wx-promo-images {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+    }
+    .wx-promo-images img {
+      width: 360px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 2px solid rgba(0, 122, 204, 0.3);
+    }
+    .slide-cover .wx-promo-text,
+    .slide-end .wx-promo-text,
+    .cover .wx-promo-text,
+    .summary .wx-promo-text {
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .slide-cover .wx-promo-images img,
+    .slide-end .wx-promo-images img,
+    .cover .wx-promo-images img,
+    .summary .wx-promo-images img {
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+  /* ===== 代码复制按钮 ===== */
+  pre { position: relative; }
+  .copy-btn {
+    position: absolute; top: 8px; right: 8px;
+    padding: 4px 10px; font-size: 12px; line-height: 1.4;
+    color: #ccc; background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 4px;
+    cursor: pointer; opacity: 0; transition: opacity 0.2s, background 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    z-index: 10;
+  }
+  pre:hover .copy-btn { opacity: 1; }
+  .copy-btn:hover { background: rgba(255,255,255,0.25); color: #fff; }
+  .copy-btn.copied { color: #4ec9b0; border-color: #4ec9b0; background: rgba(78,201,176,0.15); opacity: 1; }
+
+</style>
+    </head>
+    <body>
+      <div class="progress" id="progress" style="position: fixed; top: 0; left: 0; height: 3px; background: #007acc; transition: width 0.3s; z-index: 100;">
+      </div>
+      <div class="slides">
+        <div class="slide slide-cover active">
+          <h1>Python 基础
+          </h1>
+          <p class="subtitle">第九章 · 有益的探索
+          </p>
+          <span class="tag">配合机器学习系列课程
+          </span>
+          <div class="wx-promo">
+            <p class="wx-promo-text">欢迎关注微信公众号
+            </p>
+            <div class="wx-promo-images">
+              <img alt="coder程" src="../asset/coder程.png"/>
+              <img alt="查令十街84号" src="../asset/查令十街84号.png"/>
+            </div>
+          </div>
+        </div>
+        <div class="slide slide-content">
+          <h2>本章目录
+          </h2>
+          <div class="grid">
+            <div class="card">
+              <h3>1. 数据类型底层实现
+              </h3>
+              <p>列表的引用数组、字典的散列表、字符串的紧凑数组
+              </p>
+              <p>浅拷贝 vs 深拷贝
+              </p>
+            </div>
+            <div class="card">
+              <h3>2. 更简洁的语法
+              </h3>
+              <p>列表/字典推导式、三元表达式
+              </p>
+              <p>lambda 匿名函数
+              </p>
+            </div>
+            <div class="card">
+              <h3>3. 三大神器
+              </h3>
+              <p>map — 映射变换
+              </p>
+              <p>filter — 条件过滤
+              </p>
+              <p>reduce — 累积归约
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="slide slide-content">
+          <h2>列表的底层实现 — 引用数组
+          </h2>
+          <ul>
+            <li>Python 列表底层是一个
+              <span class="highlight">动态数组
+              </span>
+              ，存储的是元素的
+              <span class="highlight">引用（内存地址）
+              </span>
+            </li>
+            <li>列表本身存储连续，但元素对象可以分散在内存中
+            </li>
+            <li>修改列表元素只需修改引用，不需要移动数据
+            </li>
+            <li>列表扩容时，会申请更大的连续内存空间，将原数据复制过去
+            </li>
+          </ul>
+          <div class="code">
+<span class="comment"># 列表存储的是引用，不是值本身</span>
+
+a=[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]
+
+b=a
+
+<span class="comment"># b 和 a 指向同一个列表对象</span>
+
+b[<span class="number">0</span>]=<span class="number">100</span>
+
+<span class="comment"># 修改 b 也会影响 a</span>
+
+<span class="function">print</span>(a)
+
+<span class="comment"># [100, 2, 3]</span>
+
+<span class="comment"># 验证：a 和 b 是同一个对象</span>
+
+<span class="function">print</span>(aisb)
+
+<span class="comment"># True</span>
+
+</div>
+        </div>
+        <div class="slide slide-content">
+          <h2>浅拷贝与深拷贝
+          </h2>
+          <div class="grid">
+            <div class="card">
+              <h3>浅拷贝
+              </h3>
+              <p>复制外层容器，但内部元素共享引用
+              </p>
+              <p>方法：copy()、切片[:]
+              </p>
+              <p>适用：单层列表
+              </p>
+            </div>
+            <div class="card">
+              <h3>深拷贝
+              </h3>
+              <p>递归复制所有层级，完全独立
+              </p>
+              <p>方法：copy.deepcopy()
+              </p>
+              <p>适用：嵌套结构
+              </p>
+            </div>
+          </div>
+          <div class="code">
+importcopy
+
+<span class="comment"># 嵌套列表</span>
+
+matrix=[[<span class="number">1</span>,<span class="number">2</span>],[<span class="number">3</span>,<span class="number">4</span>]]
+
+<span class="comment"># 浅拷贝：外层独立，内层共享</span>
+
+shallow=matrix.
+
+<span class="function">copy</span>()shallow[<span class="number">0</span>][<span class="number">0</span>]=<span class="number">99</span>
+
+<span class="function">print</span>(matrix)
+
+<span class="comment"># [[99, 2], [3, 4]] — 原数据被修改！</span>
+
+<span class="comment"># 深拷贝：完全独立</span>
+
+deep=copy.
+
+<span class="function">deepcopy</span>(matrix)deep[<span class="number">0</span>][<span class="number">0</span>]=<span class="number">100</span>
+
+<span class="function">print</span>(matrix)
+
+<span class="comment"># [[99, 2], [3, 4]] — 原数据不受影响</span>
+
+</div>
+        </div>
+        <div class="slide slide-content">
+          <h2>字典的散列表实现
+          </h2>
+          <ul>
+            <li>字典底层基于
+              <span class="highlight">散列表（Hash Table）
+              </span>
+              实现
+            </li>
+            <li>键必须是不可变类型（可哈希），值可以是任意类型
+            </li>
+            <li>通过 hash() 函数将键映射到数组索引，实现 O(1) 查找
+            </li>
+            <li>哈希冲突时采用开放寻址法解决
+            </li>
+          </ul>
+          <div class="code">
+<span class="comment"># 字典的键必须可哈希</span>
+
+d={<span class="string">&quot;name&quot;</span>:<span class="string">&quot;Sarah&quot;</span>,<span class="number">42</span>:<span class="string">&quot;answer&quot;</span>,(<span class="number">1</span>,<span class="number">2</span>):<span class="string">&quot;tuple key&quot;</span>}
+
+<span class="comment"># 查看哈希值</span>
+
+<span class="function">print</span>(<span class="function">hash</span>(<span class="string">&quot;name&quot;</span>))
+
+<span class="function">print</span>(<span class="function">hash</span>((<span class="number">1</span>,<span class="number">2</span>)))
+
+<span class="comment"># 列表不可哈希，不能作为键</span>
+
+<span class="comment"># d[[1,2]] = &quot;fail&quot; # TypeError: unhashable type: &#x27;list&#x27;</span>
+
+</div>
+        </div>
+        <div class="slide slide-content">
+          <h2>字符串的紧凑数组
+          </h2>
+          <ul>
+            <li>字符串在 Python 内部以
+              <span class="highlight">紧凑数组
+              </span>
+              存储，字符数据连续存放
+            </li>
+            <li>字符串是
+              <span class="highlight">不可变对象
+              </span>
+              ，修改字符串会创建新对象
+            </li>
+            <li>Python 会对短字符串进行
+              <span class="highlight">驻留（Interning）
+              </span>
+              优化，复用相同字符串
+            </li>
+            <li>字符串拼接不要用 +，用 join() 效率更高
+            </li>
+          </ul>
+          <div class="code">
+<span class="comment"># 字符串不可变</span>
+
+s=<span class="string">&quot;hello&quot;</span>
+
+s=s+<span class="string">&quot; world&quot;</span>
+
+<span class="comment"># 创建了新的字符串对象</span>
+
+<span class="comment"># 字符串驻留优化</span>
+
+a=<span class="string">&quot;python&quot;</span>
+
+b=<span class="string">&quot;python&quot;</span>
+
+<span class="function">print</span>(aisb)
+
+<span class="comment"># True — 同一对象</span>
+
+<span class="comment"># 高效的字符串拼接</span>
+
+words=[<span class="string">&quot;I&quot;</span>,<span class="string">&quot;love&quot;</span>,<span class="string">&quot;Python&quot;</span>]
+
+sentence=<span class="string">&quot; &quot;</span>.
+
+<span class="function">join</span>(words)
+
+<span class="function">print</span>(sentence)
+
+<span class="comment"># &quot;I love Python&quot;</span>
+
+</div>
+        </div>
+        <div class="slide slide-content">
+          <h2>列表推导式
+          </h2>
+          <ul>
+            <li>列表推导式（List Comprehension）是一种
+              <span class="highlight">简洁创建列表
+              </span>
+              的方式
+            </li>
+            <li>通常比 for 循环更快，代码更 Pythonic
+            </li>
+            <li>支持嵌套和条件过滤
+            </li>
+          </ul>
+          <div class="code">
+<span class="comment"># 传统写法 vs 列表推导式</span>
+squares=[]
+<span class="function">forxinrange</span>(<span class="number">10</span>):
+squares.
+<span class="function">append</span>(x**<span class="number">2</span>)
+<span class="comment"># 等价推导式</span>
+squares=[x**<span class="number">2</span>
+<span class="function">forxinrange</span>(<span class="number">10</span>)]
+<span class="comment"># 带条件过滤</span>
+evens=[<span class="function">xforxinrange</span>(<span class="number">20</span>)ifx%<span class="number">2</span>==<span class="number">0</span>]
+<span class="comment"># 嵌套推导式：展平矩阵</span>
+matrix=[[<span class="number">1</span>,<span class="number">2</span>],[<span class="number">3</span>,<span class="number">4</span>],[<span class="number">5</span>,<span class="number">6</span>]]
+flat=[xforrowinmatrixforxinrow]
+<span class="function">print</span>(flat)
+<span class="comment"># [1, 2, 3, 4, 5, 6]</span>
+
+</div>
+        </div>
+        <div class="slide slide-content">
+          <h2>字典推导式与三元表达式
+          </h2>
+          <div class="grid">
+            <div class="card">
+              <h3>字典推导式
+              </h3>
+              <p>用 {k:v for ...} 快速创建字典
+              </p>
+              <p>集合推导式：{x for ...}
+              </p>
+            </div>
+            <div class="card">
+              <h3>三元表达式
+              </h3>
+              <p>value = a if condition else b
+              </p>
+              <p>替代简单的 if/else 赋值
+              </p>
+            </div>
+          </div>
+          <div class="code">
+<span class="comment"># 字典推导式</span>
+names=[<span class="string">&quot;Alice&quot;</span>,<span class="string">&quot;Bob&quot;</span>,<span class="string">&quot;Charlie&quot;</span>]
+name_lengths={name:<span class="function">len</span>(name)
+fornameinnames}
+<span class="function">print</span>(name_lengths)
+<span class="comment"># {&#x27;Alice&#x27;: 5, &#x27;Bob&#x27;: 3, &#x27;Charlie&#x27;: 7}</span>
+<span class="comment"># 集合推导式</span>
+unique_lengths={<span class="function">len</span>(name)
+fornameinnames}
+<span class="comment"># 三元表达式</span>
+score=<span class="number">75</span>
+grade=<span class="string">&quot;及格&quot;</span>
+ifscore&gt;=<span class="number">60</span>
+<span class="keyword">else</span><span class="string">&quot;不及格&quot;</span>
+<span class="function">print</span>(grade)
+
+</div>
+        </div>
+        <div class="slide slide-content">
+          <h2>lambda 匿名函数
+          </h2>
+          <ul>
+            <li>
+              <span class="highlight">lambda
+              </span>
+              用于创建小型匿名函数，无需 def 定义
+            </li>
+            <li>语法：
+              <span class="highlight">lambda 参数: 表达式
+              </span>
+            </li>
+            <li>只能包含单个表达式，不能有多条语句
+            </li>
+            <li>常用于排序 key、map/filter 等场景
+            </li>
+          </ul>
+          <div class="code">
+<span class="comment"># lambda 基本用法</span>
+
+square=lambdax:x**<span class="number">2</span>
+
+<span class="function">print</span>(<span class="function">square</span>(<span class="number">5</span>))
+
+<span class="comment"># 25</span>
+
+<span class="comment"># 用于排序</span>
+
+students=[(<span class="string">&quot;Alice&quot;</span>,<span class="number">85</span>),(<span class="string">&quot;Bob&quot;</span>,<span class="number">92</span>),(<span class="string">&quot;Charlie&quot;</span>,<span class="number">78</span>)]students.
+
+<span class="function">sort</span>(key=lambdax:x[<span class="number">1</span>],reverse=<span class="keyword">True</span>)
+
+<span class="function">print</span>(students)
+
+<span class="comment"># [(&#x27;Bob&#x27;, 92), (&#x27;Alice&#x27;, 85), (&#x27;Charlie&#x27;, 78)]</span>
+
+<span class="comment"># lambda 与 map 结合</span>
+
+nums=[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>]
+
+doubled=
+
+<span class="function">list</span>(<span class="function">map</span>(lambdax:x*<span class="number">2</span>,nums))
+
+<span class="function">print</span>(doubled)
+
+<span class="comment"># [2, 4, 6, 8, 10]</span>
+
+</div>
+        </div>
+        <div class="slide slide-content">
+          <h2>map 与 filter
+          </h2>
+          <div class="grid">
+            <div class="card">
+              <h3>map(func, iterable)
+              </h3>
+              <p>将函数作用于每个元素
+              </p>
+              <p>返回迭代器，需用 list() 转换
+              </p>
+              <p>等价于 [func(x) for x in iterable]
+              </p>
+            </div>
+            <div class="card">
+              <h3>filter(func, iterable)
+              </h3>
+              <p>保留使函数返回 True 的元素
+              </p>
+              <p>返回迭代器，需用 list() 转换
+              </p>
+              <p>等价于 [x for x in iterable if func(x)]
+              </p>
+            </div>
+          </div>
+          <div class="code">
+<span class="comment"># map 示例</span>
+
+temps_c=[<span class="number">0</span>,<span class="number">10</span>,<span class="number">20</span>,<span class="number">30</span>,<span class="number">40</span>]
+
+temps_f=
+
+<span class="function">list</span>(<span class="function">map</span>(lambdac:c*<span class="number">9</span>/<span class="number">5</span>+<span class="number">32</span>,temps_c))
+
+<span class="function">print</span>(temps_f)
+
+<span class="comment"># [32.0, 50.0, 68.0, 86.0, 104.0]</span>
+
+<span class="comment"># filter 示例</span>
+
+numbers=[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">10</span>]
+
+primes=
+
+<span class="function">list</span>(<span class="function">filter</span>(lambdax:xin{<span class="number">2</span>,<span class="number">3</span>,<span class="number">5</span>,<span class="number">7</span>},numbers))
+
+<span class="function">print</span>(primes)
+
+<span class="comment"># [2, 3, 5, 7]</span>
+
+</div>
+        </div>
+        <div class="slide slide-content">
+          <h2>reduce — 累积归约
+          </h2>
+          <ul>
+            <li>
+              <span class="highlight">reduce(func, iterable)
+              </span>
+              对序列进行累积计算
+            </li>
+            <li>需要
+              <span class="highlight">from functools import reduce
+              </span>
+            </li>
+            <li>过程：将前两个元素传给函数，结果再与下一个元素计算，依此类推
+            </li>
+          </ul>
+          <div class="code">
+fromfunctools
+importreduce
+<span class="comment"># 求阶乘</span>
+n=<span class="number">5</span>
+factorial=
+<span class="function">reduce</span>(lambdax,y:x*y,<span class="function">range</span>(<span class="number">1</span>,n+<span class="number">1</span>))
+<span class="function">print</span>(factorial)
+<span class="comment"># 120</span>
+<span class="comment"># 求列表最大值</span>
+nums=[<span class="number">3</span>,<span class="number">1</span>,<span class="number">4</span>,<span class="number">1</span>,<span class="number">5</span>,<span class="number">9</span>,<span class="number">2</span>,<span class="number">6</span>]
+max_val=
+<span class="function">reduce</span>(lambdaa,b:aifa&gt;belseb,nums)
+<span class="function">print</span>(max_val)
+<span class="comment"># 9</span>
+<span class="comment"># 字符串拼接</span>
+words=[<span class="string">&quot;I&quot;</span>,<span class="string">&quot; &quot;</span>,<span class="string">&quot;love&quot;</span>,<span class="string">&quot; &quot;</span>,<span class="string">&quot;Python&quot;</span>]
+sentence=
+<span class="function">reduce</span>(lambdax,y:x+y,words)
+<span class="function">print</span>(sentence)
+<span class="comment"># &quot;I love Python&quot;</span>
+
+</div>
+        </div>
+        <div class="slide slide-end">
+          <h2>本章总结
+          </h2>
+          <div style="max-width: 800px;">
+            <p style="margin-bottom: 16px;">▸ 列表 = 引用数组，字典 = 散列表，字符串 = 紧凑数组（不可变）
+            </p>
+            <p style="margin-bottom: 16px;">▸ 浅拷贝 copy() 共享内部引用，深拷贝 deepcopy() 完全独立
+            </p>
+            <p style="margin-bottom: 16px;">▸ 列表/字典推导式让代码更简洁、更 Pythonic
+            </p>
+            <p style="margin-bottom: 16px;">▸ lambda 用于简单匿名函数，map/filter/reduce 是函数式编程利器
+            </p>
+          </div>
+        </div>
+        <div style="text-align:center; margin-top:30px;">
+          <a href="Python基础_第10章_Python标准库_PPT.html" style="display:inline-block; padding:10px 28px; background:rgba(255,255,255,0.9); color:#1a2a6c; text-decoration:none; border-radius:8px; font-size:16px; font-weight:600;">下一章 ▶</a>
+        </div>
+      </div>
+      <!-- Slide 2: 目录 -->
+      <!-- Slide 3: 列表的底层实现 -->
+      <!-- Slide 4: 浅拷贝与深拷贝 -->
+      <!-- Slide 5: 字典的散列表实现 -->
+      <!-- Slide 6: 字符串的紧凑数组 -->
+      <!-- Slide 7: 列表推导式 -->
+      <!-- Slide 8: 字典推导式与三元表达式 -->
+      <!-- Slide 9: lambda 匿名函数 -->
+      <!-- Slide 10: map 与 filter -->
+      <!-- Slide 11: reduce -->
+      <!-- Slide 12: 总结 -->
+      <div class="nav" style="position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 100;">
+        <button onclick="prevSlide()">◀ 上一页
+        </button>
+        <span class="page-num">
+          <span id="current">1
+          </span>
+          /
+          <span id="total">12
+          </span>
+        </span>
+        <button onclick="nextSlide()">下一页 ▶
+        </button>
+      </div>
+<script>
+    const slides = document.querySelectorAll('.slide');
+    let current = 0;
+    const total = slides.length;
+    document.getElementById('total').textContent = total;
+
+    function showSlide(n) {
+      slides.forEach(s => s.classList.remove('active'));
+      slides[n].classList.add('active');
+      document.getElementById('current').textContent = n + 1;
+      document.getElementById('progress').style.width = ((n + 1) / total * 100) + '%';
+    }
+
+    function nextSlide() {
+      if (current < total - 1) { current++; showSlide(current); }
+    }
+
+    function prevSlide() {
+      if (current > 0) { current--; showSlide(current); }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+      if (e.key === 'ArrowLeft') prevSlide();
+    });
+
+    showSlide(0);
+  
+  // ===== 代码复制功能 =====
+  document.querySelectorAll('pre').forEach(pre => {
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '复制';
+    btn.type = 'button';
+    btn.addEventListener('click', () => {
+      const code = pre.querySelector('code');
+      const text = code ? code.innerText : pre.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 1500);
+      }).catch(() => {
+        // fallback
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta);
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+
+</script>
+    </body>
+  </html>

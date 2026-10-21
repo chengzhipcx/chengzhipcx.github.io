@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>如何进入 AI 行业 - PPT</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+            background: #0a0e27;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .slide {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 80px;
+            position: relative;
+        }
+
+        /* Slide 1 - Cover */
+        .slide-cover {
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f5c 50%, #2d1b69 100%);
+            text-align: center;
+        }
+
+        .slide-cover h1 {
+            font-size: 56px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .slide-cover .subtitle {
+            font-size: 24px;
+            color: #a0a8c8;
+            margin-bottom: 60px;
+        }
+
+        .slide-cover .author {
+            font-size: 18px;
+            color: #6b7280;
+        }
+
+        /* Slide 2+ */
+        .slide-content {
+            background: #0f172a;
+            border-top: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .slide-number {
+            position: absolute;
+            top: 40px;
+            left: 80px;
+            font-size: 14px;
+            color: #667eea;
+            font-weight: 600;
+            letter-spacing: 2px;
+        }
+
+        .slide-title {
+            font-size: 40px;
+            font-weight: 700;
+            margin-bottom: 50px;
+            color: #fff;
+            text-align: left;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .slide-body {
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        /* Cards */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(102, 126, 234, 0.5);
+            transform: translateY(-4px);
+        }
+
+        .card-icon {
+            font-size: 32px;
+            margin-bottom: 16px;
+        }
+
+        .card h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #e0e7ff;
+        }
+
+        .card p {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #a0a8c8;
+        }
+
+        /* Lists */
+        .styled-list {
+            list-style: none;
+        }
+
+        .styled-list li {
+            position: relative;
+            padding-left: 32px;
+            margin-bottom: 20px;
+            font-size: 18px;
+            line-height: 1.8;
+            color: #c8d0e8;
+        }
+
+        .styled-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 10px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        /* Quote */
+        .quote-block {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
+            border-left: 4px solid #667eea;
+            padding: 30px 40px;
+            border-radius: 0 12px 12px 0;
+            margin: 30px 0;
+        }
+
+        .quote-block p {
+            font-size: 22px;
+            line-height: 1.8;
+            color: #e0e7ff;
+            font-style: italic;
+        }
+
+        /* Two column */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .col-header {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid;
+        }
+
+        .col-header.yes {
+            color: #34d399;
+            border-color: #34d399;
+        }
+
+        .col-header.no {
+            color: #f87171;
+            border-color: #f87171;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -36px;
+            top: 6px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #667eea;
+            border: 3px solid #0f172a;
+        }
+
+        .timeline-year {
+            font-size: 14px;
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .timeline-text {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #c8d0e8;
+        }
+
+        /* Full width card */
+        .full-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 24px;
+        }
+
+        .full-card h3 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #e0e7ff;
+        }
+
+        .full-card p {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #a0a8c8;
+        }
+
+        /* Summary slide */
+        .slide-summary {
+            background: linear-gradient(135deg, #1a1f5c 0%, #2d1b69 100%);
+            text-align: center;
+        }
+
+        .slide-summary h2 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 50px;
+            color: #fff;
+        }
+
+        .summary-points {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .summary-point {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 24px 40px;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .summary-point .num {
+            font-size: 36px;
+            font-weight: 700;
+            color: #667eea;
+            min-width: 50px;
+        }
+
+        .summary-point .text {
+            font-size: 20px;
+            color: #e0e7ff;
+            line-height: 1.6;
+        }
+
+        /* WeChat Promo */
+        .wx-promo {
+            margin-top: auto;
+            padding-top: 40px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .wx-promo-text {
+            font-size: 16px;
+            color: #a0a8c8;
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+        }
+
+        .wx-promo-images {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .wx-promo-images img {
+            width: 360px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 40px 24px;
+            }
+
+            .slide-cover h1 {
+                font-size: 32px;
+            }
+
+            .slide-title {
+                font-size: 28px;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Slide 1: Cover -->
+    <div class="slide slide-cover">
+        <h1>如何进入 AI 行业</h1>
+        <p class="subtitle">一条面向普通人的确定性学习路线</p>
+        <div class="wx-promo">
+            <p class="wx-promo-text">欢迎关注微信公众号</p>
+            <div class="wx-promo-images">
+                <img src="asset/coder程.png" alt="coder程">
+                <img src="asset/查令十街84号.png" alt="查令十街84号">
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 2: 焦虑现状 -->
+    <div class="slide slide-content">
+        <span class="slide-number">01</span>
+        <h2 class="slide-title">AI 热潮下的普遍焦虑</h2>
+        <div class="slide-body">
+            <div class="quote-block">
+                <p>AI 这东西发展得太快了，很多人已经不确定自己正在做的事情在一年后是否还有意义。</p>
+            </div>
+            <ul class="styled-list">
+                <li>今天发布 Manus，明天来 Lovart，工具迭代眼花缭乱</li>
+                <li>Cursor 还没捂热，Claude Code 又成王者</li>
+                <li>前脚学提示词，后脚大佬说 RAG 已经过时</li>
+                <li>Coze 刚开源，Google Nano Banana 又刷屏</li>
+            </ul>
+            <div class="quote-block" style="margin-top: 40px;">
+                <p style="font-size: 18px;">很多人的焦虑并不是因为 AI 真有那么可怕，而是因为没有建立自己的判断框架。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: 核心判断 -->
+    <div class="slide slide-content">
+        <span class="slide-number">02</span>
+        <h2 class="slide-title">核心判断：机会在哪里？</h2>
+        <div class="slide-body">
+            <div class="full-card" style="margin-bottom: 40px;">
+                <h3 style="font-size: 28px; color: #34d399;">普通人的机会在「业务落地」，不在「算法岗」</h3>
+                <p style="font-size: 18px; margin-top: 16px;">算法岗位门槛较高、岗位较少，对绝大多数人来说不是高性价比的切入路径。</p>
+            </div>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-icon">👨‍💻</div>
+                    <h3>程序员</h3>
+                    <p>专注 AI 应用开发，用 AI Coding 提升生产力</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">📋</div>
+                    <h3>产品经理</h3>
+                    <p>理解 AI 能力边界，设计 AI 产品方案</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🚀</div>
+                    <h3>项目负责人</h3>
+                    <p>把握 AI 项目全貌，推动业务落地</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">💼</div>
+                    <h3>创业者</h3>
+                    <p>找到 AI 应用的真实需求，低成本试错</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4: 该学什么 -->
+    <div class="slide slide-content">
+        <span class="slide-number">03</span>
+        <h2 class="slide-title">该学什么？建立正确优先级</h2>
+        <div class="slide-body">
+            <div class="two-col">
+                <div>
+                    <div class="col-header yes">✅ 优先学这些</div>
+                    <ul class="styled-list">
+                        <li>AI 项目的全貌与分类逻辑</li>
+                        <li>企业落地的常见路径</li>
+                        <li>Workflow / Agent / RAG 的关系</li>
+                        <li>一个真实 AI 项目如何 0 到 1</li>
+                        <li>AI Coding 的实际应用</li>
+                        <li>知识库与数据工程基础</li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="col-header no">❌ 前期不必深钻</div>
+                    <ul class="styled-list">
+                        <li>TFIDF、BM25 等检索算法</li>
+                        <li>BERT、FastText 等模型细节</li>
+                        <li>LSTM、Viterbi 等传统方法</li>
+                        <li>模型训练与微调细节</li>
+                        <li>各种底层数学推导</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5: 碎片化学习的问题 -->
+    <div class="slide slide-content">
+        <span class="slide-number">04</span>
+        <h2 class="slide-title">为什么学了很久还是进不去？</h2>
+        <div class="slide-body">
+            <div class="quote-block">
+                <p>很多人不是不努力，而是没有站在生产级项目的视角去学。</p>
+            </div>
+            <div class="card-grid" style="margin-top: 40px;">
+                <div class="card">
+                    <h3>❌ 碎片化学习</h3>
+                    <ul class="styled-list" style="margin-top: 16px;">
+                        <li>会搭 Coze / Dify</li>
+                        <li>会做简单知识库</li>
+                        <li>会写几句提示词</li>
+                        <li>看过几个 Agent 视频</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>✅ 结构化认知</h3>
+                    <ul class="styled-list" style="margin-top: 16px;">
+                        <li>这个项目属于什么类型</li>
+                        <li>核心难点在哪里</li>
+                        <li>是工程问题、数据问题还是 KnowHow 问题</li>
+                        <li>成本、效果、可维护性意味着什么</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 6: AI 项目知识框架 -->
+    <div class="slide slide-content">
+        <span class="slide-number">05</span>
+        <h2 class="slide-title">AI 项目知识框架</h2>
+        <div class="slide-body">
+            <p style="font-size: 18px; color: #a0a8c8; margin-bottom: 40px; line-height: 1.8;">
+                这几年除了模型能力持续提升，AI 应用层的核心逻辑并没有发生本质变化。很多新东西只是老问题的新解法。
+            </p>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-icon">📐</div>
+                    <h3>承载 SOP</h3>
+                    <p>Workflow 如何固化业务流程</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🛠️</div>
+                    <h3>调用工具</h3>
+                    <p>MCP、Function Call、API 集成</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">📚</div>
+                    <h3>组织上下文</h3>
+                    <p>长上下文、上下文工程、记忆管理</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🔍</div>
+                    <h3>知识增强</h3>
+                    <p>RAG、知识库、GraphRAG</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🧩</div>
+                    <h3>任务拆解</h3>
+                    <p>Agent 规划、子任务分配</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🔄</div>
+                    <h3>数据闭环</h3>
+                    <p>飞轮系统、效果迭代</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 7: 生产级项目全貌 -->
+    <div class="slide slide-content">
+        <span class="slide-number">06</span>
+        <h2 class="slide-title">生产级 AI 项目的完整图景</h2>
+        <div class="slide-body">
+            <p style="font-size: 18px; color: #a0a8c8; margin-bottom: 40px; line-height: 1.8;">
+                真实公司里的 AI 项目，一个稍微大一点的案子至少涉及这些维度：
+            </p>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>1. 业务目标</h3>
+                    <p>场景定义、价值衡量、ROI 评估</p>
+                </div>
+                <div class="card">
+                    <h3>2. 模型边界</h3>
+                    <p>能力评估、幻觉处理、精度预期</p>
+                </div>
+                <div class="card">
+                    <h3>3. 工程设计</h3>
+                    <p>Prompt / Workflow / Agent 架构设计</p>
+                </div>
+                <div class="card">
+                    <h3>4. 数据工程</h3>
+                    <p>清洗、标注、评测、闭环迭代</p>
+                </div>
+                <div class="card">
+                    <h3>5. 系统接入</h3>
+                    <p>与现有系统对接、API 设计</p>
+                </div>
+                <div class="card">
+                    <h3>6. 可观测性</h3>
+                    <p>效果验证、日志追踪、持续优化</p>
+                </div>
+                <div class="card">
+                    <h3>7. 成本合规</h3>
+                    <p>Token 成本、安全合规、隐私保护</p>
+                </div>
+                <div class="card">
+                    <h3>8. 组织协同</h3>
+                    <p>与现有流程融合、团队协作</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 8: 关键模块详解 -->
+    <div class="slide slide-content">
+        <span class="slide-number">07</span>
+        <h2 class="slide-title">关键模块详解</h2>
+        <div class="slide-body">
+            <div class="full-card">
+                <h3>🤖 Agent 与 Workflow</h3>
+                <p>企业当前主流落地方式。横向对比各平台（Coze、Dify、FastGPT、n8n），理解工作流项目的真实难点。为什么越来越多企业用 AI Coding + Agent 承载 Workflow。</p>
+            </div>
+            <div class="full-card">
+                <h3>💻 AI Coding</h3>
+                <p>不再是加分项，而是必选项。从让 AI 写 demo，到真正参与生产级项目开发，掌握 AI Coding 是现代技术人的基本功。</p>
+            </div>
+            <div class="full-card">
+                <h3>📖 知识库与 RAG</h3>
+                <p>从简单 RAG 到复杂知识库系统，理解 GraphRAG、知识图谱的适用场景，掌握准确率瓶颈的处理方法。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 9: Summary -->
+    <div class="slide slide-summary">
+        <h2>核心结论</h2>
+        <div class="summary-points">
+            <div class="summary-point">
+                <span class="num">01</span>
+                <span class="text">普通人进入 AI 行业，机会在业务落地，不在算法岗</span>
+            </div>
+            <div class="summary-point">
+                <span class="num">02</span>
+                <span class="text">先建立 AI 项目知识框架，再学具体工具</span>
+            </div>
+            <div class="summary-point">
+                <span class="num">03</span>
+                <span class="text">站在生产级项目视角学习，拒绝碎片化</span>
+            </div>
+            <div class="summary-point">
+                <span class="num">04</span>
+                <span class="text">Agent、Workflow、AI Coding、知识库是四大核心模块</span>
+            </div>
+            <div class="summary-point">
+                <span class="num">05</span>
+                <span class="text">真正稀缺的是「项目全局视角」，不是工具操作能力</span>
+            </div>
+        </div>
+        <div class="wx-promo">
+            <p class="wx-promo-text">欢迎关注微信公众号</p>
+            <div class="wx-promo-images">
+                <img src="asset/coder程.png" alt="coder程">
+                <img src="asset/查令十街84号.png" alt="查令十街84号">
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

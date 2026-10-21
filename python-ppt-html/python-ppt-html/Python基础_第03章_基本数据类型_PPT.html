@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+  <html lang="zh-CN">
+    <head>
+      <meta charset="utf-8"/>
+      <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+      <title>Python基础 - 第03章 基本数据类型
+      </title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif; }
+
+  .slide {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    display: none; flex-direction: column; justify-content: center; align-items: center;
+    padding: 60px 80px; transition: opacity 0.4s ease;
+  }
+  .slide.active { display: flex; }
+
+  .slide.cover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff; text-align: center;
+  }
+  .slide.cover h1 { font-size: 3.2rem; font-weight: 700; margin-bottom: 0.5em; letter-spacing: 0.05em; }
+  .slide.cover .subtitle { font-size: 1.4rem; opacity: 0.9; margin-bottom: 2em; }
+  .slide.cover .badge {
+    display: inline-block; padding: 8px 24px; border: 2px solid rgba(255,255,255,0.6);
+    border-radius: 30px; font-size: 1rem; letter-spacing: 0.1em;
+  }
+
+  .slide.content {
+    background: #f8f9fa; color: #2d3436;
+  }
+  .slide.content .page-header {
+    position: absolute; top: 40px; left: 0; padding-left: 80px;
+    border-left: 5px solid #667eea;
+  }
+  .slide.content .page-header h2 { font-size: 2rem; color: #2d3436; }
+  .slide.content .page-header .section-tag {
+    font-size: 0.85rem; color: #667eea; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 4px;
+  }
+  .slide.content .body {
+    width: 100%; max-width: 1100px; margin-top: 60px;
+  }
+
+  pre {
+    background: #1e1e1e; color: #d4d4d4; padding: 20px 24px; border-radius: 8px;
+    font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace; font-size: 0.95rem;
+    line-height: 1.7; overflow-x: auto; text-align: left; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  pre .kw { color: #569cd6; }
+  pre .str { color: #ce9178; }
+  pre .num { color: #b5cea8; }
+  pre .com { color: #6a9955; }
+  pre .func { color: #dcdcaa; }
+  pre .var { color: #9cdcfe; }
+
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; width: 100%; }
+  .card {
+    background: #fff; border-radius: 10px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border-left: 4px solid #667eea;
+  }
+  .card h4 { font-size: 1.1rem; margin-bottom: 8px; color: #2d3436; }
+  .card p { font-size: 0.95rem; color: #636e72; line-height: 1.6; }
+
+  ul.teach-list { list-style: none; padding: 0; }
+  ul.teach-list li {
+    padding: 12px 0; padding-left: 28px; position: relative; font-size: 1.05rem; line-height: 1.7;
+    border-bottom: 1px solid #e9ecef;
+  }
+  ul.teach-list li::before {
+    content: "▸"; position: absolute; left: 0; color: #667eea; font-weight: 700;
+  }
+  ul.teach-list li:last-child { border-bottom: none; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; width: 100%; align-items: start; }
+  .two-col pre { font-size: 0.85rem; }
+  .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; width: 100%; }
+
+  .highlight-box {
+    background: #fff3cd; border-left: 4px solid #ffc107; padding: 16px 20px; border-radius: 0 8px 8px 0;
+    margin: 16px 0; font-size: 0.95rem; color: #856404;
+  }
+  .tip-box {
+    background: #d1ecf1; border-left: 4px solid #17a2b8; padding: 16px 20px; border-radius: 0 8px 8px 0;
+    margin: 16px 0; font-size: 0.95rem; color: #0c5460;
+  }
+
+  .toc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; width: 100%; max-width: 900px; }
+  .toc-item {
+    background: #fff; padding: 28px 32px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    display: flex; align-items: center; gap: 20px; transition: transform 0.2s;
+  }
+  .toc-item:hover { transform: translateY(-3px); }
+  .toc-num {
+    width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; font-weight: 700; flex-shrink: 0;
+  }
+  .toc-text h4 { font-size: 1.15rem; margin-bottom: 4px; }
+  .toc-text span { font-size: 0.85rem; color: #888; }
+
+  .slide.summary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; }
+  .slide.summary h2 { font-size: 2.4rem; margin-bottom: 40px; }
+  .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; width: 100%; max-width: 1000px; }
+  .summary-card {
+    background: rgba(255,255,255,0.12); backdrop-filter: blur(8px); padding: 28px; border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  .summary-card h4 { font-size: 1.1rem; margin-bottom: 12px; }
+  .summary-card p { font-size: 0.9rem; opacity: 0.9; line-height: 1.6; }
+
+  .progress-bar {
+    position: fixed; bottom: 0; left: 0; height: 4px; background: linear-gradient(90deg, #667eea, #764ba2);
+    transition: width 0.3s ease; z-index: 100;
+  }
+  .page-num {
+    position: fixed; bottom: 12px; right: 24px; font-size: 0.8rem; color: #888; z-index: 100;
+  }
+  .nav-hint {
+    position: fixed; bottom: 12px; left: 24px; font-size: 0.75rem; color: #aaa; z-index: 100;
+  }
+
+  h3 { font-size: 1.5rem; margin-bottom: 20px; color: #2d3436; }
+  p { font-size: 1.05rem; line-height: 1.8; color: #495057; }
+
+  .nav { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 100; }
+  .nav button {
+    background: rgba(0,0,0,0.3); color: white; border: none; padding: 10px 24px;
+    border-radius: 6px; cursor: pointer; font-size: 14px; backdrop-filter: blur(4px);
+  }
+  .nav button:hover { background: rgba(0,0,0,0.5); }
+  .nav .page-num { position: static !important; bottom: auto !important; right: auto !important; background: #007acc; color: white; font-size: 14px; line-height: 36px; padding: 0 14px; border-radius: 6px; margin: 0 10px; }
+  @media (max-width: 900px) and (orientation: landscape) {
+    .slide { padding: 20px 30px !important; }
+    .slide h1 { font-size: 1.8rem !important; }
+    .slide h2 { font-size: 1.4rem !important; }
+    .slide h3 { font-size: 1.1rem !important; }
+    .slide p, .slide li { font-size: 0.9rem !important; line-height: 1.5 !important; }
+    pre { font-size: 0.75rem !important; padding: 10px !important; }
+    .nav button { padding: 6px 14px !important; font-size: 12px !important; }
+    .nav .page-num { font-size: 12px !important; padding: 0 10px !important; }
+  }
+  
+    /* 微信公众号推荐 */
+    .wx-promo {
+      margin-top: 40px;
+      padding-top: 30px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .wx-promo-text {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+    .wx-promo-images {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+    }
+    .wx-promo-images img {
+      width: 360px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 2px solid rgba(0, 122, 204, 0.3);
+    }
+    .slide-cover .wx-promo-text,
+    .slide-end .wx-promo-text,
+    .cover .wx-promo-text,
+    .summary .wx-promo-text {
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .slide-cover .wx-promo-images img,
+    .slide-end .wx-promo-images img,
+    .cover .wx-promo-images img,
+    .summary .wx-promo-images img {
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+  /* ===== 代码复制按钮 ===== */
+  pre { position: relative; }
+  .copy-btn {
+    position: absolute; top: 8px; right: 8px;
+    padding: 4px 10px; font-size: 12px; line-height: 1.4;
+    color: #ccc; background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 4px;
+    cursor: pointer; opacity: 0; transition: opacity 0.2s, background 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    z-index: 10;
+  }
+  pre:hover .copy-btn { opacity: 1; }
+  .copy-btn:hover { background: rgba(255,255,255,0.25); color: #fff; }
+  .copy-btn.copied { color: #4ec9b0; border-color: #4ec9b0; background: rgba(78,201,176,0.15); opacity: 1; }
+
+</style>
+    </head>
+    <body>
+      <div class="slide cover active">
+        <div class="badge">CHAPTER 03
+        </div>
+        <h1>Python 基本数据类型
+        </h1>
+        <p class="subtitle">数字 · 字符串 · 布尔 · 类型转换
+        </p>
+        <div class="wx-promo">
+          <p class="wx-promo-text">欢迎关注微信公众号
+          </p>
+          <div class="wx-promo-images">
+            <img alt="coder程" src="../asset/coder程.png"/>
+            <img alt="查令十街84号" src="../asset/查令十街84号.png"/>
+          </div>
+        </div>
+      </div>
+      <div class="slide content">
+        <div class="page-header">
+          <div class="section-tag">Contents
+          </div>
+          <h2>本章目录
+          </h2>
+        </div>
+        <div class="body">
+          <div class="toc-grid">
+            <div class="toc-item">
+              <div class="toc-num">1
+              </div>
+              <div class="toc-text">
+                <h4>数字类型
+                </h4>
+                <span>整数、浮点数、复数及运算
+                </span>
+              </div>
+            </div>
+            <div class="toc-item">
+              <div class="toc-num">2
+              </div>
+              <div class="toc-text">
+                <h4>字符串
+                </h4>
+                <span>索引、切片、方法、格式化
+                </span>
+              </div>
+            </div>
+            <div class="toc-item">
+              <div class="toc-num">3
+              </div>
+              <div class="toc-text">
+                <h4>布尔类型
+                </h4>
+                <span>True/False、逻辑运算
+                </span>
+              </div>
+            </div>
+            <div class="toc-item">
+              <div class="toc-num">4
+              </div>
+              <div class="toc-text">
+                <h4>类型转换
+                </h4>
+                <span>int() / str() / float() 等
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide content">
+        <div class="page-header">
+          <div class="section-tag">3.1 数字类型
+          </div>
+          <h2>整数、浮点数与复数
+          </h2>
+        </div>
+        <div class="body">
+          <div class="three-col">
+            <div class="card">
+              <h4>int 整数
+              </h4>
+              <p>无大小限制
+                <br/>十进制 / 二进制 0b / 八进制 0o / 十六进制 0x
+              </p>
+<pre style="margin-top:10px; font-size:0.8rem;"><code><span class="var">a</span> = <span class="num">100</span>
+<span class="var">b</span> = <span class="num">0b1010</span>   <span class="com"># 10</span>
+<span class="var">c</span> = <span class="num">0xFF</span>     <span class="com"># 255</span></code></pre>
+            </div>
+            <div class="card">
+              <h4>float 浮点数
+              </h4>
+              <p>带小数点或科学计数法
+                <br/>注意精度问题
+              </p>
+<pre style="margin-top:10px; font-size:0.8rem;"><code><span class="var">f1</span> = <span class="num">3.14</span>
+<span class="var">f2</span> = <span class="num">1.5e2</span>   <span class="com"># 150.0</span>
+<span class="var">f3</span> = <span class="num">0.1</span> + <span class="num">0.2</span>  <span class="com"># 0.30000000000000004</span></code></pre>
+            </div>
+            <div class="card">
+              <h4>complex 复数
+              </h4>
+              <p>实部 + 虚部，用 j 表示
+              </p>
+<pre style="margin-top:10px; font-size:0.8rem;"><code><span class="var">z</span> = <span class="num">3</span> + <span class="num">4j</span>
+<span class="func">print</span>(<span class="var">z</span>.real)   <span class="com"># 3.0</span>
+<span class="func">print</span>(<span class="var">z</span>.imag)   <span class="com"># 4.0</span>
+<span class="func">print</span>(<span class="func">abs</span>(<span class="var">z</span>))  <span class="com"># 5.0</span></code></pre>
+            </div>
+          </div>
+          <div class="tip-box" style="margin-top: 24px;">
+            <strong>浮点数精度：
+            </strong>
+            0.1 + 0.2 ≠ 0.3 是计算机浮点数的固有限制。需要精确计算时，使用
+            <code>decimal
+            </code>
+            模块。
+          </div>
+        </div>
+      </div>
+      <div class="slide content">
+        <div class="page-header">
+          <div class="section-tag">3.1 数字类型
+          </div>
+          <h2>算术运算符
+          </h2>
+        </div>
+        <div class="body">
+          <div class="two-col">
+            <div>
+              <h3>常用运算符
+              </h3>
+              <ul class="teach-list">
+                <li>
+                  <code>+
+                  </code>
+                  加
+                  <code>-
+                  </code>
+                  减
+                  <code>*
+                  </code>
+                  乘
+                  <code>/
+                  </code>
+                  除（浮点）
+                </li>
+                <li>
+                  <code>//
+                  </code>
+                  整除
+                  <code>%
+                  </code>
+                  取余
+                  <code>**
+                  </code>
+                  幂运算
+                </li>
+                <li>
+                  <code>divmod(a, b)
+                  </code>
+                  → (a//b, a%b)
+                </li>
+                <li>
+                  <code>round(x, n)
+                  </code>
+                  四舍五入
+                </li>
+                <li>
+                  <code>abs(x)
+                  </code>
+                  绝对值
+                  <code>pow(x, y)
+                  </code>
+                  幂
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3>代码示例
+              </h3>
+<pre><code><span class="num">17</span> / <span class="num">5</span>     <span class="com"># 3.4   （浮点除）</span>
+<span class="num">17</span> // <span class="num">5</span>    <span class="com"># 3     （整除）</span>
+<span class="num">17</span> % <span class="num">5</span>     <span class="com"># 2     （取余）</span>
+<span class="num">2</span> ** <span class="num">10</span>    <span class="com"># 1024  （2的10次方）</span>
+<span class="func">divmod</span>(<span class="num">17</span>, <span class="num">5</span>)  <span class="com"># (3, 2)</span>
+<span class="func">round</span>(<span class="num">3.14159</span>, <span class="num">2</span>)  <span class="com"># 3.14</span></code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide content">
+        <div class="page-header">
+          <div class="section-tag">3.2 字符串
+          </div>
+          <h2>字符串基础
+          </h2>
+        </div>
+        <div class="body">
+          <div class="two-col">
+            <div>
+              <h3>创建字符串
+              </h3>
+<pre><code><span class="var">s1</span> = <span class="str">'单引号'</span>
+<span class="var">s2</span> = <span class="str">"双引号"</span>
+<span class="var">s3</span> = <span class="str">'''多行
+字符串'''</span>
+
+<span class="com"># 转义字符</span>
+<span class="var">s4</span> = <span class="str">"Line1\nLine2\tTab"</span>
+<span class="var">s5</span> = <span class="str">r"C:\\Users\\Tom"</span>  <span class="com"># 原始字符串</span></code></pre>
+            </div>
+            <div>
+              <h3>索引与切片
+              </h3>
+<pre><code><span class="var">s</span> = <span class="str">"Python"</span>
+<span class="var">s</span>[<span class="num">0</span>]      <span class="com"># 'P'   正向索引</span>
+<span class="var">s</span>[-<span class="num">1</span>]     <span class="com"># 'n'   反向索引</span>
+<span class="var">s</span>[<span class="num">0</span>:<span class="num">3</span>]    <span class="com"># 'Pyt' [开始:结束)</span>
+<span class="var">s</span>[:<span class="num">3</span>]     <span class="com"># 'Pyt' 省略开头</span>
+<span class="var">s</span>[<span class="num">3</span>:]     <span class="com"># 'hon' 省略结尾</span>
+<span class="var">s</span>[::-<span class="num">1</span>]   <span class="com"># 'nohtyP' 反转</span></code></pre>
+            </div>
+          </div>
+          <div class="highlight-box" style="margin-top: 20px;">
+            <strong>切片公式：
+            </strong>
+            <code>s[start:end:step]
+            </code>
+            — 包含 start，不包含 end，步长 step。步长为负时反向取。
+          </div>
+        </div>
+      </div>
+      <div class="slide content">
+        <div class="page-header">
+          <div class="section-tag">3.2 字符串
+          </div>
+          <h2>字符串常用方法
+          </h2>
+        </div>
+        <div class="body">
+          <div class="two-col">
+            <div>
+<pre><code><span class="var">s</span> = <span class="str">"  Hello World  "</span>
+
+<span class="var">s</span>.<span class="func">strip</span>()       <span class="com"># "Hello World"  去空白</span>
+<span class="var">s</span>.<span class="func">lower</span>()       <span class="com"># "  hello world  "</span>
+<span class="var">s</span>.<span class="func">upper</span>()       <span class="com"># "  HELLO WORLD  "</span>
+<span class="var">s</span>.<span class="func">replace</span>(<span class="str">"World"</span>, <span class="str">"Python"</span>)  <span class="com"># "  Hello Python  "</span>
+<span class="var">s</span>.<span class="func">split</span>(<span class="str">" "</span>)    <span class="com"># ['', '', 'Hello', 'World', '', '']</span>
+<span class="str">"-"</span>.<span class="func">join</span>([<span class="str">"a"</span>, <span class="str">"b"</span>, <span class="str">"c"</span>])  <span class="com"># "a-b-c"</span></code></pre>
+            </div>
+            <div>
+<pre><code><span class="var">s</span> = <span class="str">"abc123"</span>
+
+<span class="var">s</span>.<span class="func">startswith</span>(<span class="str">"ab"</span>)   <span class="com"># True</span>
+<span class="var">s</span>.<span class="func">endswith</span>(<span class="str">"23"</span>)     <span class="com"># True</span>
+<span class="var">s</span>.<span class="func">find</span>(<span class="str">"c"</span>)        <span class="com"># 2  （找不到返回 -1）</span>
+<span class="var">s</span>.<span class="func">count</span>(<span class="str">"a"</span>)       <span class="com"># 1</span>
+<span class="var">s</span>.<span class="func">isdigit</span>()        <span class="com"># False</span>
+<span class="str">"123"</span>.<span class="func">isdigit</span>()    <span class="com"># True</span></code></pre>
+            </div>
+          </div>
+          <div class="tip-box" style="margin-top: 20px;">
+            <strong>字符串不可变：
+            </strong>
+            所有字符串方法都返回
+            <strong>新字符串
+            </strong>
+            ，不会修改原字符串。要保存结果必须赋值给变量。
+          </div>
+        </div>
+      </div>
+      <div class="slide content">
+        <div class="page-header">
+          <div class="section-tag">3.3 布尔类型
+          </div>
+          <h2>布尔与逻辑运算
+          </h2>
+        </div>
+        <div class="body">
+          <div class="two-col">
+            <div>
+              <h3>布尔值
+              </h3>
+              <p>只有两个值：
+                <code>True
+                </code>
+                和
+                <code>False
+                </code>
+              </p>
+<pre><code><span class="var">flag</span> = <span class="num">True</span>
+<span class="func">print</span>(<span class="func">type</span>(<span class="var">flag</span>))   <span class="com"># &lt;class 'bool'&gt;</span>
+
+<span class="com"># 布尔本质</span>
+<span class="func">int</span>(<span class="num">True</span>)   <span class="com"># 1</span>
+<span class="func">int</span>(<span class="num">False</span>)  <span class="com"># 0</span></code></pre>
+              <h3 style="margin-top: 20px;">比较运算符
+              </h3>
+<pre><code><span class="num">==</span>  <span class="com"># 等于</span>   <span class="num">!=</span>  <span class="com"># 不等于</span>
+<span class="num">&gt;</span>   <span class="com"># 大于</span>   <span class="num">&lt;</span>   <span class="com"># 小于</span>
+<span class="num">&gt;=</span>  <span class="com"># 大于等于</span>   <span class="num">&lt;=</span>  <span class="com"># 小于等于</span></code></pre>
+            </div>
+            <div>
+              <h3>逻辑运算符
+              </h3>
+<pre><code><span class="var">a</span>, <span class="var">b</span> = <span class="num">True</span>, <span class="num">False</span>
+
+<span class="var">a</span> <span class="kw">and</span> <span class="var">b</span>   <span class="com"># False （全真才真）</span>
+<span class="var">a</span> <span class="kw">or</span> <span class="var">b</span>    <span class="com"># True  （有真即真）</span>
+<span class="kw">not</span> <span class="var">a</span>     <span class="com"># False （取反）</span>
+
+<span class="com"># 短路求值</span>
+<span class="num">0</span> <span class="kw">and</span> <span class="func">print</span>(<span class="str">"x"</span>)   <span class="com"># 0 （不执行 print）</span>
+<span class="num">1</span> <span class="kw">or</span> <span class="func">print</span>(<span class="str">"y"</span>)    <span class="com"># 1 （不执行 print）</span></code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide content">
+        <div class="page-header">
+          <div class="section-tag">3.3 布尔类型
+          </div>
+          <h2>真值与假值
+          </h2>
+        </div>
+        <div class="body">
+          <p style="margin-bottom: 20px;">在条件判断中，以下值会被视为
+            <code>False
+            </code>
+            （"假值"），其余均为
+            <code>True
+            </code>
+            （"真值"）：
+          </p>
+          <div class="two-col">
+            <div>
+              <h3>假值（Falsy）
+              </h3>
+              <ul class="teach-list">
+                <li>
+                  <code>None
+                  </code>
+                </li>
+                <li>
+                  <code>False
+                  </code>
+                </li>
+                <li>数字
+                  <code>0
+                  </code>
+                  、
+                  <code>0.0
+                  </code>
+                  、
+                  <code>0j
+                  </code>
+                </li>
+                <li>空字符串
+                  <code>""
+                  </code>
+                </li>
+                <li>空列表
+                  <code>[]
+                  </code>
+                </li>
+                <li>空元组
+                  <code>()
+                  </code>
+                </li>
+                <li>空字典
+                  <code>{}
+                  </code>
+                </li>
+                <li>空集合
+                  <code>set()
+                  </code>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3>实用技巧
+              </h3>
+<pre><code><span class="var">name</span> = <span class="str">""</span>
+<span class="kw">if</span> <span class="var">name</span>:
+    <span class="func">print</span>(<span class="str">"有名字"</span>)
+<span class="kw">else</span>:
+    <span class="func">print</span>(<span class="str">"名字为空"</span>)
+
+<span class="var">items</span> = []
+<span class="func">print</span>(<span class="str">"有内容"</span> <span class="kw">if</span> <span class="var">items</span> <span class="kw">else</span> <span class="str">"为空"</span>)</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide content">
+        <div class="page-header">
+          <div class="section-tag">3.4 类型转换
+          </div>
+          <h2>显式类型转换
+          </h2>
+        </div>
+        <div class="body">
+          <div class="two-col">
+            <div>
+              <h3>常用转换函数
+              </h3>
+              <ul class="teach-list">
+                <li>
+                  <code>int(x)
+                  </code>
+                  — 转整数
+                </li>
+                <li>
+                  <code>float(x)
+                  </code>
+                  — 转浮点数
+                </li>
+                <li>
+                  <code>str(x)
+                  </code>
+                  — 转字符串
+                </li>
+                <li>
+                  <code>bool(x)
+                  </code>
+                  — 转布尔值
+                </li>
+                <li>
+                  <code>list(x)
+                  </code>
+                  — 转列表
+                </li>
+                <li>
+                  <code>tuple(x)
+                  </code>
+                  — 转元组
+                </li>
+                <li>
+                  <code>set(x)
+                  </code>
+                  — 转集合
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3>代码示例
+              </h3>
+<pre><code><span class="var">s</span> = <span class="str">"123"</span>
+<span class="var">n</span> = <span class="func">int</span>(<span class="var">s</span>)      <span class="com"># 123</span>
+<span class="var">f</span> = <span class="func">float</span>(<span class="var">s</span>)    <span class="com"># 123.0</span>
+
+<span class="var">x</span> = <span class="num">3.14</span>
+<span class="var">i</span> = <span class="func">int</span>(<span class="var">x</span>)      <span class="com"># 3 （截断小数）</span>
+<span class="var">t</span> = <span class="func">str</span>(<span class="var">x</span>)      <span class="com"># "3.14"</span>
+
+<span class="com"># 类型判断</span>
+<span class="func">type</span>(<span class="var">x</span>)         <span class="com"># &lt;class 'float'&gt;</span>
+<span class="func">isinstance</span>(<span class="var">x</span>, <span class="func">float</span>)  <span class="com"># True</span></code></pre>
+            </div>
+          </div>
+          <div class="highlight-box" style="margin-top: 16px;">
+            <strong>注意：
+            </strong>
+            <code>int("3.14")
+            </code>
+            会报错！必须先
+            <code>float("3.14")
+            </code>
+            再
+            <code>int()
+            </code>
+            。
+          </div>
+        </div>
+      </div>
+      <div class="slide summary">
+        <h2>本章总结
+        </h2>
+        <div class="summary-grid">
+          <div class="summary-card">
+            <h4>数字
+            </h4>
+            <p>int（无限精度）、float（注意精度）、complex（j 表示虚部）。运算符 + - * / // % **。
+            </p>
+          </div>
+          <div class="summary-card">
+            <h4>字符串
+            </h4>
+            <p>不可变序列，支持索引、切片、丰富的内置方法。f-string 是最佳格式化方案。
+            </p>
+          </div>
+          <div class="summary-card">
+            <h4>布尔与转换
+            </h4>
+            <p>True/False，and/or/not 逻辑运算。假值判断简化代码。用 int()/str()/float() 做显式转换。
+            </p>
+          </div>
+        </div>
+        <div style="text-align:center; margin-top:30px;">
+          <a href="Python基础_第04章_组合数据类型_PPT.html" style="display:inline-block; padding:10px 28px; background:rgba(255,255,255,0.9); color:#1a2a6c; text-decoration:none; border-radius:8px; font-size:16px; font-weight:600;">下一章 ▶</a>
+        </div>
+      </div>
+      <!-- ==================== 封面 ==================== -->
+      <!-- ==================== 目录 ==================== -->
+      <!-- ==================== 数字类型 ==================== -->
+      <!-- ==================== 数字运算 ==================== -->
+      <!-- ==================== 字符串基础 ==================== -->
+      <!-- ==================== 字符串方法 ==================== -->
+      <!-- ==================== 布尔类型 ==================== -->
+      <!-- ==================== 真值判断 ==================== -->
+      <!-- ==================== 类型转换 ==================== -->
+      <!-- ==================== 总结 ==================== -->
+      <div class="progress-bar" id="progress">
+      </div>
+      <div class="nav">
+        <button onclick="prevSlide()">◀ 上一页
+        </button>
+        <span class="page-num" id="pageNum">1 / 10
+        </span>
+        <button onclick="nextSlide()">下一页 ▶
+        </button>
+      </div>
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let current = 0;
+  const total = slides.length;
+
+  function show(i) {
+    slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+    document.getElementById('progress').style.width = ((i + 1) / total * 100) + '%';
+    document.getElementById('pageNum').textContent = (i + 1) + ' / ' + total;
+  }
+
+  function nextSlide() {
+    if (current < total - 1) { current++; show(current); }
+  }
+  function prevSlide() {
+    if (current > 0) { current--; show(current); }
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') {
+      nextSlide();
+    } else if (e.key === 'ArrowLeft') {
+      prevSlide();
+    } else if (e.key === 'Home') {
+      current = 0; show(current);
+    } else if (e.key === 'End') {
+      current = total - 1; show(current);
+    }
+  });
+
+  show(0);
+
+  // ===== 代码复制功能 =====
+  document.querySelectorAll('pre').forEach(pre => {
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '复制';
+    btn.type = 'button';
+    btn.addEventListener('click', () => {
+      const code = pre.querySelector('code');
+      const text = code ? code.innerText : pre.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 1500);
+      }).catch(() => {
+        // fallback
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta);
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+
+</script>
+    </body>
+  </html>

@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+  <html lang="zh-CN">
+    <head>
+      <meta charset="utf-8"/>
+      <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+      <title>Python基础 - 第07章 类
+      </title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; overflow:hidden; font-family:"Segoe UI","Microsoft YaHei",sans-serif; }
+
+  .slide {
+    width:100%; height:100vh;
+    display:none; flex-direction:column; justify-content:center; align-items:center;
+    position:relative; padding:60px 80px;
+  }
+  .slide.active { display:flex; }
+
+  /* Cover */
+  .cover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color:#fff; text-align:center;
+  }
+  .cover h1 { font-size:3.2rem; font-weight:700; margin-bottom:20px; letter-spacing:2px; }
+  .cover .subtitle { font-size:1.4rem; opacity:0.9; margin-bottom:12px; }
+  .cover .chapter-num { font-size:1.1rem; opacity:0.7; letter-spacing:4px; text-transform:uppercase; }
+
+  /* TOC */
+  .toc { background:#f8f9fa; }
+  .toc h2 {
+    font-size:2rem; color:#333; margin-bottom:40px;
+    border-left:6px solid #007acc; padding-left:18px;
+  }
+  .toc ul { list-style:none; width:60%; max-width:700px; }
+  .toc li {
+    font-size:1.25rem; color:#444; padding:14px 0;
+    border-bottom:1px solid #e0e0e0; display:flex; align-items:center;
+  }
+  .toc li span.num { display:inline-block; width:36px; height:36px; line-height:36px; border-radius:50%; background:#007acc; color:#fff; text-align:center; margin-right:16px; font-size:0.95rem; font-weight:600; }
+  .toc li:last-child { border-bottom:none; }
+
+  /* Content */
+  .content { background:#f8f9fa; justify-content:flex-start; padding-top:50px; }
+  .content h2 {
+    font-size:1.9rem; color:#222; margin-bottom:30px; align-self:flex-start;
+    border-left:6px solid #007acc; padding-left:18px;
+  }
+  .content-body { width:100%; max-width:900px; }
+  .content-body p, .content-body li { font-size:1.15rem; color:#333; line-height:1.8; margin-bottom:12px; }
+  .content-body ul { margin-left:24px; margin-bottom:16px; }
+  .content-body ul li { margin-bottom:6px; }
+
+  /* Code block */
+  .code-block {
+    background:#1e1e1e; color:#d4d4d4; font-family:"Consolas","Monaco","Courier New",monospace;
+    padding:20px 24px; border-radius:8px; font-size:0.95rem; line-height:1.7;
+    overflow-x:auto; margin:16px 0; box-shadow:0 4px 12px rgba(0,0,0,0.15);
+  white-space: pre; }
+  .code-block .kw { color:#569cd6; }
+  .code-block .str { color:#ce9178; }
+  .code-block .num { color:#b5cea8; }
+  .code-block .com { color:#6a9955; }
+  .code-block .func { color:#dcdcaa; }
+  .code-block .var { color:#9cdcfe; }
+
+  /* Summary */
+  .summary { background:#f8f9fa; }
+  .summary h2 {
+    font-size:2rem; color:#333; margin-bottom:35px;
+    border-left:6px solid #007acc; padding-left:18px;
+  }
+  .summary ul { list-style:none; max-width:750px; }
+  .summary li {
+    font-size:1.2rem; color:#444; padding:12px 0; padding-left:28px; position:relative;
+  }
+  .summary li::before {
+    content:"✓"; position:absolute; left:0; color:#007acc; font-weight:bold;
+  }
+
+  /* Progress bar */
+  .progress-bar {
+    position:fixed; bottom:0; left:0; height:5px; background:#e0e0e0; width:100%; z-index:100;
+  }
+  .progress-fill {
+    height:100%; background: linear-gradient(90deg, #667eea, #764ba2);
+    transition:width 0.3s ease;
+  }
+
+  .page-num {
+    position:fixed; bottom:14px; right:24px; font-size:0.85rem; color:#888; z-index:101;
+  }
+  .nav-hint {
+    position:fixed; bottom:14px; left:50%; transform:translateX(-50%);
+    font-size:0.8rem; color:#aaa; z-index:101; user-select:none;
+  }
+
+  .nav { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 100; }
+  .nav button {
+    background: rgba(0,0,0,0.3); color: white; border: none; padding: 10px 24px;
+    border-radius: 6px; cursor: pointer; font-size: 14px; backdrop-filter: blur(4px);
+  }
+  .nav button:hover { background: rgba(0,0,0,0.5); }
+  .nav .page-num { position: static !important; bottom: auto !important; right: auto !important; background: #007acc; color: white; font-size: 14px; line-height: 36px; padding: 0 14px; border-radius: 6px; margin: 0 10px; }
+  @media (max-width: 900px) and (orientation: landscape) {
+    .slide { padding: 20px 30px !important; }
+    .slide h1 { font-size: 1.8rem !important; }
+    .slide h2 { font-size: 1.4rem !important; }
+    .slide h3 { font-size: 1.1rem !important; }
+    .slide p, .slide li { font-size: 0.9rem !important; line-height: 1.5 !important; }
+    pre { font-size: 0.75rem !important; padding: 10px !important; }
+    .nav button { padding: 6px 14px !important; font-size: 12px !important; }
+    .nav .page-num { font-size: 12px !important; padding: 0 10px !important; }
+  }
+  
+    /* 微信公众号推荐 */
+    .wx-promo {
+      margin-top: 40px;
+      padding-top: 30px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .wx-promo-text {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+    .wx-promo-images {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+    }
+    .wx-promo-images img {
+      width: 360px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 2px solid rgba(0, 122, 204, 0.3);
+    }
+    .slide-cover .wx-promo-text,
+    .slide-end .wx-promo-text,
+    .cover .wx-promo-text,
+    .summary .wx-promo-text {
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .slide-cover .wx-promo-images img,
+    .slide-end .wx-promo-images img,
+    .cover .wx-promo-images img,
+    .summary .wx-promo-images img {
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+  /* ===== 代码复制按钮 ===== */
+  pre { position: relative; }
+  .copy-btn {
+    position: absolute; top: 8px; right: 8px;
+    padding: 4px 10px; font-size: 12px; line-height: 1.4;
+    color: #ccc; background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 4px;
+    cursor: pointer; opacity: 0; transition: opacity 0.2s, background 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    z-index: 10;
+  }
+  pre:hover .copy-btn { opacity: 1; }
+  .copy-btn:hover { background: rgba(255,255,255,0.25); color: #fff; }
+  .copy-btn.copied { color: #4ec9b0; border-color: #4ec9b0; background: rgba(78,201,176,0.15); opacity: 1; }
+
+</style>
+    </head>
+    <body>
+      <div class="slide cover active">
+        <div class="chapter-num">Chapter 07
+        </div>
+        <h1>类
+        </h1>
+        <div class="subtitle">Python基础 · 面向对象编程的核心
+        </div>
+        <div class="wx-promo">
+          <p class="wx-promo-text">欢迎关注微信公众号
+          </p>
+          <div class="wx-promo-images">
+            <img alt="coder程" src="../asset/coder程.png"/>
+            <img alt="查令十街84号" src="../asset/查令十街84号.png"/>
+          </div>
+        </div>
+      </div>
+      <div class="slide toc">
+        <h2>本章目录
+        </h2>
+        <ul>
+          <li>
+            <span class="num">1
+            </span>
+            引言：为什么需要类
+          </li>
+          <li>
+            <span class="num">2
+            </span>
+            类的定义
+          </li>
+          <li>
+            <span class="num">3
+            </span>
+            创建实例
+          </li>
+          <li>
+            <span class="num">4
+            </span>
+            类的继承
+          </li>
+        </ul>
+      </div>
+      <div class="slide content">
+        <h2>1. 引言：为什么需要类
+        </h2>
+        <div class="content-body">
+          <p>面向过程用
+            <strong>函数
+            </strong>
+            处理数据，面向对象用
+            <strong>类
+            </strong>
+            把数据和行为
+            <strong>封装
+            </strong>
+            在一起。
+          </p>
+          <div class="code-block">
+<span class="com"># 面向过程：数据和行为分离</span>
+<span class="var">dog_name</span>=<span class="str">&quot;Buddy&quot;</span>
+<span class="var">dog_age</span>=<span class="num">3</span>
+<span class="func">defdog_bark</span>(<span class="var">name</span>):
+<span class="func">print</span>(f&quot;{<span class="var">name</span>} says: 汪！&quot;)
+<span class="func">dog_bark</span>(<span class="var">dog_name</span>)
+
+</div>
+          <div class="code-block">
+<span class="com"># 面向对象：数据和行为绑定</span>
+<span class="var">classDog</span>:
+<span class="func">def__init__</span>(<span class="var">self</span>,<span class="var">name</span>,<span class="var">age</span>):
+<span class="var">self</span>.
+<span class="var">name</span>=<span class="var">nameself</span>.
+<span class="var">age</span>=<span class="var">age</span>
+<span class="func">defbark</span>(<span class="var">self</span>):
+<span class="func">print</span>(f&quot;{<span class="var">self</span>.<span class="var">name</span>} says: 汪！&quot;)
+<span class="var">buddy</span>=
+<span class="func">Dog</span>(<span class="str">&quot;Buddy&quot;</span>,<span class="num">3</span>)<span class="var">buddy</span>.
+<span class="func">bark</span>()
+<span class="com"># Buddy says: 汪！</span>
+
+</div>
+          <p>当数据和行为
+            <strong>天然关联
+            </strong>
+            时，面向对象让代码更有组织、更易扩展。
+          </p>
+        </div>
+      </div>
+      <div class="slide content">
+        <h2>2. 类的定义
+        </h2>
+        <div class="content-body">
+          <p>类是对象的
+            <strong>蓝图/模板
+            </strong>
+            ，定义了对象有哪些
+            <strong>属性
+            </strong>
+            （数据）和
+            <strong>方法
+            </strong>
+            （行为）。
+          </p>
+          <div class="code-block">
+<span class="var">classStudent</span>:
+
+<span class="com"># 类属性：所有实例共享</span>
+
+<span class="var">school</span>=<span class="str">&quot;Python学院&quot;</span>
+
+<span class="com"># 构造方法：创建实例时自动调用</span>
+
+<span class="func">def__init__</span>(<span class="var">self</span>,<span class="var">name</span>,<span class="var">age</span>):
+
+<span class="var">self</span>.
+
+<span class="var">name</span>=<span class="var">name</span>
+
+<span class="com"># 实例属性</span>
+
+<span class="var">self</span>.
+
+<span class="var">age</span>=<span class="var">age</span>
+
+<span class="com"># 实例方法</span>
+
+<span class="func">defintroduce</span>(<span class="var">self</span>):
+
+<span class="var">returnf</span><span class="str">&quot;我是{self.name}，{self.age}岁&quot;</span>
+
+<span class="com"># 类方法</span>
+
+@<span class="func">classmethod</span>
+
+<span class="func">deffrom_birth_year</span>(<span class="var">cls</span>,<span class="var">name</span>,<span class="var">birth_year</span>):
+
+<span class="var">age</span>=<span class="num">2024</span>-<span class="var">birth_year</span>
+
+<span class="kw">return</span>
+
+<span class="func">cls</span>(<span class="var">name</span>,<span class="var">age</span>)
+
+</div>
+          <ul>
+            <li>
+              <b>self
+              </b>
+              ：指向实例本身，必须通过它访问实例属性
+            </li>
+            <li>
+              <b>__init__
+              </b>
+              ：构造方法，实例化时自动执行
+            </li>
+            <li>
+              <b>@classmethod
+              </b>
+              ：类方法，操作类本身而非实例
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="slide content">
+        <h2>2. 实例属性、类属性与特殊方法
+        </h2>
+        <div class="content-body">
+          <div class="code-block">
+<span class="var">classCircle</span>:
+
+<span class="var">pi</span>=<span class="num">3.14159</span>
+
+<span class="com"># 类属性</span>
+
+<span class="func">def__init__</span>(<span class="var">self</span>,<span class="var">radius</span>):
+
+<span class="var">self</span>.
+
+<span class="var">radius</span>=<span class="var">radius</span>
+
+<span class="func">defarea</span>(<span class="var">self</span>):
+
+<span class="var">returnself</span>.<span class="var">pi</span>*<span class="var">self</span>.<span class="var">radius</span>**<span class="num">2</span>
+
+<span class="func">def__str__</span>(<span class="var">self</span>):
+
+<span class="com"># 打印对象时的友好输出</span>
+
+<span class="var">returnf</span><span class="str">&quot;Circle(radius={self.radius})&quot;</span>
+
+<span class="func">def__repr__</span>(<span class="var">self</span>):
+
+<span class="com"># 交互式环境中的表示</span>
+
+<span class="var">returnf</span><span class="str">&quot;Circle({self.radius})&quot;</span>
+
+<span class="func">def__eq__</span>(<span class="var">self</span>,<span class="var">other</span>):
+
+<span class="com"># == 比较逻辑</span>
+
+<span class="var">returnself</span>.<span class="var">radius</span>==<span class="var">other</span>.<span class="var">radius</span>
+
+</div>
+          <p>
+            <b>魔术方法（Dunder Methods）
+            </b>
+            ：以双下划线包围，让对象像内置类型一样自然。
+          </p>
+        </div>
+      </div>
+      <div class="slide content">
+        <h2>3. 创建实例
+        </h2>
+        <div class="content-body">
+          <p>类本身不会创建数据，需要
+            <strong>实例化
+            </strong>
+            （调用类名）产生对象。
+          </p>
+          <div class="code-block">
+<span class="com"># 创建实例</span>
+
+<span class="var">s1</span> = <span class="func">Student</span>(<span class="str">&quot;Alice&quot;</span>, <span class="num">20</span>)
+
+<span class="var">s2</span> = <span class="func">Student</span>(<span class="str">&quot;Bob&quot;</span>, <span class="num">22</span>)
+
+<span class="com"># 访问属性</span>
+
+<span class="func">print</span>(<span class="var">s1</span>.<span class="var">name</span>)
+
+<span class="com"># Alice</span>
+
+<span class="func">print</span>(<span class="var">s1</span>.<span class="var">school</span>)
+
+<span class="com"># Python学院（继承自类）</span>
+
+<span class="com"># 调用方法</span>
+
+<span class="func">print</span>(<span class="var">s1</span>.<span class="func">introduce</span>())
+
+<span class="com"># 通过类方法创建</span>
+
+<span class="var">s3</span> = <span class="var">Student</span>.<span class="func">from_birth_year</span>(<span class="str">&quot;Carol&quot;</span>, <span class="num">2000</span>)
+</div>
+          <p>
+            <b>动态添加属性
+            </b>
+            ：Python 允许运行时给实例添加新属性（但不推荐滥用）。
+          </p>
+          <div class="code-block">
+<span class="var">s1</span>.
+
+<span class="var">hobby</span>=<span class="str">&quot;编程&quot;</span>
+
+<span class="func">print</span>(<span class="var">s1</span>.<span class="var">hobby</span>)
+
+<span class="com"># 编程（仅 s1 有，不影响 s2）</span>
+
+</div>
+        </div>
+      </div>
+      <div class="slide content">
+        <h2>3. 封装与属性装饰器
+        </h2>
+        <div class="content-body">
+          <p>
+            <b>封装
+            </b>
+            ：隐藏内部实现，通过公开接口交互。Python 用
+            <strong>命名约定
+            </strong>
+            （单下划线）表示"私有"。
+          </p>
+          <div class="code-block">
+<span class="var">classBankAccount</span>:
+
+<span class="func">def__init__</span>(<span class="var">self</span>,<span class="var">owner</span>,<span class="var">balance</span>=<span class="num">0</span>):
+
+<span class="var">self</span>.
+
+<span class="var">owner</span>=<span class="var">ownerself</span>.<span class="var">_</span>
+
+<span class="var">balance</span>=<span class="var">balance</span>
+
+<span class="com"># _ 前缀：约定私有</span>
+
+<span class="func">defdeposit</span>(<span class="var">self</span>,<span class="var">amount</span>):
+
+<span class="var">ifamount</span>&gt;<span class="num">0</span>:
+
+<span class="var">self</span>.<span class="var">_</span>
+
+<span class="var">balance</span>+=<span class="var">amount</span>
+
+<span class="func">defget_balance</span>(<span class="var">self</span>):
+
+<span class="var">returnself</span>.<span class="var">_balance</span>
+
+<span class="var">acc</span>=
+
+<span class="func">BankAccount</span>(<span class="str">&quot;Alice&quot;</span>,<span class="num">1000</span>)<span class="var">acc</span>.
+
+<span class="func">deposit</span>(<span class="num">500</span>)
+
+<span class="func">print</span>(<span class="var">acc</span>.<span class="func">get_balance</span>())
+
+<span class="com"># 1500</span>
+
+</div>
+          <p>
+            <b>@property
+            </b>
+            ：把方法变成属性一样访问。
+          </p>
+          <div class="code-block">
+@<span class="func">property</span>
+<span class="func">defbalance</span>(<span class="var">self</span>):
+<span class="var">returnself</span>.<span class="var">_balance</span>
+<span class="com"># 使用：acc.balance 而不是 acc.get_balance()</span>
+
+</div>
+        </div>
+      </div>
+      <div class="slide content">
+        <h2>4. 类的继承
+        </h2>
+        <div class="content-body">
+          <p>
+            <b>继承
+            </b>
+            ：子类自动拥有父类的属性和方法，同时可
+            <strong>扩展
+            </strong>
+            或
+            <strong>重写
+            </strong>
+            。
+          </p>
+          <div class="code-block">
+<span class="var">classAnimal</span>:
+
+<span class="func">def__init__</span>(<span class="var">self</span>,<span class="var">name</span>):
+
+<span class="var">self</span>.
+
+<span class="var">name</span>=<span class="var">name</span>
+
+<span class="func">defspeak</span>(<span class="var">self</span>):
+
+<span class="kw">raise</span>
+
+<span class="func">NotImplementedError</span>(<span class="str">&quot;子类必须实现&quot;</span>)
+
+<span class="func">classDog</span>(<span class="var">Animal</span>):
+
+<span class="com"># Dog 继承 Animal</span>
+
+<span class="func">defspeak</span>(<span class="var">self</span>):
+
+<span class="var">returnf</span><span class="str">&quot;{self.name} says: 汪！&quot;</span>
+
+<span class="func">classCat</span>(<span class="var">Animal</span>):
+
+<span class="com"># Cat 继承 Animal</span>
+
+<span class="func">defspeak</span>(<span class="var">self</span>):
+
+<span class="var">returnf</span><span class="str">&quot;{self.name} says: 喵~&quot;</span>
+
+<span class="var">d</span>=
+
+<span class="func">Dog</span>(<span class="str">&quot;Buddy&quot;</span>)
+
+<span class="var">c</span>=
+
+<span class="func">Cat</span>(<span class="str">&quot;Kitty&quot;</span>)
+
+<span class="func">print</span>(<span class="var">d</span>.<span class="func">speak</span>())
+
+<span class="com"># Buddy says: 汪！</span>
+
+<span class="func">print</span>(<span class="var">c</span>.<span class="func">speak</span>())
+
+<span class="com"># Kitty says: 喵~</span>
+
+</div>
+        </div>
+      </div>
+      <div class="slide content">
+        <h2>4. super() 与多继承
+        </h2>
+        <div class="content-body">
+          <p>
+            <b>super()
+            </b>
+            ：调用父类的方法，避免显式指定父类名。
+          </p>
+          <div class="code-block">
+<span class="var">classEmployee</span>:
+
+<span class="func">def__init__</span>(<span class="var">self</span>,<span class="var">name</span>,<span class="var">salary</span>):
+
+<span class="var">self</span>.
+
+<span class="var">name</span>=<span class="var">nameself</span>.
+
+<span class="var">salary</span>=<span class="var">salary</span>
+
+<span class="func">classManager</span>(<span class="var">Employee</span>):
+
+<span class="func">def__init__</span>(<span class="var">self</span>,<span class="var">name</span>,<span class="var">salary</span>,<span class="var">department</span>):
+
+<span class="func">super</span>().
+
+<span class="func">__init__</span>(<span class="var">name</span>,<span class="var">salary</span>)<span class="var">self</span>.
+
+<span class="var">department</span>=<span class="var">department</span>
+
+<span class="var">m</span>=
+
+<span class="func">Manager</span>(<span class="str">&quot;Alice&quot;</span>,<span class="num">50000</span>,<span class="str">&quot;IT&quot;</span>)
+
+</div>
+          <p>
+            <b>多继承
+            </b>
+            ：Python 支持一个子类继承多个父类，按
+            <b>MRO（方法解析顺序）
+            </b>
+            查找。
+          </p>
+          <div class="code-block">
+<span class="var">classA</span>:
+
+<span class="func">defmethod</span>(<span class="var">self</span>):
+
+<span class="func">print</span>(<span class="str">&quot;A&quot;</span>)
+
+<span class="func">classB</span>(<span class="var">A</span>):
+
+<span class="func">defmethod</span>(<span class="var">self</span>):
+
+<span class="func">print</span>(<span class="str">&quot;B&quot;</span>)
+
+<span class="func">classC</span>(<span class="var">A</span>):
+
+<span class="func">defmethod</span>(<span class="var">self</span>):
+
+<span class="func">print</span>(<span class="str">&quot;C&quot;</span>)
+
+<span class="func">classD</span>(<span class="var">B</span>,<span class="var">C</span>):
+
+<span class="com"># 多继承</span>
+
+<span class="kw">pass</span>
+
+<span class="var">d</span>=
+
+<span class="func">D</span>()<span class="var">d</span>.
+
+<span class="func">method</span>()
+
+<span class="com"># B（按 MRO 顺序）</span>
+
+<span class="func">print</span>(<span class="var">D</span>.<span class="var">__mro__</span>)
+
+<span class="com"># 查看解析顺序</span>
+
+</div>
+        </div>
+      </div>
+      <div class="slide content">
+        <h2>4. 多态 — 同一接口，不同表现
+        </h2>
+        <div class="content-body">
+          <p>多态让不同的类对同一消息做出
+            <strong>不同的响应
+            </strong>
+            。Python 作为动态语言天然支持。
+          </p>
+          <div class="code-block">
+<span class="func">defanimal_concert</span>(<span class="var">animals</span>):
+
+<span class="var">foranimalinanimals</span>:
+
+<span class="func">print</span>(<span class="var">animal</span>.<span class="func">speak</span>())
+
+<span class="var">animals</span>=[<span class="func">Dog</span>(<span class="str">&quot;Buddy&quot;</span>),<span class="func">Cat</span>(<span class="str">&quot;Kitty&quot;</span>)]
+
+<span class="func">animal_concert</span>(<span class="var">animals</span>)
+
+<span class="com"># 输出：</span>
+
+<span class="com"># Buddy says: 汪！</span>
+
+<span class="com"># Kitty says: 喵~</span>
+
+</div>
+          <p>
+            <b>鸭子类型
+            </b>
+            ：Python 不检查类型，只关心对象是否有需要的方法。
+          </p>
+          <blockquote style="margin-top:16px; padding:12px 20px; background:#e8f4fd; border-left:4px solid #007acc; border-radius:4px;">"如果它走起来像鸭子，叫起来像鸭子，那它就是鸭子。"
+          </blockquote>
+        </div>
+      </div>
+      <div class="slide content">
+        <h2>常用魔术方法速查
+        </h2>
+        <div class="content-body">
+          <table style="width:100%; border-collapse:collapse; font-size:1.05rem;">
+            <tr style="background:#007acc; color:#fff;">
+              <th style="padding:10px 14px; text-align:left;">方法
+              </th>
+              <th style="padding:10px 14px; text-align:left;">触发场景
+              </th>
+            </tr>
+            <tr style="border-bottom:1px solid #e0e0e0;">
+              <td style="padding:10px 14px;">
+                <span class="code-inline">__init__
+                </span>
+              </td>
+              <td style="padding:10px 14px;">对象初始化
+              </td>
+            </tr>
+            <tr style="border-bottom:1px solid #e0e0e0;">
+              <td style="padding:10px 14px;">
+                <span class="code-inline">__str__
+                </span>
+              </td>
+              <td style="padding:10px 14px;">print(obj) / str(obj)
+              </td>
+            </tr>
+            <tr style="border-bottom:1px solid #e0e0e0;">
+              <td style="padding:10px 14px;">
+                <span class="code-inline">__repr__
+                </span>
+              </td>
+              <td style="padding:10px 14px;">交互式环境 / repr(obj)
+              </td>
+            </tr>
+            <tr style="border-bottom:1px solid #e0e0e0;">
+              <td style="padding:10px 14px;">
+                <span class="code-inline">__eq__
+                </span>
+              </td>
+              <td style="padding:10px 14px;">obj1 == obj2
+              </td>
+            </tr>
+            <tr style="border-bottom:1px solid #e0e0e0;">
+              <td style="padding:10px 14px;">
+                <span class="code-inline">__lt__
+                </span>
+              </td>
+              <td style="padding:10px 14px;">obj1 &lt; obj2
+              </td>
+            </tr>
+            <tr style="border-bottom:1px solid #e0e0e0;">
+              <td style="padding:10px 14px;">
+                <span class="code-inline">__len__
+                </span>
+              </td>
+              <td style="padding:10px 14px;">len(obj)
+              </td>
+            </tr>
+            <tr style="border-bottom:1px solid #e0e0e0;">
+              <td style="padding:10px 14px;">
+                <span class="code-inline">__getitem__
+                </span>
+              </td>
+              <td style="padding:10px 14px;">obj[key]
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:10px 14px;">
+                <span class="code-inline">__call__
+                </span>
+              </td>
+              <td style="padding:10px 14px;">obj() 像函数一样调用
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="slide content">
+        <h2>综合练习：图书管理系统
+        </h2>
+        <div class="content-body">
+          <div class="code-block">
+<span class="var">classBook</span>:
+<span class="func">def__init__</span>(<span class="var">self</span>,<span class="var">title</span>,<span class="var">author</span>,<span class="var">isbn</span>):
+<span class="var">self</span>.
+<span class="var">title</span>=<span class="var">titleself</span>.
+<span class="var">author</span>=<span class="var">authorself</span>.
+<span class="var">isbn</span>=<span class="var">isbnself</span>.<span class="var">_</span>
+<span class="var">borrowed</span>=<span class="kw">False</span>
+<span class="func">defborrow</span>(<span class="var">self</span>):
+<span class="var">ifself</span>.<span class="var">_borrowed</span>:
+<span class="func">print</span>(f&quot;《{<span class="var">self</span>.<span class="var">title</span>}》已被借出&quot;)
+<span class="kw">else</span>:
+<span class="var">self</span>.<span class="var">_</span>
+<span class="var">borrowed</span>=<span class="kw">True</span>
+<span class="func">print</span>(f&quot;成功借阅《{<span class="var">self</span>.<span class="var">title</span>}》&quot;)
+<span class="func">def__str__</span>(<span class="var">self</span>):
+<span class="var">status</span>=<span class="str">&quot;已借出&quot;</span>
+<span class="var">ifself</span>.<span class="var">_borrowed</span>
+<span class="kw">else</span><span class="str">&quot;在馆&quot;</span><span class="var">returnf</span><span class="str">&quot;《{self.title}》({status})&quot;</span><span class="func">classEBook</span>(<span class="var">Book</span>):
+<span class="func">def__init__</span>(<span class="var">self</span>,<span class="var">title</span>,<span class="var">author</span>,<span class="var">isbn</span>,<span class="func">format</span>):
+<span class="func">super</span>().
+<span class="func">__init__</span>(<span class="var">title</span>,<span class="var">author</span>,<span class="var">isbn</span>)<span class="var">self</span>.
+<span class="func">format</span>=
+<span class="func">formatdef__str__</span>(<span class="var">self</span>):<span class="var">returnf</span><span class="str">&quot;[电子书] {super().__str__()} [{self.format}]&quot;</span>
+
+</div>
+        </div>
+      </div>
+      <div class="slide summary">
+        <h2>本章总结
+        </h2>
+        <ul>
+          <li>类封装数据（属性）与行为（方法），是面向对象的基础
+          </li>
+          <li>__init__ 构造实例，self 指向实例自身
+          </li>
+          <li>类属性共享，实例属性独立
+          </li>
+          <li>@property 将方法伪装成属性，实现封装
+          </li>
+          <li>继承让子类复用父类代码，super() 调用父类方法
+          </li>
+          <li>多态通过统一接口调用不同实现
+          </li>
+          <li>魔术方法让自定义类像内置类型一样自然
+          </li>
+          <li>Python 的鸭子类型让多态更灵活
+          </li>
+        </ul>
+        <div style="text-align:center; margin-top:30px;">
+          <a href="Python基础_第08章_文件异常和模块_PPT.html" style="display:inline-block; padding:10px 28px; background:rgba(255,255,255,0.9); color:#1a2a6c; text-decoration:none; border-radius:8px; font-size:16px; font-weight:600;">下一章 ▶</a>
+        </div>
+      </div>
+      <!-- Slide 1: Cover -->
+      <!-- Slide 2: TOC -->
+      <!-- Slide 3: 为什么需要类 -->
+      <!-- Slide 4: 类的基本定义 -->
+      <!-- Slide 5: 实例属性与方法 -->
+      <!-- Slide 6: 创建实例 -->
+      <!-- Slide 7: 封装与属性装饰器 -->
+      <!-- Slide 8: 类的继承 -->
+      <!-- Slide 9: super() 与多继承 -->
+      <!-- Slide 10: 多态 -->
+      <!-- Slide 11: 魔术方法进阶 -->
+      <!-- Slide 12: 综合练习 -->
+      <!-- Slide 13: Summary -->
+      <!-- Progress bar -->
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress">
+        </div>
+      </div>
+      <div class="nav">
+        <button onclick="prevSlide()">◀ 上一页
+        </button>
+        <span class="page-num" id="pageNum">1 / 13
+        </span>
+        <button onclick="nextSlide()">下一页 ▶
+        </button>
+      </div>
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let current = 0;
+  const total = slides.length;
+
+  function show(i) {
+    if (i < 0) i = 0;
+    if (i >= total) i = total - 1;
+    slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+    current = i;
+    document.getElementById('progress').style.width = ((current + 1) / total * 100) + '%';
+    document.getElementById('pageNum').textContent = (current + 1) + ' / ' + total;
+  }
+
+  function nextSlide() { show(current + 1); }
+  function prevSlide() { show(current - 1); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+      e.preventDefault(); nextSlide();
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault(); prevSlide();
+    } else if (e.key === 'Home') {
+      e.preventDefault(); show(0);
+    } else if (e.key === 'End') {
+      e.preventDefault(); show(total - 1);
+    }
+  });
+
+  show(0);
+
+  // ===== 代码复制功能 =====
+  document.querySelectorAll('pre').forEach(pre => {
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '复制';
+    btn.type = 'button';
+    btn.addEventListener('click', () => {
+      const code = pre.querySelector('code');
+      const text = code ? code.innerText : pre.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 1500);
+      }).catch(() => {
+        // fallback
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta);
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+
+</script>
+    </body>
+  </html>

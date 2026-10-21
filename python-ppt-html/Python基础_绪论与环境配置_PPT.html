@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+  <html lang="zh-CN">
+    <head>
+      <meta charset="utf-8"/>
+      <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+      <title>Python 基础 — 绪论与环境配置
+      </title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; overflow: hidden; }
+    .slides { width: 100%; height: 100%; position: relative; }
+    .slide {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      display: none; flex-direction: column; justify-content: center; align-items: center;
+      padding: 60px 80px; transition: opacity 0.3s;
+    }
+    .slide.active { display: flex; }
+
+    /* 封面 */
+    .slide-cover { background: linear-gradient(135deg, #1a2a6c 0%, #2d5a87 50%, #007acc 100%); color: white; }
+    .slide-cover h1 { font-size: 52px; font-weight: 700; margin-bottom: 16px; letter-spacing: 2px; }
+    .slide-cover .subtitle { font-size: 24px; opacity: 0.85; margin-bottom: 40px; }
+    .slide-cover .tag { display: inline-block; background: rgba(255,255,255,0.15); padding: 8px 20px; border-radius: 20px; font-size: 14px; }
+
+    /* 内容页 */
+    .slide-content { background: #f8f9fa; color: #222; }
+    .slide-content h2 { font-size: 36px; color: #1a2a6c; margin-bottom: 40px; border-left: 6px solid #007acc; padding-left: 20px; }
+    .slide-content ul { list-style: none; width: 100%; max-width: 900px; }
+    .slide-content li { font-size: 22px; line-height: 1.8; margin-bottom: 20px; padding-left: 32px; position: relative; }
+    .slide-content li::before { content: "▸"; position: absolute; left: 0; color: #007acc; font-weight: bold; }
+    .slide-content .highlight { background: #fff3cd; padding: 2px 8px; border-radius: 4px; }
+    .slide-content .code { background: #1e1e1e; color: #d4d4d4; padding: 20px 24px; border-radius: 8px; font-family: "Consolas", "Monaco", monospace; font-size: 16px; line-height: 1.6; width: 100%; max-width: 900px; margin-top: 20px; overflow-x: auto; white-space: pre; }
+    .slide-content .code .comment { color: #6a9955; }
+    .slide-content .code .cmd { color: #ce9178; }
+    .slide-content .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; width: 100%; max-width: 900px; }
+    .slide-content .card { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .slide-content .card h3 { font-size: 20px; color: #1a2a6c; margin-bottom: 12px; }
+    .slide-content .card p { font-size: 16px; color: #555; line-height: 1.7; }
+
+    /* 对比页 */
+    .slide-compare { background: #fff; }
+    .slide-compare h2 { font-size: 36px; color: #1a2a6c; margin-bottom: 40px; }
+    .compare-table { width: 100%; max-width: 900px; border-collapse: collapse; font-size: 18px; }
+    .compare-table th { background: #1a2a6c; color: white; padding: 16px; text-align: left; }
+    .compare-table td { padding: 16px; border-bottom: 1px solid #e0e0e0; }
+    .compare-table tr:nth-child(even) { background: #f8f9fa; }
+    .compare-table .good { color: #28a745; font-weight: bold; }
+    .compare-table .bad { color: #dc3545; }
+
+    /* 结语 */
+    .slide-end { background: linear-gradient(135deg, #2d5a87 0%, #007acc 100%); color: white; }
+    .slide-end h2 { font-size: 40px; margin-bottom: 30px; }
+    .slide-end p { font-size: 22px; opacity: 0.9; }
+
+    /* 导航 */
+    .nav { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 100; }
+    .nav button {
+      background: rgba(0,0,0,0.3); color: white; border: none; padding: 10px 24px;
+      border-radius: 6px; cursor: pointer; font-size: 14px; backdrop-filter: blur(4px);
+    }
+    .nav button:hover { background: rgba(0,0,0,0.5); }
+    .nav .page-num { background: #007acc; color: white; font-size: 14px; line-height: 36px; padding: 0 14px; border-radius: 6px; margin: 0 10px; }
+    .progress { position: fixed; top: 0; left: 0; height: 3px; background: #007acc; transition: width 0.3s; z-index: 100; }
+    @media (max-width: 900px) and (orientation: landscape) {
+      .slide { padding: 20px 30px !important; }
+      .slide h1 { font-size: 1.8rem !important; }
+      .slide h2 { font-size: 1.4rem !important; }
+      .slide h3 { font-size: 1.1rem !important; }
+      .slide p, .slide li { font-size: 0.9rem !important; line-height: 1.5 !important; }
+      .slide-content .code { font-size: 0.75rem !important; padding: 10px !important; }
+      .nav button { padding: 6px 14px !important; font-size: 12px !important; }
+      .nav .page-num { font-size: 12px !important; padding: 0 10px !important; }
+    }
+  
+    /* 微信公众号推荐 */
+    .wx-promo {
+      margin-top: 40px;
+      padding-top: 30px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .wx-promo-text {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+    .wx-promo-images {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+    }
+    .wx-promo-images img {
+      width: 360px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 2px solid rgba(0, 122, 204, 0.3);
+    }
+    .slide-cover .wx-promo-text,
+    .slide-end .wx-promo-text,
+    .cover .wx-promo-text,
+    .summary .wx-promo-text {
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .slide-cover .wx-promo-images img,
+    .slide-end .wx-promo-images img,
+    .cover .wx-promo-images img,
+    .summary .wx-promo-images img {
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+  /* ===== 代码复制按钮 ===== */
+  pre { position: relative; }
+  .copy-btn {
+    position: absolute; top: 8px; right: 8px;
+    padding: 4px 10px; font-size: 12px; line-height: 1.4;
+    color: #ccc; background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 4px;
+    cursor: pointer; opacity: 0; transition: opacity 0.2s, background 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    z-index: 10;
+  }
+  pre:hover .copy-btn { opacity: 1; }
+  .copy-btn:hover { background: rgba(255,255,255,0.25); color: #fff; }
+  .copy-btn.copied { color: #4ec9b0; border-color: #4ec9b0; background: rgba(78,201,176,0.15); opacity: 1; }
+
+</style>
+    </head>
+    <body>
+      <div class="progress" id="progress">
+      </div>
+      <div class="slides">
+        <div class="slide slide-cover active">
+          <h1>Python 基础
+          </h1>
+          <p class="subtitle">第一章 · 绪论与环境配置
+          </p>
+          <span class="tag">配合机器学习系列课程
+          </span>
+          <div class="wx-promo">
+            <p class="wx-promo-text">欢迎关注微信公众号
+            </p>
+            <div class="wx-promo-images">
+              <img alt="coder程" src="../asset/coder程.png"/>
+              <img alt="查令十街84号" src="../asset/查令十街84号.png"/>
+            </div>
+          </div>
+        </div>
+        <div class="slide slide-content">
+          <h2>课程目标
+          </h2>
+          <ul>
+            <li>为
+              <strong>零基础
+              </strong>
+              学员构建最基础的 Python 知识体系
+            </li>
+            <li>已有基础的同学可选修部分章节，补齐知识盲区
+            </li>
+            <li>紧贴
+              <strong>人工智能方向
+              </strong>
+              ，不涉及 Web/爬虫/游戏等其他方向
+            </li>
+            <li>输出能力：
+              <strong>基础的机器学习编程能力
+              </strong>
+            </li>
+          </ul>
+          <div style="margin-top: 30px; width: 100%; max-width: 900px;">
+            <div style="background: white; padding: 20px; border-radius: 10px; border-left: 4px solid #007acc;">
+              <p style="font-size: 18px; color: #555;">⚠️ 面向零基础或基础薄弱学员，
+                <strong>不涉及异步编程、元编程等高级内容
+                </strong>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="slide slide-content">
+          <h2>课程内容与学习形式
+          </h2>
+          <div class="grid">
+            <div class="card">
+              <h3>📹 课程视频
+              </h3>
+              <p>通过脑图介绍本章框架
+              </p>
+              <p>通过小例子展开各知识点
+              </p>
+              <p>阐明"是什么"、"能做什么"、"有哪些坑"
+              </p>
+            </div>
+            <div class="card">
+              <h3>📝 作业讲解
+              </h3>
+              <p>每章节布置相应编程作业
+              </p>
+              <p>每两章结束后结合作业打卡情况讲解
+              </p>
+              <p>递进式、趣味性、启发式
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="slide slide-content">
+          <h2>为什么是 Python？
+          </h2>
+          <ul>
+            <li>
+              <strong>Python 与 AI 密不可分
+              </strong>
+              — 几乎所有主流机器学习框架（TensorFlow、PyTorch）的首选接口语言
+            </li>
+            <li>
+              <strong>方便灵活、简单易用
+              </strong>
+              — 语法接近自然语言，学习曲线平缓
+            </li>
+            <li>
+              <strong>生态丰富
+              </strong>
+              — NumPy、Pandas、Scikit-learn、Matplotlib 等库开箱即用
+            </li>
+            <li>
+              <strong>开发速度快
+              </strong>
+              — 同样的算法，Python 开发 1 小时 ≈ C++ 开发 10 小时
+            </li>
+          </ul>
+        </div>
+        <div class="slide slide-compare">
+          <h2>Python 性能真相
+          </h2>
+          <table class="compare-table">
+            <tr>
+              <th>维度
+              </th>
+              <th>Python
+              </th>
+              <th>C++
+              </th>
+            </tr>
+            <tr>
+              <td>1~100万累加（重复100次）
+              </td>
+              <td class="bad">~10 s
+              </td>
+              <td class="good">~0.3 s
+              </td>
+            </tr>
+            <tr>
+              <td>开发同样功能耗时
+              </td>
+              <td class="good">~1 小时
+              </td>
+              <td class="bad">~10 小时
+              </td>
+            </tr>
+            <tr>
+              <td>适合场景
+              </td>
+              <td>上层逻辑、快速验证
+              </td>
+              <td>底层算法、性能瓶颈
+              </td>
+            </tr>
+          </table>
+          <div style="margin-top: 30px; width: 100%; max-width: 900px;">
+            <div style="background: #e8f4fd; padding: 20px; border-radius: 10px; border-left: 4px solid #007acc;">
+              <p style="font-size: 18px;">💡
+                <strong>策略：
+                </strong>
+                Python 写上层逻辑，C/C++ 写底层算法，通过 NumPy 等库暴露 Python 接口 —— 各取所长，有机融合
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="slide slide-content">
+          <h2>Python 的语言属性
+          </h2>
+          <div class="grid">
+            <div class="card">
+              <h3>按执行方式
+              </h3>
+              <p>
+                <strong>编译型
+                </strong>
+                ：C、C++ — 先编译再运行，速度快
+              </p>
+              <p>
+                <strong>解释型
+                </strong>
+                ：Python、JavaScript — 逐行解释执行，灵活
+              </p>
+            </div>
+            <div class="card">
+              <h3>按类型声明
+              </h3>
+              <p>
+                <strong>静态语言
+                </strong>
+                ：Java、C++ — 变量类型需预先声明
+              </p>
+              <p>
+                <strong>动态语言
+                </strong>
+                ：Python — 变量类型运行时自动推断
+              </p>
+            </div>
+          </div>
+          <div style="margin-top: 30px; width: 100%; max-width: 900px; text-align: center;">
+            <p style="font-size: 20px; color: #1a2a6c; font-weight: bold;">Python = 解释型 + 高级语言 + 动态语言
+            </p>
+          </div>
+        </div>
+        <div class="slide slide-content">
+          <h2>Python 发展简史
+          </h2>
+          <ul>
+            <li>
+              <strong>1989
+              </strong>
+              — 荷兰程序员 Guido van Rossum 开发 Python（大蟒蛇）
+            </li>
+            <li>
+              <strong>1991
+              </strong>
+              — 第一个可用版本问世
+            </li>
+            <li>
+              <strong>2000
+              </strong>
+              — Python 2.0 发布
+            </li>
+            <li>
+              <strong>2008
+              </strong>
+              — Python 3.0 发布（自我革命，不兼容 2.x）
+            </li>
+            <li>
+              <strong>2010
+              </strong>
+              — Python 2.x 发布最后一个版本
+            </li>
+            <li>
+              <strong>2016
+              </strong>
+              — 几乎所有重要库完成 Python 3 迁移
+            </li>
+            <li>
+              <strong>现在
+              </strong>
+              — Python 3.x 持续迭代更新，3.12+ 为主流
+            </li>
+          </ul>
+          <div style="margin-top: 30px; width: 100%; max-width: 900px;">
+            <div style="background: #fff3cd; padding: 16px 20px; border-radius: 8px; text-align: center;">
+              <p style="font-size: 18px; color: #856404;">⚠️ 本课程使用
+                <strong>Python 3.x
+                </strong>
+                ，不再涉及 Python 2 相关内容
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="slide slide-content">
+          <h2>环境配置：Anaconda
+          </h2>
+          <p style="font-size: 18px; color: #666; margin-bottom: 20px; width: 100%; max-width: 900px;">Anaconda 是数据科学领域最常用的 Python 发行版，内置了 NumPy、Pandas 等常用库
+          </p>
+          <div class="code">
+# 1. 下载并安装 Anaconda（官网：anaconda.com）
+            <br/># 2. 创建独立的 Python 环境  
+            <br/>conda create -n pyml python=3.11
+            <br/># 3. 激活环境       
+            <br/>conda activate pyml
+            <br/># 4. 安装机器学习常用包
+            <br/>conda install numpy pandas matplotlib scikit-learn
+            <br/>conda install jupyter notebook
+          </div>
+        </div>
+        <div class="slide slide-content">
+          <h2>开发工具推荐
+          </h2>
+          <div class="grid">
+            <div class="card">
+              <h3>🛠️ PyCharm
+              </h3>
+              <p>JetBrains 出品的 Python IDE
+              </p>
+              <p>代码补全、调试、重构功能强大
+              </p>
+              <p>Community 版免费
+              </p>
+            </div>
+            <div class="card">
+              <h3>📓 Jupyter Notebook
+              </h3>
+              <p>交互式编程环境，代码分块运行
+              </p>
+              <p>适合数据探索、可视化展示
+              </p>
+              <p>机器学习领域标配工具
+              </p>
+            </div>
+          </div>
+          <div style="margin-top: 30px; width: 100%; max-width: 900px;">
+            <div style="background: #e8f4fd; padding: 16px 20px; border-radius: 8px; border-left: 4px solid #007acc;">
+              <p style="font-size: 16px;">💡 建议：
+                <strong>平时用 PyCharm 写完整项目
+                </strong>
+                ，
+                <strong>数据分析/实验用 Jupyter Notebook
+                </strong>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="slide slide-content">
+          <h2>学习建议
+          </h2>
+          <ul>
+            <li>
+              <strong>动手 &gt; 看
+              </strong>
+              — 每看完一节就打开 IDE 敲一遍代码，不要只看不练
+            </li>
+            <li>
+              <strong>先跑通，再深究
+              </strong>
+              — 不要卡在语法细节上，先让代码跑起来，再回头理解
+            </li>
+            <li>
+              <strong>善用搜索引擎
+              </strong>
+              — Python 报错信息通常很直观，复制到 Google/百度就能找到答案
+            </li>
+            <li>
+              <strong>坚持打卡
+              </strong>
+              — 每两章有一次作业讲解，跟上节奏比突击更有效
+            </li>
+            <li>
+              <strong>以用促学
+              </strong>
+              — 结合机器学习课程中的实战项目来巩固 Python 语法
+            </li>
+          </ul>
+        </div>
+        <div class="slide slide-end">
+          <h2>本章小结
+          </h2>
+          <p style="margin-bottom: 20px;">✅ 了解了 Python 在 AI 领域的重要性
+          </p>
+          <p style="margin-bottom: 20px;">✅ 完成了 Anaconda + PyCharm/Jupyter 的环境搭建
+          </p>
+          <p style="margin-bottom: 40px;">✅ 明确了学习路径和方法
+          </p>
+          <p style="font-size: 28px; font-weight: bold;">下一章：Python 基本语法元素
+          </p>
+          <div style="text-align:center; margin-top:30px;">
+            <a href="Python基础_第02章_Python基本语法元素_PPT.html" style="display:inline-block; padding:10px 28px; background:rgba(255,255,255,0.9); color:#1a2a6c; text-decoration:none; border-radius:8px; font-size:16px; font-weight:600;">下一章 ▶</a>
+          </div>
+        </div>
+      </div>
+      <!-- Slide 2: 课程目标 -->
+      <!-- Slide 3: 课程内容 -->
+      <!-- Slide 4: 为什么选 Python -->
+      <!-- Slide 5: 性能对比 -->
+      <!-- Slide 6: Python 分类 -->
+      <!-- Slide 7: 发展简史 -->
+      <!-- Slide 8: 环境配置 -->
+      <!-- Slide 9: 开发工具 -->
+      <!-- Slide 10: 学习建议 -->
+      <!-- Slide 11: 结语 -->
+      <div class="nav">
+        <button onclick="prevSlide()">◀ 上一页
+        </button>
+        <span class="page-num" id="pageNum">1 / 11
+        </span>
+        <button onclick="nextSlide()">下一页 ▶
+        </button>
+      </div>
+<script>
+    let current = 0;
+    const slides = document.querySelectorAll('.slide');
+    const total = slides.length;
+    const pageNum = document.getElementById('pageNum');
+    const progress = document.getElementById('progress');
+
+    function showSlide(index) {
+      slides.forEach((s, i) => s.classList.toggle('active', i === index));
+      pageNum.textContent = `${index + 1} / ${total}`;
+      progress.style.width = `${((index + 1) / total) * 100}%`;
+    }
+
+    function nextSlide() {
+      if (current < total - 1) { current++; showSlide(current); }
+    }
+
+    function prevSlide() {
+      if (current > 0) { current--; showSlide(current); }
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+      if (e.key === 'ArrowLeft') prevSlide();
+    });
+
+    showSlide(0);
+  
+  // ===== 代码复制功能 =====
+  document.querySelectorAll('pre').forEach(pre => {
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '复制';
+    btn.type = 'button';
+    btn.addEventListener('click', () => {
+      const code = pre.querySelector('code');
+      const text = code ? code.innerText : pre.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 1500);
+      }).catch(() => {
+        // fallback
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta);
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+
+</script>
+    </body>
+  </html>

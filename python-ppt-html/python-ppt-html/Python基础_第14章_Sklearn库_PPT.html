@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+  <html lang="zh-CN">
+    <head>
+      <meta charset="utf-8"/>
+      <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+      <title>Python基础 - 第14章 Sklearn库
+      </title>
+<style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Microsoft YaHei", "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+            background: #1a1a2e;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+        .slideshow {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        .slide {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: none;
+            padding: 60px 80px;
+            overflow-y: auto;
+        }
+        .slide.active { display: flex; flex-direction: column; }
+        
+        /* 封面页 */
+        .slide.cover {
+            background: linear-gradient(135deg, #1a2a6c, #2d5a87, #007acc);
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+        }
+        .slide.cover h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+        }
+        .slide.cover .subtitle {
+            font-size: 1.8rem;
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+        .slide.cover .chapter-num {
+            font-size: 1.2rem;
+            opacity: 0.7;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+        }
+        .slide.cover .divider {
+            width: 120px;
+            height: 3px;
+            background: rgba(255,255,255,0.5);
+            margin: 30px auto;
+        }
+        
+        /* 内容页 */
+        .slide.content {
+            background: #f8f9fa;
+            color: #333;
+        }
+        .slide.content h2 {
+            font-size: 2.2rem;
+            color: #1a2a6c;
+            border-left: 6px solid #007acc;
+            padding-left: 20px;
+            margin-bottom: 30px;
+            flex-shrink: 0;
+        }
+        .slide.content h3 {
+            font-size: 1.5rem;
+            color: #2d5a87;
+            margin: 20px 0 12px 0;
+        }
+        .slide.content p, .slide.content li {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: #444;
+        }
+        .slide.content ul {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+        .slide.content li {
+            margin-bottom: 8px;
+        }
+        
+        /* 代码块 */
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px 25px;
+            border-radius: 8px;
+            font-family: "Consolas", "Monaco", "Courier New", monospace;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            overflow-x: auto;
+            margin: 15px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        code {
+            font-family: "Consolas", "Monaco", "Courier New", monospace;
+            background: #e8e8e8;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.9em;
+            color: #c7254e;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+            font-size: inherit;
+        }
+        .code-comment { color: #6a9955; }
+        .code-keyword { color: #569cd6; }
+        .code-string { color: #ce9178; }
+        .code-function { color: #dcdcaa; }
+        .code-number { color: #b5cea8; }
+        .code-class { color: #4ec9b0; }
+        
+        /* 目录页 */
+        .slide.toc {
+            background: #f8f9fa;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .slide.toc h2 {
+            font-size: 2.5rem;
+            color: #1a2a6c;
+            border-left: 6px solid #007acc;
+            padding-left: 20px;
+            margin-bottom: 50px;
+        }
+        .toc-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 1.4rem;
+            color: #333;
+        }
+        .toc-num {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #1a2a6c, #007acc);
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        .toc-text { font-size: 1.3rem; }
+        .toc-time {
+            margin-left: auto;
+            color: #888;
+            font-size: 1rem;
+        }
+        
+        /* 总结页 */
+        .slide.summary {
+            background: linear-gradient(135deg, #1a2a6c, #2d5a87, #007acc);
+            color: white;
+            justify-content: center;
+        }
+        .slide.summary h2 {
+            color: white;
+            border-left-color: #fff;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+        }
+        .summary-box {
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+        .summary-box li {
+            font-size: 1.2rem;
+            line-height: 2;
+            margin-bottom: 10px;
+        }
+        
+        /* 导航提示 */
+        .nav-hint {
+            position: fixed;
+            bottom: 20px;
+            right: 30px;
+            color: #888;
+            font-size: 0.85rem;
+            z-index: 100;
+            background: rgba(255,255,255,0.8);
+            padding: 6px 14px;
+            border-radius: 20px;
+        }
+        
+        /* 进度条 */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #1a2a6c, #007acc);
+            transition: width 0.3s ease;
+            z-index: 100;
+        }
+        
+        /* 页码 */
+        .page-num {
+            position: fixed;
+            bottom: 20px;
+            left: 30px;
+            color: #888;
+            font-size: 0.85rem;
+            z-index: 100;
+            background: rgba(255,255,255,0.8);
+            padding: 6px 14px;
+            border-radius: 20px;
+        }
+        
+        /* 卡片样式 */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 15px;
+        }
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-top: 4px solid #007acc;
+        }
+        .card h4 {
+            color: #1a2a6c;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+        .card p {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        /* 表格样式 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        th {
+            background: linear-gradient(135deg, #1a2a6c, #2d5a87);
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+            color: #444;
+        }
+        tr:last-child td { border-bottom: none; }
+        tr:nth-child(even) { background: #f8f9fa; }
+        
+        /* 双列布局 */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 15px;
+        }
+        .col-box {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .col-box h4 {
+            color: #1a2a6c;
+            margin-bottom: 10px;
+            font-size: 1.15rem;
+        }
+        .nav { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 100; }
+        .nav button {
+            background: rgba(0,0,0,0.3); color: white; border: none; padding: 10px 24px;
+            border-radius: 6px; cursor: pointer; font-size: 14px; backdrop-filter: blur(4px);
+        }
+        .nav button:hover { background: rgba(0,0,0,0.5); }
+        .nav .page-num { position: static !important; bottom: auto !important; right: auto !important; left: auto !important; background: #007acc; color: white; font-size: 14px; line-height: 36px; padding: 0 14px; border-radius: 6px; margin: 0 10px; }
+        @media (max-width: 900px) and (orientation: landscape) {
+            .slideshow { width: 100vw !important; height: 100vh !important; border-radius: 0 !important; }
+            .slide { padding: 20px 30px !important; }
+            .slide h1 { font-size: 1.8rem !important; }
+            .slide h2 { font-size: 1.4rem !important; }
+            .slide h3 { font-size: 1.1rem !important; }
+            .slide p, .slide li { font-size: 0.9rem !important; line-height: 1.5 !important; }
+            pre { font-size: 0.75rem !important; padding: 10px !important; }
+            .nav button { padding: 6px 14px !important; font-size: 12px !important; }
+            .nav .page-num { font-size: 12px !important; padding: 0 10px !important; }
+        }
+  
+    /* 微信公众号推荐 */
+    .wx-promo {
+      margin-top: 40px;
+      padding-top: 30px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .wx-promo-text {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+    .wx-promo-images {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+    }
+    .wx-promo-images img {
+      width: 360px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 2px solid rgba(0, 122, 204, 0.3);
+    }
+    .slide-cover .wx-promo-text,
+    .slide-end .wx-promo-text,
+    .cover .wx-promo-text,
+    .summary .wx-promo-text {
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .slide-cover .wx-promo-images img,
+    .slide-end .wx-promo-images img,
+    .cover .wx-promo-images img,
+    .summary .wx-promo-images img {
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+  /* ===== 代码复制按钮 ===== */
+  pre { position: relative; }
+  .copy-btn {
+    position: absolute; top: 8px; right: 8px;
+    padding: 4px 10px; font-size: 12px; line-height: 1.4;
+    color: #ccc; background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 4px;
+    cursor: pointer; opacity: 0; transition: opacity 0.2s, background 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    z-index: 10;
+  }
+  pre:hover .copy-btn { opacity: 1; }
+  .copy-btn:hover { background: rgba(255,255,255,0.25); color: #fff; }
+  .copy-btn.copied { color: #4ec9b0; border-color: #4ec9b0; background: rgba(78,201,176,0.15); opacity: 1; }
+
+</style>
+    </head>
+    <body>
+      <div class="progress-bar" id="progressBar">
+      </div>
+      <div class="nav">
+        <button onclick="prevSlide()">◀ 上一页
+        </button>
+        <span class="page-num" id="pageNum">1 / 16
+        </span>
+        <button onclick="nextSlide()">下一页 ▶
+        </button>
+      </div>
+      <div class="slideshow" id="slideshow">
+        <div class="slide cover active">
+          <div class="chapter-num">Chapter 14
+          </div>
+          <h1>Sklearn 库
+          </h1>
+          <div class="divider">
+          </div>
+          <div class="subtitle">Python 机器学习入门
+          </div>
+          <p style="opacity:0.6; margin-top:30px; font-size:1rem;">Python基础系列课程
+          </p>
+          <div class="wx-promo">
+            <p class="wx-promo-text">欢迎关注微信公众号
+            </p>
+            <div class="wx-promo-images">
+              <img alt="coder程" src="../asset/coder程.png"/>
+              <img alt="查令十街84号" src="../asset/查令十街84号.png"/>
+            </div>
+          </div>
+        </div>
+        <div class="slide toc">
+          <h2>本章目录
+          </h2>
+          <div class="toc-item">
+            <span class="toc-num">1
+            </span>
+            <span class="toc-text">数据集预处理
+            </span>
+            <span class="toc-time">10 min
+            </span>
+          </div>
+          <div class="toc-item">
+            <span class="toc-num">2
+            </span>
+            <span class="toc-text">八大分类算法
+            </span>
+            <span class="toc-time">20 min
+            </span>
+          </div>
+          <div class="toc-item">
+            <span class="toc-num">3
+            </span>
+            <span class="toc-text">回归分析
+            </span>
+            <span class="toc-time">15 min
+            </span>
+          </div>
+          <div class="toc-item">
+            <span class="toc-num">4
+            </span>
+            <span class="toc-text">模型评估与调优
+            </span>
+            <span class="toc-time">15 min
+            </span>
+          </div>
+        </div>
+        <div class="slide content">
+          <h2>什么是 Scikit-learn？
+          </h2>
+          <p>Scikit-learn（简称 sklearn）是 Python 中最流行、最广泛使用的机器学习库之一，建立在 NumPy、SciPy 和 Matplotlib 之上。
+          </p>
+          <div class="card-grid" style="margin-top:25px;">
+            <div class="card">
+              <h4>🔧 简单易用
+              </h4>
+              <p>统一的 API 设计，所有模型都遵循 fit → predict 范式
+              </p>
+            </div>
+            <div class="card">
+              <h4>📚 算法丰富
+              </h4>
+              <p>涵盖分类、回归、聚类、降维等数十种经典算法
+              </p>
+            </div>
+            <div class="card">
+              <h4>🧪 完善的工具链
+              </h4>
+              <p>数据预处理、模型选择、评估指标一应俱全
+              </p>
+            </div>
+            <div class="card">
+              <h4>📖 文档详尽
+              </h4>
+              <p>官方文档丰富，社区活跃，学习曲线平缓
+              </p>
+            </div>
+          </div>
+<pre style="margin-top:25px;"><code><span class="code-comment"># 安装 sklearn</span>
+pip install scikit-learn
+
+<span class="code-comment"># 基本导入</span>
+<span class="code-keyword">from</span> sklearn <span class="code-keyword">import</span> datasets
+<span class="code-keyword">from</span> sklearn.model_selection <span class="code-keyword">import</span> train_test_split
+<span class="code-keyword">from</span> sklearn.preprocessing <span class="code-keyword">import</span> StandardScaler</code></pre>
+        </div>
+        <div class="slide content">
+          <h2>数据集预处理
+          </h2>
+          <h3>1. 数据集划分：train_test_split
+          </h3>
+          <p>将数据集划分为训练集和测试集，是机器学习流程的第一步。
+          </p>
+<pre><code><span class="code-keyword">from</span> sklearn.model_selection <span class="code-keyword">import</span> train_test_split
+<span class="code-keyword">from</span> sklearn <span class="code-keyword">import</span> datasets
+
+<span class="code-comment"># 加载内置数据集</span>
+iris = datasets.load_iris()
+X, y = iris.data, iris.target
+
+<span class="code-comment"># 划分数据集：测试集占 20%，设置随机种子保证可复现</span>
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=<span class="code-number">0.2</span>, random_state=<span class="code-number">42</span>
+)
+
+<span class="code-function">print</span>(<span class="code-string">f"训练集大小: {len(X_train)}, 测试集大小: {len(X_test)}"</span>)
+<span class="code-comment"># 输出: 训练集大小: 120, 测试集大小: 30</span></code></pre>
+        </div>
+        <div class="slide content">
+          <h2>特征标准化与归一化
+          </h2>
+          <p>不同特征的量纲差异会影响模型性能，需要进行标准化处理。
+          </p>
+          <div class="two-col">
+            <div class="col-box">
+              <h4>StandardScaler（标准化）
+              </h4>
+              <p>将特征转换为均值为0、标准差为1的标准正态分布：
+              </p>
+              <p style="font-style:italic; color:#666; margin:10px 0;">z = (x - μ) / σ
+              </p>
+              <p>适用于数据近似正态分布的情况。
+              </p>
+            </div>
+            <div class="col-box">
+              <h4>MinMaxScaler（归一化）
+              </h4>
+              <p>将特征缩放到 [0, 1] 范围：
+              </p>
+              <p style="font-style:italic; color:#666; margin:10px 0;">x_scaled = (x - min) / (max - min)
+              </p>
+              <p>适用于需要固定边界的情况。
+              </p>
+            </div>
+          </div>
+<pre style="margin-top:20px;"><code><span class="code-keyword">from</span> sklearn.preprocessing <span class="code-keyword">import</span> StandardScaler, MinMaxScaler
+
+<span class="code-comment"># 标准化处理</span>
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)  <span class="code-comment"># 测试集用同样的参数转换</span>
+
+<span class="code-comment"># 归一化处理</span>
+normalizer = MinMaxScaler()
+X_train_norm = normalizer.fit_transform(X_train)</code></pre>
+        </div>
+        <div class="slide content">
+          <h2>八大分类算法概览
+          </h2>
+          <table>
+            <tr>
+              <th>算法
+              </th>
+              <th>类名
+              </th>
+              <th>核心思想
+              </th>
+              <th>适用场景
+              </th>
+            </tr>
+            <tr>
+              <td>K近邻
+              </td>
+              <td>KNeighborsClassifier
+              </td>
+              <td>物以类聚，找最近的K个邻居投票
+              </td>
+              <td>小数据集，非线性边界
+              </td>
+            </tr>
+            <tr>
+              <td>决策树
+              </td>
+              <td>DecisionTreeClassifier
+              </td>
+              <td>基于特征条件递归划分数据
+              </td>
+              <td>需要可解释性
+              </td>
+            </tr>
+            <tr>
+              <td>朴素贝叶斯
+              </td>
+              <td>GaussianNB
+              </td>
+              <td>基于贝叶斯定理，假设特征独立
+              </td>
+              <td>文本分类、高维数据
+              </td>
+            </tr>
+            <tr>
+              <td>逻辑回归
+              </td>
+              <td>LogisticRegression
+              </td>
+              <td>用Sigmoid函数拟合概率
+              </td>
+              <td>二分类、概率输出
+              </td>
+            </tr>
+            <tr>
+              <td>SVM
+              </td>
+              <td>SVC
+              </td>
+              <td>寻找最优超平面最大化间隔
+              </td>
+              <td>高维数据、复杂边界
+              </td>
+            </tr>
+            <tr>
+              <td>随机森林
+              </td>
+              <td>RandomForestClassifier
+              </td>
+              <td>多棵决策树集成投票
+              </td>
+              <td>通用场景，抗过拟合
+              </td>
+            </tr>
+            <tr>
+              <td>梯度提升
+              </td>
+              <td>GradientBoostingClassifier
+              </td>
+              <td>串行训练弱分类器，逐步修正
+              </td>
+              <td>追求高精度
+              </td>
+            </tr>
+            <tr>
+              <td>AdaBoost
+              </td>
+              <td>AdaBoostClassifier
+              </td>
+              <td>加权组合弱分类器
+              </td>
+              <td>提升简单模型性能
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="slide content">
+          <h2>K近邻算法 (KNN)
+          </h2>
+          <h3>核心思想
+          </h3>
+          <p>"近朱者赤，近墨者黑" —— 一个样本的类别由其最相似的 K 个邻居的类别投票决定。
+          </p>
+          <h3>关键参数
+          </h3>
+          <ul>
+            <li>
+              <code>n_neighbors
+              </code>
+              ：K 值，邻居个数（默认5）
+            </li>
+            <li>
+              <code>weights
+              </code>
+              ：权重，'uniform' 等权 / 'distance' 按距离加权
+            </li>
+            <li>
+              <code>metric
+              </code>
+              ：距离度量，'minkowski'、'euclidean'、'manhattan'
+            </li>
+          </ul>
+<pre><code><span class="code-keyword">from</span> sklearn.neighbors <span class="code-keyword">import</span> KNeighborsClassifier
+
+<span class="code-comment"># 创建 KNN 分类器</span>
+knn = KNeighborsClassifier(n_neighbors=<span class="code-number">5</span>, weights=<span class="code-string">'uniform'</span>)
+
+<span class="code-comment"># 训练模型</span>
+knn.fit(X_train_scaled, y_train)
+
+<span class="code-comment"># 预测</span>
+y_pred = knn.predict(X_test_scaled)
+
+<span class="code-comment"># 预测概率</span>
+proba = knn.predict_proba(X_test_scaled[:<span class="code-number">3</span>])
+<span class="code-function">print</span>(proba)</code></pre>
+        </div>
+        <div class="slide content">
+          <h2>决策树 (Decision Tree)
+          </h2>
+          <h3>核心思想
+          </h3>
+          <p>通过一系列if-else判断条件，像一棵树一样层层分叉，最终将样本分到某个叶子节点（类别）。
+          </p>
+          <h3>关键参数
+          </h3>
+          <ul>
+            <li>
+              <code>criterion
+              </code>
+              ：划分标准，'gini'（基尼系数）或 'entropy'（信息熵）
+            </li>
+            <li>
+              <code>max_depth
+              </code>
+              ：树的最大深度，防止过拟合
+            </li>
+            <li>
+              <code>min_samples_split
+              </code>
+              ：节点再划分所需最小样本数
+            </li>
+            <li>
+              <code>min_samples_leaf
+              </code>
+              ：叶子节点最小样本数
+            </li>
+          </ul>
+<pre><code><span class="code-keyword">from</span> sklearn.tree <span class="code-keyword">import</span> DecisionTreeClassifier
+
+<span class="code-comment"># 创建决策树</span>
+dt = DecisionTreeClassifier(
+    criterion=<span class="code-string">'gini'</span>,
+    max_depth=<span class="code-number">5</span>,
+    min_samples_split=<span class="code-number">10</span>,
+    random_state=<span class="code-number">42</span>
+)
+
+<span class="code-comment"># 训练</span>
+dt.fit(X_train, y_train)
+
+<span class="code-comment"># 查看特征重要性</span>
+<span class="code-function">print</span>(<span class="code-string">"特征重要性:"</span>, dt.feature_importances_)</code></pre>
+        </div>
+        <div class="slide content">
+          <h2>支持向量机 (SVM)
+          </h2>
+          <h3>核心思想
+          </h3>
+          <p>在特征空间中寻找一个超平面，使得两类样本之间的间隔（Margin）最大化。间隔越大，模型泛化能力越强。
+          </p>
+          <h3>核函数 (Kernel)
+          </h3>
+          <p>SVM 的精髓在于核技巧，将低维不可分的数据映射到高维空间：
+          </p>
+          <ul>
+            <li>
+              <code>linear
+              </code>
+              ：线性核，适合线性可分数据
+            </li>
+            <li>
+              <code>rbf
+              </code>
+              ：径向基函数，适合非线性数据（最常用）
+            </li>
+            <li>
+              <code>poly
+              </code>
+              ：多项式核
+            </li>
+          </ul>
+<pre><code><span class="code-keyword">from</span> sklearn.svm <span class="code-keyword">import</span> SVC
+
+<span class="code-comment"># 线性 SVM</span>
+linear_svm = SVC(kernel=<span class="code-string">'linear'</span>, C=<span class="code-number">1.0</span>)
+
+<span class="code-comment"># RBF 核 SVM（适合复杂边界）</span>
+rbf_svm = SVC(kernel=<span class="code-string">'rbf'</span>, C=<span class="code-number">1.0</span>, gamma=<span class="code-string">'scale'</span>)
+
+rbf_svm.fit(X_train_scaled, y_train)
+y_pred = rbf_svm.predict(X_test_scaled)</code></pre>
+        </div>
+        <div class="slide content">
+          <h2>逻辑回归 &amp; 朴素贝叶斯
+          </h2>
+          <div class="two-col">
+            <div class="col-box">
+              <h4>逻辑回归 LogisticRegression
+              </h4>
+              <p>虽然叫"回归"，但是分类算法。用 Sigmoid 函数将线性输出映射到 (0,1) 概率。
+              </p>
+<pre style="margin-top:10px;"><code><span class="code-keyword">from</span> sklearn.linear_model <span class="code-keyword">import</span> LogisticRegression
+
+lr = LogisticRegression(
+    max_iter=<span class="code-number">1000</span>,
+    C=<span class="code-number">1.0</span>,
+    solver=<span class="code-string">'lbfgs'</span>
+)
+lr.fit(X_train_scaled, y_train)
+
+<span class="code-comment"># 输出概率</span>
+proba = lr.predict_proba(X_test_scaled)</code></pre>
+            </div>
+            <div class="col-box">
+              <h4>朴素贝叶斯 GaussianNB
+              </h4>
+              <p>基于贝叶斯定理，假设特征之间相互独立。简单高效，适合文本分类。
+              </p>
+<pre style="margin-top:10px;"><code><span class="code-keyword">from</span> sklearn.naive_bayes <span class="code-keyword">import</span> GaussianNB
+
+nb = GaussianNB()
+nb.fit(X_train, y_train)
+
+<span class="code-comment"># 先验概率</span>
+<span class="code-function">print</span>(nb.class_prior_)</code></pre>
+            </div>
+          </div>
+        </div>
+        <div class="slide content">
+          <h2>集成学习：随机森林 &amp; 梯度提升
+          </h2>
+          <div class="two-col">
+            <div class="col-box">
+              <h4>🌲 随机森林 RandomForest
+              </h4>
+              <p>Bagging 策略：多棵决策树并行训练，随机选特征、随机采样，最后投票。
+              </p>
+<pre style="margin-top:10px;"><code><span class="code-keyword">from</span> sklearn.ensemble <span class="code-keyword">import</span> RandomForestClassifier
+
+rf = RandomForestClassifier(
+    n_estimators=<span class="code-number">100</span>,   <span class="code-comment"># 树的数量</span>
+    max_depth=<span class="code-number">10</span>,
+    random_state=<span class="code-number">42</span>
+)
+rf.fit(X_train, y_train)
+
+<span class="code-comment"># 特征重要性排序</span>
+importances = rf.feature_importances_</code></pre>
+            </div>
+            <div class="col-box">
+              <h4>📈 梯度提升 GradientBoosting
+              </h4>
+              <p>Boosting 策略：串行训练，每棵树修正前一棵的错误，逐步提升精度。
+              </p>
+<pre style="margin-top:10px;"><code><span class="code-keyword">from</span> sklearn.ensemble <span class="code-keyword">import</span> GradientBoostingClassifier
+
+gb = GradientBoostingClassifier(
+    n_estimators=<span class="code-number">100</span>,
+    learning_rate=<span class="code-number">0.1</span>,
+    max_depth=<span class="code-number">3</span>
+)
+gb.fit(X_train, y_train)</code></pre>
+            </div>
+          </div>
+          <p style="margin-top:15px; font-size:1rem;">
+            <strong>核心区别：
+            </strong>
+            RandomForest 是"并行民主投票"，GradientBoosting 是"串行纠错精进"。
+          </p>
+        </div>
+        <div class="slide content">
+          <h2>回归分析
+          </h2>
+          <p>预测连续值（如房价、温度、销售额），而非离散类别。
+          </p>
+          <h3>线性回归 LinearRegression
+          </h3>
+          <p>拟合一条直线（或超平面），使预测值与真实值的误差平方和最小。
+          </p>
+<pre><code><span class="code-keyword">from</span> sklearn.linear_model <span class="code-keyword">import</span> LinearRegression
+<span class="code-keyword">from</span> sklearn.datasets <span class="code-keyword">import</span> fetch_california_housing
+
+<span class="code-comment"># 加载加州房价数据集</span>
+housing = fetch_california_housing()
+X, y = housing.data, housing.target
+
+<span class="code-comment"># 划分并标准化</span>
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=<span class="code-number">0.2</span>)
+scaler = StandardScaler()
+X_train_s = scaler.fit_transform(X_train)
+X_test_s = scaler.transform(X_test)
+
+<span class="code-comment"># 训练线性回归模型</span>
+model = LinearRegression()
+model.fit(X_train_s, y_train)
+
+<span class="code-comment"># 预测</span>
+y_pred = model.predict(X_test_s)
+
+<span class="code-comment"># 查看系数和截距</span>
+<span class="code-function">print</span>(<span class="code-string">f"系数: {model.coef_}"</span>)
+<span class="code-function">print</span>(<span class="code-string">f"截距: {model.intercept_}"</span>)</code></pre>
+        </div>
+        <div class="slide content">
+          <h2>模型评估指标
+          </h2>
+          <div class="two-col">
+            <div class="col-box">
+              <h4>分类指标
+              </h4>
+              <ul style="margin-left:0; list-style:none;">
+                <li>✅
+                  <strong>准确率
+                  </strong>
+                  ：预测正确的比例
+                </li>
+                <li>🎯
+                  <strong>精确率
+                  </strong>
+                  ：预测为正例中实际为正例的比例
+                </li>
+                <li>🔍
+                  <strong>召回率
+                  </strong>
+                  ：实际正例中被预测为正例的比例
+                </li>
+                <li>⚖️
+                  <strong>F1-score
+                  </strong>
+                  ：精确率和召回率的调和平均
+                </li>
+              </ul>
+            </div>
+            <div class="col-box">
+              <h4>回归指标
+              </h4>
+              <ul style="margin-left:0; list-style:none;">
+                <li>📉
+                  <strong>MSE
+                  </strong>
+                  ：均方误差
+                </li>
+                <li>📏
+                  <strong>MAE
+                  </strong>
+                  ：平均绝对误差
+                </li>
+                <li>📊
+                  <strong>RMSE
+                  </strong>
+                  ：均方根误差
+                </li>
+                <li>📈
+                  <strong>R²
+                  </strong>
+                  ：决定系数，越接近1越好
+                </li>
+              </ul>
+            </div>
+          </div>
+<pre style="margin-top:15px;"><code><span class="code-keyword">from</span> sklearn.metrics <span class="code-keyword">import</span> accuracy_score, classification_report, mean_squared_error, r2_score
+
+<span class="code-comment"># 分类评估</span>
+<span class="code-function">print</span>(accuracy_score(y_test, y_pred))
+<span class="code-function">print</span>(classification_report(y_test, y_pred))
+
+<span class="code-comment"># 回归评估</span>
+<span class="code-function">print</span>(<span class="code-string">f"MSE: {mean_squared_error(y_test, y_pred)}"</span>)
+<span class="code-function">print</span>(<span class="code-string">f"R²: {r2_score(y_test, y_pred)}"</span>)</code></pre>
+        </div>
+        <div class="slide content">
+          <h2>交叉验证 &amp; 网格搜索
+          </h2>
+          <h3>交叉验证 Cross-Validation
+          </h3>
+          <p>将数据分成 K 份，轮流用 K-1 份训练、1 份验证，避免偶然性，更可靠地评估模型。
+          </p>
+<pre><code><span class="code-keyword">from</span> sklearn.model_selection <span class="code-keyword">import</span> cross_val_score, GridSearchCV
+
+<span class="code-comment"># 5折交叉验证</span>
+scores = cross_val_score(rf, X, y, cv=<span class="code-number">5</span>)
+<span class="code-function">print</span>(<span class="code-string">f"5折交叉验证得分: {scores}"</span>)
+<span class="code-function">print</span>(<span class="code-string">f"平均得分: {scores.mean():.4f}"</span>)
+
+<span class="code-comment"># 网格搜索：自动寻找最优超参数</span>
+param_grid = {
+    <span class="code-string">'n_estimators'</span>: [<span class="code-number">50</span>, <span class="code-number">100</span>, <span class="code-number">200</span>],
+    <span class="code-string">'max_depth'</span>: [<span class="code-number">3</span>, <span class="code-number">5</span>, <span class="code-number">10</span>, <span class="code-keyword">None</span>]
+}
+
+grid_search = GridSearchCV(
+    RandomForestClassifier(random_state=<span class="code-number">42</span>),
+    param_grid,
+    cv=<span class="code-number">5</span>,
+    scoring=<span class="code-string">'accuracy'</span>,
+    n_jobs=<span class="code-number">-1</span>  <span class="code-comment"># 使用所有CPU核心</span>
+)
+grid_search.fit(X_train, y_train)
+<span class="code-function">print</span>(<span class="code-string">f"最优参数: {grid_search.best_params_}"</span>)</code></pre>
+        </div>
+        <div class="slide content">
+          <h2>机器学习完整流程
+          </h2>
+<pre><code><span class="code-comment"># 第1步：导入库</span>
+<span class="code-keyword">from</span> sklearn.datasets <span class="code-keyword">import</span> load_iris
+<span class="code-keyword">from</span> sklearn.model_selection <span class="code-keyword">import</span> train_test_split
+<span class="code-keyword">from</span> sklearn.preprocessing <span class="code-keyword">import</span> StandardScaler
+<span class="code-keyword">from</span> sklearn.ensemble <span class="code-keyword">import</span> RandomForestClassifier
+<span class="code-keyword">from</span> sklearn.metrics <span class="code-keyword">import</span> accuracy_score
+
+<span class="code-comment"># 第2步：加载数据</span>
+X, y = load_iris(return_X_y=<span class="code-keyword">True</span>)
+
+<span class="code-comment"># 第3步：划分数据集</span>
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=<span class="code-number">0.2</span>, random_state=<span class="code-number">42</span>)
+
+<span class="code-comment"># 第4步：特征预处理</span>
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+<span class="code-comment"># 第5步：创建并训练模型</span>
+model = RandomForestClassifier(n_estimators=<span class="code-number">100</span>, random_state=<span class="code-number">42</span>)
+model.fit(X_train, y_train)
+
+<span class="code-comment"># 第6步：预测与评估</span>
+y_pred = model.predict(X_test)
+<span class="code-function">print</span>(<span class="code-string">f"准确率: {accuracy_score(y_test, y_pred):.4f}"</span>)</code></pre>
+          <p style="margin-top:15px; text-align:center; font-size:1.1rem; color:#1a2a6c;">
+            <strong>📌 核心范式：导入 → 数据 → 划分 → 预处理 → fit → predict → 评估
+            </strong>
+          </p>
+        </div>
+        <div class="slide content">
+          <h2>重难点回顾
+          </h2>
+          <div class="card-grid">
+            <div class="card">
+              <h4>🎯 fit vs transform vs fit_transform
+              </h4>
+              <p>fit 学习参数（如均值/方差），transform 应用转换。训练集用 fit_transform，测试集只用 transform。
+              </p>
+            </div>
+            <div class="card">
+              <h4>🎯 数据泄露
+              </h4>
+              <p>绝不能先对整个数据集做标准化再划分！测试集信息会通过统计量泄露到训练过程。
+              </p>
+            </div>
+            <div class="card">
+              <h4>🎯 过拟合 vs 欠拟合
+              </h4>
+              <p>决策树 max_depth 太大 → 过拟合；太小 → 欠拟合。交叉验证是判断的金标准。
+              </p>
+            </div>
+            <div class="card">
+              <h4>🎯 核函数选择
+              </h4>
+              <p>线性核快但表达能力弱；RBF 核强大但需要调 gamma。数据量大时优先考虑线性核。
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="slide summary">
+          <h2>本章总结
+          </h2>
+          <div class="summary-box">
+            <ul>
+              <li>Scikit-learn 提供统一的 fit → predict API，上手门槛低
+              </li>
+              <li>数据预处理三件套：划分、标准化、编码，顺序不可错
+              </li>
+              <li>KNN 直观简单，SVM 理论优美，决策树可解释性强
+              </li>
+              <li>集成学习（随机森林、梯度提升）通常能取得最好效果
+              </li>
+              <li>模型评估不能只看训练集，交叉验证 + 测试集才可靠
+              </li>
+              <li>GridSearchCV 是自动调参的利器，省去寻找最优参数的烦恼
+              </li>
+            </ul>
+          </div>
+          <p style="text-align:center; margin-top:40px; font-size:1.2rem; opacity:0.8;">下一章：再谈编程 —— 时间复杂度分析
+          </p>
+          <div style="text-align:center; margin-top:30px;">
+            <a href="Python基础_第15章_再谈编程_PPT.html" style="display:inline-block; padding:10px 28px; background:rgba(255,255,255,0.9); color:#1a2a6c; text-decoration:none; border-radius:8px; font-size:16px; font-weight:600;">下一章 ▶</a>
+          </div>
+        </div>
+      </div>
+      <!-- 目录 -->
+      <!-- Sklearn简介 -->
+      <!-- 数据集预处理 -->
+      <!-- 特征标准化 -->
+      <!-- 分类算法概览 -->
+      <!-- KNN -->
+      <!-- 决策树 -->
+      <!-- SVM -->
+      <!-- 逻辑回归与朴素贝叶斯 -->
+      <!-- 集成学习 -->
+      <!-- 回归 -->
+      <!-- 模型评估 -->
+      <!-- 交叉验证 -->
+      <!-- 完整流程 -->
+      <!-- 重难点回顾 -->
+      <!-- 总结 -->
+<script>
+        const slides = document.querySelectorAll('.slide');
+        let currentSlide = 0;
+        const totalSlides = slides.length;
+        
+        function updateSlide() {
+            slides.forEach((slide, index) => {
+                slide.classList.toggle('active', index === currentSlide);
+            });
+            const progress = ((currentSlide + 1) / totalSlides) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('pageNum').textContent = (currentSlide + 1) + ' / ' + totalSlides;
+        }
+        
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+        
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                e.preventDefault();
+                prevSlide();
+            } else if (e.key === 'Home') {
+                currentSlide = 0;
+                updateSlide();
+            } else if (e.key === 'End') {
+                currentSlide = totalSlides - 1;
+                updateSlide();
+            }
+        });
+        
+        updateSlide();
+    
+  // ===== 代码复制功能 =====
+  document.querySelectorAll('pre').forEach(pre => {
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '复制';
+    btn.type = 'button';
+    btn.addEventListener('click', () => {
+      const code = pre.querySelector('code');
+      const text = code ? code.innerText : pre.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 1500);
+      }).catch(() => {
+        // fallback
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta);
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+
+</script>
+    </body>
+  </html>

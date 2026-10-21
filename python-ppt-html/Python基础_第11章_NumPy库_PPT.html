@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+  <html lang="zh-CN">
+    <head>
+      <meta charset="utf-8"/>
+      <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+      <title>Python基础 - 第11章 NumPy库
+      </title>
+<style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background: #1a1a2e;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .slideshow {
+            width: 1280px;
+            height: 720px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            padding: 60px 80px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            overflow-y: auto;
+        }
+        .slide.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        /* 封面页 */
+        .slide.cover {
+            background: linear-gradient(135deg, #1a2a6c, #2d5a87, #007acc);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+        }
+        .slide.cover h1 {
+            font-size: 64px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .slide.cover .subtitle {
+            font-size: 28px;
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+        .slide.cover .chapter-num {
+            font-size: 20px;
+            opacity: 0.7;
+            border: 2px solid rgba(255,255,255,0.3);
+            padding: 8px 24px;
+            border-radius: 30px;
+        }
+        /* 内容页 */
+        .slide.content {
+            background: #f8f9fa;
+        }
+        .slide.content h2 {
+            font-size: 36px;
+            color: #1a2a6c;
+            border-left: 6px solid #007acc;
+            padding-left: 20px;
+            margin-bottom: 30px;
+        }
+        .slide.content h3 {
+            font-size: 26px;
+            color: #2d5a87;
+            margin: 24px 0 12px 0;
+        }
+        .slide.content p {
+            font-size: 20px;
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 16px;
+        }
+        .slide.content ul, .slide.content ol {
+            font-size: 20px;
+            line-height: 1.9;
+            color: #333;
+            margin-left: 30px;
+            margin-bottom: 16px;
+        }
+        .slide.content li {
+            margin-bottom: 8px;
+        }
+        /* 代码块 */
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 15px;
+            padding: 20px 24px;
+            border-radius: 8px;
+            overflow-x: auto;
+            line-height: 1.6;
+            margin: 16px 0;
+        }
+        code {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 16px;
+            background: #e8e8e8;
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #c7254e;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+            font-size: 15px;
+        }
+        .comment { color: #6a9955; }
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .number { color: #b5cea8; }
+        .function { color: #dcdcaa; }
+        /* 两栏布局 */
+        .two-col {
+            display: flex;
+            gap: 40px;
+        }
+        .two-col > div {
+            flex: 1;
+        }
+        /* 提示框 */
+        .tip-box {
+            background: #e3f2fd;
+            border-left: 4px solid #007acc;
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 16px 0;
+            font-size: 18px;
+        }
+        .tip-box strong {
+            color: #007acc;
+        }
+        /* 表格 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 18px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px 16px;
+            text-align: left;
+        }
+        th {
+            background: #2d5a87;
+            color: white;
+        }
+        tr:nth-child(even) { background: #f0f4f8; }
+        /* 进度条 */
+        .progress-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #007acc, #2d5a87);
+            transition: width 0.3s ease;
+            z-index: 100;
+        }
+        /* 页码 */
+        .page-num {
+            position: absolute;
+            bottom: 20px;
+            right: 40px;
+            font-size: 14px;
+            color: #999;
+        }
+        /* 导航提示 */
+        .nav-hint {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 13px;
+            color: #bbb;
+            background: rgba(0,0,0,0.05);
+            padding: 6px 16px;
+            border-radius: 20px;
+        }
+        /* 导航按钮 */
+        .nav { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 100; }
+        .nav button {
+            background: rgba(0,0,0,0.3); color: white; border: none; padding: 10px 24px;
+            border-radius: 6px; cursor: pointer; font-size: 14px; backdrop-filter: blur(4px);
+        }
+        .nav button:hover { background: rgba(0,0,0,0.5); }
+        .nav .page-num { position: static !important; bottom: auto !important; right: auto !important; left: auto !important; background: #007acc; color: white; font-size: 14px; line-height: 36px; padding: 0 14px; border-radius: 6px; margin: 0 10px; }
+        /* 目录页 */
+        .toc-list {
+            list-style: none;
+            margin-left: 0 !important;
+        }
+        .toc-list li {
+            font-size: 24px;
+            padding: 18px 0;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+        }
+        .toc-list .num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #007acc, #2d5a87);
+            color: white;
+            border-radius: 50%;
+            font-weight: 700;
+            margin-right: 20px;
+            font-size: 20px;
+        }
+        /* 总结页 */
+        .slide.summary {
+            background: linear-gradient(135deg, #1a2a6c, #2d5a87, #007acc);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .slide.summary h2 {
+            color: white;
+            border-left-color: rgba(255,255,255,0.5);
+        }
+        .slide.summary p, .slide.summary li {
+            color: rgba(255,255,255,0.9);
+        }
+  
+    /* 微信公众号推荐 */
+    .wx-promo {
+      margin-top: 40px;
+      padding-top: 30px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .wx-promo-text {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+    .wx-promo-images {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+    }
+    .wx-promo-images img {
+      width: 360px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 2px solid rgba(0, 122, 204, 0.3);
+    }
+    .slide-cover .wx-promo-text,
+    .slide-end .wx-promo-text,
+    .cover .wx-promo-text,
+    .summary .wx-promo-text {
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .slide-cover .wx-promo-images img,
+    .slide-end .wx-promo-images img,
+    .cover .wx-promo-images img,
+    .summary .wx-promo-images img {
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+  /* ===== 代码复制按钮 ===== */
+  pre { position: relative; }
+  .copy-btn {
+    position: absolute; top: 8px; right: 8px;
+    padding: 4px 10px; font-size: 12px; line-height: 1.4;
+    color: #ccc; background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 4px;
+    cursor: pointer; opacity: 0; transition: opacity 0.2s, background 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    z-index: 10;
+  }
+  pre:hover .copy-btn { opacity: 1; }
+  .copy-btn:hover { background: rgba(255,255,255,0.25); color: #fff; }
+  .copy-btn.copied { color: #4ec9b0; border-color: #4ec9b0; background: rgba(78,201,176,0.15); opacity: 1; }
+
+</style>
+    </head>
+    <body>
+      <div class="slideshow">
+        <div class="slide cover active" data-index="0">
+          <div class="chapter-num">第十一章
+          </div>
+          <h1>NumPy 库
+          </h1>
+          <div class="subtitle">Python数据科学的核心基石
+          </div>
+          <div class="wx-promo">
+            <p class="wx-promo-text">欢迎关注微信公众号
+            </p>
+            <div class="wx-promo-images">
+              <img alt="coder程" src="../asset/coder程.png"/>
+              <img alt="查令十街84号" src="../asset/查令十街84号.png"/>
+            </div>
+          </div>
+        </div>
+        <div class="slide content" data-index="1">
+          <h2>目录
+          </h2>
+          <ul class="toc-list">
+            <li>
+              <span class="num">1
+              </span>
+              为什么要用NumPy库
+            </li>
+            <li>
+              <span class="num">2
+              </span>
+              NumPy数组的创建
+            </li>
+            <li>
+              <span class="num">3
+              </span>
+              NumPy数组的性质
+            </li>
+            <li>
+              <span class="num">4
+              </span>
+              NumPy四大运算
+            </li>
+            <li>
+              <span class="num">5
+              </span>
+              其他NumPy通用函数
+            </li>
+          </ul>
+        </div>
+        <div class="slide content" data-index="2">
+          <h2>为什么要用 NumPy 库
+          </h2>
+          <p>NumPy（Numerical Python）是Python科学计算的核心库，提供了高性能的多维数组对象。
+          </p>
+          <h3>Python 列表 vs NumPy 数组
+          </h3>
+          <table>
+            <tr>
+              <th>特性
+              </th>
+              <th>Python 列表
+              </th>
+              <th>NumPy 数组
+              </th>
+            </tr>
+            <tr>
+              <td>存储方式
+              </td>
+              <td>分散存储（存指针）
+              </td>
+              <td>连续内存存储
+              </td>
+            </tr>
+            <tr>
+              <td>元素类型
+              </td>
+              <td>任意类型混合
+              </td>
+              <td>同类型元素
+              </td>
+            </tr>
+            <tr>
+              <td>运算速度
+              </td>
+              <td>慢（循环逐个计算）
+              </td>
+              <td>快（C语言底层优化）
+              </td>
+            </tr>
+            <tr>
+              <td>向量化运算
+              </td>
+              <td>不支持
+              </td>
+              <td>原生支持
+              </td>
+            </tr>
+            <tr>
+              <td>广播机制
+              </td>
+              <td>不支持
+              </td>
+              <td>支持
+              </td>
+            </tr>
+          </table>
+          <div class="tip-box">
+            <strong>核心优势：
+            </strong>
+            NumPy数组的运算速度比Python列表快10~100倍，这是数据科学选择NumPy的根本原因。
+          </div>
+        </div>
+        <div class="slide content" data-index="3">
+          <h2>NumPy 数组的创建
+          </h2>
+<pre><span class="comment"># 导入NumPy库</span>
+<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+
+<span class="comment"># 1. 从列表创建数组</span>
+a = np.array([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>])
+<span class="comment"># 2. 创建二维数组</span>
+b = np.array([[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>]])
+
+<span class="comment"># 3. 创建特殊数组</span>
+zeros = np.zeros((<span class="number">3</span>, <span class="number">4</span>))        <span class="comment"># 3行4列的零矩阵</span>
+ones = np.ones((<span class="number">2</span>, <span class="number">3</span>))          <span class="comment"># 2行3列的全1矩阵</span>
+eye = np.eye(<span class="number">4</span>)                  <span class="comment"># 4x4单位矩阵</span>
+
+<span class="comment"># 4. 等差/等比数列</span>
+arange = np.arange(<span class="number">0</span>, <span class="number">10</span>, <span class="number">2</span>)      <span class="comment"># [0, 2, 4, 6, 8]</span>
+linspace = np.linspace(<span class="number">0</span>, <span class="number">1</span>, <span class="number">5</span>)    <span class="comment"># [0, 0.25, 0.5, 0.75, 1]</span>
+logspace = np.logspace(<span class="number">0</span>, <span class="number">2</span>, <span class="number">3</span>)    <span class="comment"># [1, 10, 100]</span>
+
+<span class="comment"># 5. 随机数组</span>
+rand = np.random.rand(<span class="number">3</span>, <span class="number">3</span>)       <span class="comment"># 0~1均匀分布</span>
+randn = np.random.randn(<span class="number">3</span>, <span class="number">3</span>)     <span class="comment"># 标准正态分布</span>
+randint = np.random.randint(<span class="number">0</span>, <span class="number">10</span>, (<span class="number">2</span>, <span class="number">2</span>))  <span class="comment"># 0~9随机整数</span></pre>
+        </div>
+        <div class="slide content" data-index="4">
+          <h2>NumPy 数组的性质
+          </h2>
+          <div class="two-col">
+            <div>
+              <h3>数组属性
+              </h3>
+<pre><span class="keyword">import</span> numpy <span class="keyword">as</span> np
+arr = np.array([[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>],[<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>]])
+
+<span class="comment"># 数组形状与维度</span>
+<span class="function">print</span>(arr.shape)      <span class="comment"># (2, 3)  - 形状</span>
+<span class="function">print</span>(arr.ndim)       <span class="comment"># 2       - 维度数</span>
+<span class="function">print</span>(arr.size)       <span class="comment"># 6       - 元素总数</span>
+<span class="function">print</span>(arr.dtype)      <span class="comment"># int64   - 数据类型</span>
+
+<span class="comment"># 重塑数组</span>
+arr2 = arr.reshape(<span class="number">3</span>, <span class="number">2</span>)
+arr3 = arr.reshape(<span class="number">-1</span>, <span class="number">1</span>)   <span class="comment"># -1自动推断</span></pre>
+            </div>
+            <div>
+              <h3>数据类型
+              </h3>
+<pre><span class="comment"># 指定数据类型</span>
+arr_int = np.array([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>], dtype=np.int32)
+arr_float = np.array([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>], dtype=np.float64)
+
+<span class="comment"># 类型转换</span>
+arr_f = arr.astype(np.float32)
+
+<span class="comment"># 常用dtype</span>
+<span class="comment"># int8/16/32/64, uint8/16/32/64</span>
+<span class="comment"># float16/32/64</span>
+<span class="comment"># complex64/128</span>
+<span class="comment"># bool, string_, object</span></pre>
+            </div>
+          </div>
+          <div class="tip-box">
+            <strong>注意：
+            </strong>
+            <code>reshape()
+            </code>
+            返回新数组视图，不复制数据；
+            <code>-1
+            </code>
+            表示该维度大小由其他维度自动推断。
+          </div>
+        </div>
+        <div class="slide content" data-index="5">
+          <h2>数组的索引与切片
+          </h2>
+<pre><span class="keyword">import</span> numpy <span class="keyword">as</span> np
+arr = np.array([[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>],
+                [<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>],
+                [<span class="number">9</span>,<span class="number">10</span>,<span class="number">11</span>,<span class="number">12</span>]])
+
+<span class="comment"># 基础索引</span>
+<span class="function">print</span>(arr[<span class="number">1</span>, <span class="number">2</span>])       <span class="comment"># 7  - 第2行第3列</span>
+<span class="function">print</span>(arr[<span class="number">0</span>])          <span class="comment"># [1,2,3,4] - 第1行</span>
+
+<span class="comment"># 切片</span>
+<span class="function">print</span>(arr[<span class="number">1</span>:<span class="number">3</span>, <span class="number">1</span>:<span class="number">4</span>])   <span class="comment"># [[6,7,8],[10,11,12]]</span>
+<span class="function">print</span>(arr[:, <span class="number">2</span>])       <span class="comment"># [3,7,11] - 第3列</span>
+<span class="function">print</span>(arr[<span class="number">::</span><span class="number">2</span>])        <span class="comment"># 每隔一行</span>
+
+<span class="comment"># 布尔索引（筛选）</span>
+<span class="function">print</span>(arr[arr &gt; <span class="number">5</span>])    <span class="comment"># [6,7,8,9,10,11,12]</span>
+<span class="function">print</span>(arr[(arr &gt; <span class="number">3</span>) &amp; (arr &lt; <span class="number">10</span>)])  <span class="comment"># [4,5,6,7,8,9]</span>
+
+<span class="comment"># 花式索引</span>
+<span class="function">print</span>(arr[[<span class="number">0</span>,<span class="number">2</span>], [<span class="number">1</span>,<span class="number">3</span>]])  <span class="comment"># [2, 12] - (0,1)和(2,3)</span></pre>
+        </div>
+        <div class="slide content" data-index="6">
+          <h2>NumPy 四大运算 — 算术运算
+          </h2>
+          <div class="two-col">
+            <div>
+              <h3>基本算术
+              </h3>
+<pre><span class="keyword">import</span> numpy <span class="keyword">as</span> np
+a = np.array([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>])
+b = np.array([<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>])
+
+<span class="comment"># 元素级运算</span>
+<span class="function">print</span>(a + b)      <span class="comment"># [5, 7, 9]</span>
+<span class="function">print</span>(a - b)      <span class="comment"># [-3, -3, -3]</span>
+<span class="function">print</span>(a * b)      <span class="comment"># [4, 10, 18]</span>
+<span class="function">print</span>(a / b)      <span class="comment"># [0.25, 0.4, 0.5]</span>
+<span class="function">print</span>(a <span class="keyword">**</span> <span class="number">2</span>)     <span class="comment"># [1, 4, 9]</span>
+
+<span class="comment"># 标量运算（广播）</span>
+<span class="function">print</span>(a + <span class="number">10</span>)     <span class="comment"># [11, 12, 13]</span>
+<span class="function">print</span>(a * <span class="number">2</span>)      <span class="comment"># [2, 4, 6]</span></pre>
+            </div>
+            <div>
+              <h3>通用函数（ufunc）
+              </h3>
+<pre><span class="comment"># 数学函数</span>
+np.sqrt(a)         <span class="comment"># 平方根</span>
+np.exp(a)          <span class="comment"># 指数 e^x</span>
+np.log(a)          <span class="comment"># 自然对数</span>
+np.sin(a)          <span class="comment"># 正弦</span>
+np.cos(a)          <span class="comment"># 余弦</span>
+
+<span class="comment"># 取整函数</span>
+np.floor([<span class="number">1.7</span>,<span class="number">2.3</span>])    <span class="comment"># [1., 2.]</span>
+np.ceil([<span class="number">1.7</span>,<span class="number">2.3</span>])     <span class="comment"># [2., 3.]</span>
+np.round([<span class="number">1.55</span>], <span class="number">1</span>)    <span class="comment"># [1.6]</span>
+
+<span class="comment"># 绝对值</span>
+np.abs([-<span class="number">1</span>, -<span class="number">2</span>, <span class="number">3</span>])   <span class="comment"># [1, 2, 3]</span></pre>
+            </div>
+          </div>
+        </div>
+        <div class="slide content" data-index="7">
+          <h2>NumPy 四大运算 — 比较运算
+          </h2>
+<pre><span class="keyword">import</span> numpy <span class="keyword">as</span> np
+a = np.array([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>])
+b = np.array([<span class="number">5</span>, <span class="number">4</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>])
+
+<span class="comment"># 元素级比较，返回布尔数组</span>
+<span class="function">print</span>(a == b)      <span class="comment"># [False, False, True, False, False]</span>
+<span class="function">print</span>(a != b)      <span class="comment"># [True, True, False, True, True]</span>
+<span class="function">print</span>(a &gt; b)       <span class="comment"># [False, False, False, True, True]</span>
+<span class="function">print</span>(a &lt;= b)      <span class="comment"># [True, True, True, False, False]</span>
+
+<span class="comment"># 数组整体比较</span>
+<span class="function">print</span>(np.array_equal(a, b))   <span class="comment"># False</span>
+<span class="function">print</span>(np.allclose(a, b))    <span class="comment"># False（浮点数近似相等）</span>
+
+<span class="comment"># 逻辑运算（布尔数组之间）</span>
+cond1 = a &gt; <span class="number">2</span>
+cond2 = a &lt; <span class="number">5</span>
+<span class="function">print</span>(np.logical_and(cond1, cond2))   <span class="comment"># [False, False, True, True, False]</span>
+<span class="function">print</span>(np.logical_or(cond1, cond2))    <span class="comment"># [True, True, True, True, True]</span>
+<span class="function">print</span>(np.logical_not(cond1))          <span class="comment"># [True, True, False, False, False]</span>
+
+<span class="comment"># 条件筛选：np.where</span>
+<span class="function">print</span>(np.where(a &gt; <span class="number">3</span>, <span class="string">"大"</span>, <span class="string">"小"</span>))   <span class="comment"># ['小', '小', '小', '大', '大']</span></pre>
+        </div>
+        <div class="slide content" data-index="8">
+          <h2>NumPy 四大运算 — 聚合运算
+          </h2>
+          <div class="two-col">
+            <div>
+              <h3>基础聚合函数
+              </h3>
+<pre><span class="keyword">import</span> numpy <span class="keyword">as</span> np
+arr = np.array([[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>],
+                [<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>],
+                [<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>]])
+
+<span class="comment"># 全局聚合</span>
+np.sum(arr)        <span class="comment"># 45</span>
+np.mean(arr)       <span class="comment"># 5.0</span>
+np.std(arr)        <span class="comment"># 2.58... 标准差</span>
+np.var(arr)        <span class="comment"># 6.66... 方差</span>
+np.min(arr)        <span class="comment"># 1</span>
+np.max(arr)        <span class="comment"># 9</span>
+np.prod(arr)       <span class="comment"># 362880</span>
+
+<span class="comment"># 对象方法方式</span>
+arr.sum()          <span class="comment"># 45</span>
+arr.mean()         <span class="comment"># 5.0</span>
+arr.max()          <span class="comment"># 9</span></pre>
+            </div>
+            <div>
+              <h3>按轴聚合
+              </h3>
+<pre><span class="comment"># axis=0：沿着行方向（纵向），每列求和</span>
+np.sum(arr, axis=<span class="number">0</span>)    <span class="comment"># [12, 15, 18]</span>
+
+<span class="comment"># axis=1：沿着列方向（横向），每行求和</span>
+np.sum(arr, axis=<span class="number">1</span>)    <span class="comment"># [6, 15, 24]</span>
+
+<span class="comment"># 更复杂的聚合</span>
+np.argmax(arr)          <span class="comment"># 8 - 最大值的索引</span>
+np.argmin(arr, axis=<span class="number">0</span>)  <span class="comment"># [0,0,0] - 每列最小值行索引</span>
+
+<span class="comment"># 累积运算</span>
+np.cumsum(arr)          <span class="comment"># [1,3,6,10,15,21,28,36,45]</span>
+np.cumprod(arr)         <span class="comment"># [1,2,6,24,120,720,5040,40320,362880]</span></pre>
+            </div>
+          </div>
+          <div class="tip-box">
+            <strong>axis记忆法：
+            </strong>
+            <code>axis=0
+            </code>
+            是「压扁行」，结果维度与列数一致；
+            <code>axis=1
+            </code>
+            是「压扁列」，结果维度与行数一致。
+          </div>
+        </div>
+        <div class="slide content" data-index="9">
+          <h2>NumPy 四大运算 — 线性代数
+          </h2>
+<pre><span class="keyword">import</span> numpy <span class="keyword">as</span> np
+A = np.array([[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>]])
+B = np.array([[<span class="number">5</span>, <span class="number">6</span>], [<span class="number">7</span>, <span class="number">8</span>]])
+
+<span class="comment"># 矩阵乘法（点积）</span>
+<span class="function">print</span>(A @ B)              <span class="comment"># [[19,22],[43,50]]</span>
+<span class="function">print</span>(np.dot(A, B))       <span class="comment"># 同上</span>
+
+<span class="comment"># 转置</span>
+<span class="function">print</span>(A.T)                <span class="comment"># [[1,3],[2,4]]</span>
+
+<span class="comment"># 逆矩阵</span>
+A_inv = np.linalg.inv(A)
+<span class="function">print</span>(A_inv)              <span class="comment"># [[-2,1],[1.5,-0.5]]</span>
+
+<span class="comment"># 行列式</span>
+<span class="function">print</span>(np.linalg.det(A))    <span class="comment"># -2.0</span>
+
+<span class="comment"># 特征值与特征向量</span>
+eigenvalues, eigenvectors = np.linalg.eig(A)
+
+<span class="comment"># 解线性方程组 Ax = b</span>
+b = np.array([<span class="number">1</span>, <span class="number">2</span>])
+x = np.linalg.solve(A, b)  <span class="comment"># 求解 x</span>
+
+<span class="comment"># 矩阵分解</span>
+Q, R = np.linalg.qr(A)       <span class="comment"># QR分解</span>
+U, S, Vh = np.linalg.svd(A)  <span class="comment"># SVD分解</span></pre>
+        </div>
+        <div class="slide content" data-index="10">
+          <h2>广播机制（Broadcasting）
+          </h2>
+          <p>NumPy广播允许不同形状的数组之间进行运算，是NumPy最强大的特性之一。
+          </p>
+          <h3>广播规则
+          </h3>
+          <ol>
+            <li>如果两个数组维度数不同，会在
+              <strong>较小维度数组
+              </strong>
+              的形状前面补1，直到维度数相同
+            </li>
+            <li>如果两个数组在某个维度上的大小
+              <strong>相同
+              </strong>
+              ，或者其中
+              <strong>一个为1
+              </strong>
+              ，则可以广播
+            </li>
+            <li>如果某个维度上大小不同且都不为1，则
+              <strong>无法广播
+              </strong>
+              ，报错
+            </li>
+          </ol>
+<pre><span class="keyword">import</span> numpy <span class="keyword">as</span> np
+
+<span class="comment"># 示例1：标量广播到数组</span>
+a = np.array([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>])
+<span class="function">print</span>(a + <span class="number">10</span>)              <span class="comment"># [11, 12, 13] — 10 广播为 [10,10,10]</span>
+
+<span class="comment"># 示例2：一维数组广播到二维</span>
+A = np.array([[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>],[<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>],[<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>]])  <span class="comment"># shape (3,3)</span>
+b = np.array([<span class="number">10</span>,<span class="number">20</span>,<span class="number">30</span>])                              <span class="comment"># shape (3,) → 变为 (1,3)</span>
+<span class="function">print</span>(A + b)              <span class="comment"># [[11,22,33],[14,25,36],[17,28,39]]</span>
+
+<span class="comment"># 示例3：列向量广播</span>
+c = np.array([[<span class="number">10</span>],[<span class="number">20</span>],[<span class="number">30</span>]])   <span class="comment"># shape (3,1)</span>
+<span class="function">print</span>(A + c)              <span class="comment"># [[11,12,13],[24,25,26],[37,38,39]]</span></pre>
+        </div>
+        <div class="slide content" data-index="11">
+          <h2>其他 NumPy 通用函数
+          </h2>
+          <div class="two-col">
+            <div>
+              <h3>数组操作
+              </h3>
+<pre><span class="comment"># 拼接</span>
+np.concatenate([a, b])     <span class="comment"># 沿轴0拼接</span>
+np.vstack([a, b])          <span class="comment"># 垂直拼接</span>
+np.hstack([a, b])          <span class="comment"># 水平拼接</span>
+np.split(arr, <span class="number">3</span>)         <span class="comment"># 等分</span>
+
+<span class="comment"># 重复与平铺</span>
+np.tile(a, <span class="number">3</span>)            <span class="comment"># 整体重复3次</span>
+np.repeat(a, <span class="number">2</span>)          <span class="comment"># 每个元素重复2次</span>
+
+<span class="comment"># 去重与排序</span>
+np.unique(arr)             <span class="comment"># 唯一值</span>
+np.sort(arr, axis=<span class="number">0</span>)       <span class="comment"># 排序</span>
+np.argsort(arr)            <span class="comment"># 排序索引</span>
+np.searchsorted(arr, <span class="number">5</span>)  <span class="comment"># 二分查找插入位置</span></pre>
+            </div>
+            <div>
+              <h3>随机数生成
+              </h3>
+<pre><span class="keyword">from</span> numpy.random <span class="keyword">import</span> default_rng
+rng = default_rng(<span class="number">42</span>)      <span class="comment"># 设置随机种子</span>
+
+rng.random(<span class="number">5</span>)              <span class="comment"># 5个0~1随机数</span>
+rng.integers(<span class="number">0</span>, <span class="number">10</span>, <span class="number">5</span>)      <span class="comment"># 5个0~9整数</span>
+rng.normal(<span class="number">0</span>, <span class="number">1</span>, <span class="number">100</span>)     <span class="comment"># 100个正态分布数</span>
+rng.choice([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>], <span class="number">10</span>)  <span class="comment"># 随机抽样</span>
+rng.shuffle(arr)             <span class="comment"># 原地打乱</span>
+rng.permutation(arr)         <span class="comment"># 返回打乱副本</span></pre>
+            </div>
+          </div>
+        </div>
+        <div class="slide summary" data-index="12">
+          <h2>本章总结
+          </h2>
+          <ul>
+            <li>
+              <strong>NumPy 核心：
+              </strong>
+              高性能多维数组 ndarray，是Python数据科学的基石
+            </li>
+            <li>
+              <strong>数组创建：
+              </strong>
+              <code>np.array()
+              </code>
+              、
+              <code>zeros
+              </code>
+              、
+              <code>ones
+              </code>
+              、
+              <code>arange
+              </code>
+              、
+              <code>random
+              </code>
+              等多种方式
+            </li>
+            <li>
+              <strong>数组属性：
+              </strong>
+              <code>shape
+              </code>
+              、
+              <code>ndim
+              </code>
+              、
+              <code>dtype
+              </code>
+              、
+              <code>reshape
+              </code>
+              掌握数组形态
+            </li>
+            <li>
+              <strong>四大运算：
+              </strong>
+              算术运算、比较运算、聚合运算、线性代数运算
+            </li>
+            <li>
+              <strong>广播机制：
+              </strong>
+              不同形状数组间的自动扩展，编写简洁高效的向量化代码
+            </li>
+            <li>
+              <strong>通用函数：
+              </strong>
+              拼接、分割、排序、随机数等丰富数组操作工具
+            </li>
+          </ul>
+          <p style="margin-top:30px; font-size:22px; opacity:0.8;">掌握 NumPy 后，方可轻松驾驭 Pandas 与 Matplotlib，它们底层均依赖 NumPy。
+          </p>
+          <div style="text-align:center; margin-top:30px;">
+            <a href="Python基础_第12章_Pandas库_PPT.html" style="display:inline-block; padding:10px 28px; background:rgba(255,255,255,0.9); color:#1a2a6c; text-decoration:none; border-radius:8px; font-size:16px; font-weight:600;">下一章 ▶</a>
+          </div>
+        </div>
+      </div>
+      <!-- Slide 2: 目录 -->
+      <!-- Slide 3: 为什么要用NumPy -->
+      <!-- Slide 4: NumPy数组创建 -->
+      <!-- Slide 5: 数组性质 -->
+      <!-- Slide 6: 数组索引与切片 -->
+      <!-- Slide 7: 四大运算-1 算术运算 -->
+      <!-- Slide 8: 四大运算-2 比较运算 -->
+      <!-- Slide 9: 四大运算-3 聚合运算 -->
+      <!-- Slide 10: 四大运算-4 线性代数运算 -->
+      <!-- Slide 11: 广播机制 -->
+      <!-- Slide 12: 通用函数 -->
+      <!-- Slide 13: 总结 -->
+      <div class="nav">
+        <button onclick="prevSlide()">◀ 上一页
+        </button>
+        <span class="page-num" id="pageNum">1 / 13
+        </span>
+        <button onclick="nextSlide()">下一页 ▶
+        </button>
+      </div>
+<script>
+    const slides = document.querySelectorAll('.slide');
+    let current = 0;
+    const total = slides.length;
+
+    function updateSlide() {
+        slides.forEach(s => s.classList.remove('active'));
+        slides[current].classList.add('active');
+        document.getElementById('pageNum').textContent = (current + 1) + ' / ' + total;
+        document.getElementById('progressBar').style.width = ((current + 1) / total * 100) + '%';
+    }
+
+    function nextSlide() {
+        if (current < total - 1) { current++; updateSlide(); }
+    }
+    function prevSlide() {
+        if (current > 0) { current--; updateSlide(); }
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ') {
+            nextSlide();
+        } else if (e.key === 'ArrowLeft') {
+            prevSlide();
+        } else if (e.key === 'Home') {
+            current = 0; updateSlide();
+        } else if (e.key === 'End') {
+            current = total - 1; updateSlide();
+        }
+    });
+
+    updateSlide();
+
+  // ===== 代码复制功能 =====
+  document.querySelectorAll('pre').forEach(pre => {
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '复制';
+    btn.type = 'button';
+    btn.addEventListener('click', () => {
+      const code = pre.querySelector('code');
+      const text = code ? code.innerText : pre.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 1500);
+      }).catch(() => {
+        // fallback
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta);
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+
+</script>
+    </body>
+  </html>

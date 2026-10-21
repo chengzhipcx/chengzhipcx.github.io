@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+  <html lang="zh-CN">
+    <head>
+      <meta charset="utf-8"/>
+      <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+      <title>Python基础 - 第12章 Pandas库
+      </title>
+<style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background: #1a1a2e;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .slideshow {
+            width: 1280px;
+            height: 720px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            padding: 60px 80px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            overflow-y: auto;
+        }
+        .slide.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .slide.cover {
+            background: linear-gradient(135deg, #1a2a6c, #2d5a87, #007acc);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+        }
+        .slide.cover h1 {
+            font-size: 64px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .slide.cover .subtitle {
+            font-size: 28px;
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+        .slide.cover .chapter-num {
+            font-size: 20px;
+            opacity: 0.7;
+            border: 2px solid rgba(255,255,255,0.3);
+            padding: 8px 24px;
+            border-radius: 30px;
+        }
+        .slide.content {
+            background: #f8f9fa;
+        }
+        .slide.content h2 {
+            font-size: 36px;
+            color: #1a2a6c;
+            border-left: 6px solid #007acc;
+            padding-left: 20px;
+            margin-bottom: 30px;
+        }
+        .slide.content h3 {
+            font-size: 26px;
+            color: #2d5a87;
+            margin: 24px 0 12px 0;
+        }
+        .slide.content p {
+            font-size: 20px;
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 16px;
+        }
+        .slide.content ul, .slide.content ol {
+            font-size: 20px;
+            line-height: 1.9;
+            color: #333;
+            margin-left: 30px;
+            margin-bottom: 16px;
+        }
+        .slide.content li {
+            margin-bottom: 8px;
+        }
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 15px;
+            padding: 20px 24px;
+            border-radius: 8px;
+            overflow-x: auto;
+            line-height: 1.6;
+            margin: 16px 0;
+        }
+        code {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 16px;
+            background: #e8e8e8;
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #c7254e;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+            font-size: 15px;
+        }
+        .comment { color: #6a9955; }
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .number { color: #b5cea8; }
+        .function { color: #dcdcaa; }
+        .two-col {
+            display: flex;
+            gap: 40px;
+        }
+        .two-col > div {
+            flex: 1;
+        }
+        .tip-box {
+            background: #e3f2fd;
+            border-left: 4px solid #007acc;
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 16px 0;
+            font-size: 18px;
+        }
+        .tip-box strong {
+            color: #007acc;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 18px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px 16px;
+            text-align: left;
+        }
+        th {
+            background: #2d5a87;
+            color: white;
+        }
+        tr:nth-child(even) { background: #f0f4f8; }
+        .progress-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #007acc, #2d5a87);
+            transition: width 0.3s ease;
+            z-index: 100;
+        }
+        .page-num {
+            position: absolute;
+            bottom: 20px;
+            right: 40px;
+            font-size: 14px;
+            color: #999;
+        }
+        .nav-hint {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 13px;
+            color: #bbb;
+            background: rgba(0,0,0,0.05);
+            padding: 6px 16px;
+            border-radius: 20px;
+        }
+        .nav { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 100; }
+        .nav button {
+            background: rgba(0,0,0,0.3); color: white; border: none; padding: 10px 24px;
+            border-radius: 6px; cursor: pointer; font-size: 14px; backdrop-filter: blur(4px);
+        }
+        .nav button:hover { background: rgba(0,0,0,0.5); }
+        .nav .page-num { position: static !important; bottom: auto !important; right: auto !important; left: auto !important; background: #007acc; color: white; font-size: 14px; line-height: 36px; padding: 0 14px; border-radius: 6px; margin: 0 10px; }
+        .toc-list {
+            list-style: none;
+            margin-left: 0 !important;
+        }
+        .toc-list li {
+            font-size: 24px;
+            padding: 18px 0;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+        }
+        .toc-list .num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #007acc, #2d5a87);
+            color: white;
+            border-radius: 50%;
+            font-weight: 700;
+            margin-right: 20px;
+            font-size: 20px;
+        }
+        .slide.summary {
+            background: linear-gradient(135deg, #1a2a6c, #2d5a87, #007acc);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .slide.summary h2 {
+            color: white;
+            border-left-color: rgba(255,255,255,0.5);
+        }
+        .slide.summary p, .slide.summary li {
+            color: rgba(255,255,255,0.9);
+        }
+  
+    /* 微信公众号推荐 */
+    .wx-promo {
+      margin-top: 40px;
+      padding-top: 30px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .wx-promo-text {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+    .wx-promo-images {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+    }
+    .wx-promo-images img {
+      width: 360px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 2px solid rgba(0, 122, 204, 0.3);
+    }
+    .slide-cover .wx-promo-text,
+    .slide-end .wx-promo-text,
+    .cover .wx-promo-text,
+    .summary .wx-promo-text {
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .slide-cover .wx-promo-images img,
+    .slide-end .wx-promo-images img,
+    .cover .wx-promo-images img,
+    .summary .wx-promo-images img {
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+  /* ===== 代码复制按钮 ===== */
+  pre { position: relative; }
+  .copy-btn {
+    position: absolute; top: 8px; right: 8px;
+    padding: 4px 10px; font-size: 12px; line-height: 1.4;
+    color: #ccc; background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 4px;
+    cursor: pointer; opacity: 0; transition: opacity 0.2s, background 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    z-index: 10;
+  }
+  pre:hover .copy-btn { opacity: 1; }
+  .copy-btn:hover { background: rgba(255,255,255,0.25); color: #fff; }
+  .copy-btn.copied { color: #4ec9b0; border-color: #4ec9b0; background: rgba(78,201,176,0.15); opacity: 1; }
+
+</style>
+    </head>
+    <body>
+      <div class="slideshow">
+        <div class="slide cover active" data-index="0">
+          <div class="chapter-num">第十二章
+          </div>
+          <h1>Pandas 库
+          </h1>
+          <div class="subtitle">Python数据分析的瑞士军刀
+          </div>
+          <div class="wx-promo">
+            <p class="wx-promo-text">欢迎关注微信公众号
+            </p>
+            <div class="wx-promo-images">
+              <img alt="coder程" src="../asset/coder程.png"/>
+              <img alt="查令十街84号" src="../asset/查令十街84号.png"/>
+            </div>
+          </div>
+        </div>
+        <div class="slide content" data-index="1">
+          <h2>目录
+          </h2>
+          <ul class="toc-list">
+            <li>
+              <span class="num">1
+              </span>
+              Pandas对象创建
+            </li>
+            <li>
+              <span class="num">2
+              </span>
+              DataFrame对象性质
+            </li>
+            <li>
+              <span class="num">3
+              </span>
+              数值运算与统计分析
+            </li>
+            <li>
+              <span class="num">4
+              </span>
+              处理缺失值与合并数据
+            </li>
+            <li>
+              <span class="num">5
+              </span>
+              分组、透视表及其他
+            </li>
+          </ul>
+        </div>
+        <div class="slide content" data-index="2">
+          <h2>Pandas 简介
+          </h2>
+          <p>Pandas 是基于 NumPy 构建的数据分析库，提供了快速、灵活、明确的数据结构。
+          </p>
+          <h3>核心数据结构
+          </h3>
+          <table>
+            <tr>
+              <th>结构
+              </th>
+              <th>维度
+              </th>
+              <th>描述
+              </th>
+              <th>类比
+              </th>
+            </tr>
+            <tr>
+              <td>
+                <code>Series
+                </code>
+              </td>
+              <td>一维
+              </td>
+              <td>带标签的数组（索引+值）
+              </td>
+              <td>Excel 的一列
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <code>DataFrame
+                </code>
+              </td>
+              <td>二维
+              </td>
+              <td>表格型数据结构（多列Series）
+              </td>
+              <td>Excel 整张表
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <code>Index
+                </code>
+              </td>
+              <td>—
+              </td>
+              <td>轴标签，不可变
+              </td>
+              <td>行号/列名
+              </td>
+            </tr>
+          </table>
+          <div class="tip-box">
+            <strong>安装与导入：
+            </strong>
+            <code>pip install pandas
+            </code>
+            ，然后
+            <code>import pandas as pd
+            </code>
+          </div>
+        </div>
+        <div class="slide content" data-index="3">
+          <h2>Series 对象的创建
+          </h2>
+<pre><span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+
+<span class="comment"># 1. 从列表创建（默认整数索引）</span>
+s1 = pd.Series([<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>])
+<span class="function">print</span>(s1)
+<span class="comment"># 0    1</span>
+<span class="comment"># 1    3</span>
+<span class="comment"># ...</span>
+
+<span class="comment"># 2. 指定索引</span>
+s2 = pd.Series([<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>], index=[<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>])
+
+<span class="comment"># 3. 从字典创建</span>
+s3 = pd.Series({<span class="string">'a'</span>: <span class="number">1</span>, <span class="string">'b'</span>: <span class="number">2</span>, <span class="string">'c'</span>: <span class="number">3</span>})
+
+<span class="comment"># 4. 从NumPy数组创建</span>
+s4 = pd.Series(np.array([<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>]), index=[<span class="string">'x'</span>, <span class="string">'y'</span>, <span class="string">'z'</span>])
+
+<span class="comment"># 5. 标量广播</span>
+s5 = pd.Series(<span class="number">5</span>, index=[<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>])   <span class="comment"># [5,5,5]</span></pre>
+        </div>
+        <div class="slide content" data-index="4">
+          <h2>DataFrame 对象的创建
+          </h2>
+<pre><span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+
+<span class="comment"># 1. 从字典创建（值为列表）</span>
+df1 = pd.DataFrame({
+    <span class="string">'name'</span>: [<span class="string">'Alice'</span>, <span class="string">'Bob'</span>, <span class="string">'Charlie'</span>],
+    <span class="string">'age'</span>: [<span class="number">25</span>, <span class="number">30</span>, <span class="number">35</span>],
+    <span class="string">'city'</span>: [<span class="string">'Beijing'</span>, <span class="string">'Shanghai'</span>, <span class="string">'Shenzhen'</span>]
+})
+
+<span class="comment"># 2. 从字典创建（值为Series）</span>
+df2 = pd.DataFrame({
+    <span class="string">'A'</span>: pd.Series([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]),
+    <span class="string">'B'</span>: pd.Series([<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>])
+})
+
+<span class="comment"># 3. 从二维数组创建</span>
+df3 = pd.DataFrame(np.arange(<span class="number">12</span>).reshape(<span class="number">3</span>, <span class="number">4</span>),
+                   columns=[<span class="string">'A'</span>, <span class="string">'B'</span>, <span class="string">'C'</span>, <span class="string">'D'</span>],
+                   index=[<span class="string">'x'</span>, <span class="string">'y'</span>, <span class="string">'z'</span>])
+
+<span class="comment"># 4. 从文件读取</span>
+df_csv = pd.read_csv(<span class="string">'data.csv'</span>)       <span class="comment"># CSV文件</span>
+df_excel = pd.read_excel(<span class="string">'data.xlsx'</span>)   <span class="comment"># Excel文件</span>
+df_json = pd.read_json(<span class="string">'data.json'</span>)     <span class="comment"># JSON文件</span></pre>
+        </div>
+        <div class="slide content" data-index="5">
+          <h2>DataFrame 对象性质
+          </h2>
+          <div class="two-col">
+            <div>
+              <h3>基本属性
+              </h3>
+<pre><span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+
+df = pd.DataFrame({
+    <span class="string">'A'</span>: [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>],
+    <span class="string">'B'</span>: [<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>],
+    <span class="string">'C'</span>: [<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>]
+}, index=[<span class="string">'x'</span>,<span class="string">'y'</span>,<span class="string">'z'</span>])
+
+<span class="comment"># 形状与维度</span>
+<span class="function">print</span>(df.shape)       <span class="comment"># (3, 3)</span>
+<span class="function">print</span>(df.ndim)        <span class="comment"># 2</span>
+<span class="function">print</span>(df.size)        <span class="comment"># 9</span>
+<span class="function">print</span>(len(df))        <span class="comment"># 3 - 行数</span>
+
+<span class="comment"># 索引与列名</span>
+<span class="function">print</span>(df.index)       <span class="comment"># Index(['x','y','z'], dtype='object')</span>
+<span class="function">print</span>(df.columns)     <span class="comment"># Index(['A','B','C'], dtype='object')</span>
+<span class="function">print</span>(df.dtypes)      <span class="comment"># 每列数据类型</span>
+<span class="function">print</span>(df.values)      <span class="comment"># 底层NumPy数组</span></pre>
+            </div>
+            <div>
+              <h3>查看数据
+              </h3>
+<pre><span class="comment"># 查看开头/末尾</span>
+df.head(<span class="number">3</span>)            <span class="comment"># 前3行</span>
+df.tail(<span class="number">2</span>)            <span class="comment"># 后2行</span>
+
+<span class="comment"># 统计摘要</span>
+df.describe()           <span class="comment"># 数值列统计</span>
+df.info()               <span class="comment"># 结构信息</span>
+
+<span class="comment"># 转置</span>
+df.T                    <span class="comment"># 行列互换</span>
+
+<span class="comment"># 列访问</span>
+df[<span class="string">'A'</span>]               <span class="comment"># Series</span>
+df[[<span class="string">'A'</span>, <span class="string">'B'</span>]]        <span class="comment"># DataFrame</span>
+
+<span class="comment"># 行访问（loc/iloc）</span>
+df.loc[<span class="string">'x'</span>]           <span class="comment"># 按索引标签</span>
+df.iloc[<span class="number">0</span>]            <span class="comment"># 按整数位置</span></pre>
+            </div>
+          </div>
+        </div>
+        <div class="slide content" data-index="6">
+          <h2>DataFrame 索引与切片
+          </h2>
+<pre><span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+
+df = pd.DataFrame({
+    <span class="string">'name'</span>: [<span class="string">'Alice'</span>, <span class="string">'Bob'</span>, <span class="string">'Charlie'</span>, <span class="string">'David'</span>],
+    <span class="string">'age'</span>: [<span class="number">25</span>, <span class="number">30</span>, <span class="number">35</span>, <span class="number">28</span>],
+    <span class="string">'score'</span>: [<span class="number">85</span>, <span class="number">90</span>, <span class="number">78</span>, <span class="number">92</span>]
+}, index=[<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>, <span class="string">'d'</span>])
+
+<span class="comment"># loc - 基于标签的索引</span>
+df.loc[<span class="string">'a'</span>]                      <span class="comment"># 取'a'行</span>
+df.loc[<span class="string">'a'</span>:<span class="string">'c'</span>]                  <span class="comment"># 标签切片（含结束）</span>
+df.loc[<span class="string">'a'</span>, <span class="string">'name'</span>]              <span class="comment"># 'a'行的'name'列</span>
+df.loc[:, [<span class="string">'name'</span>, <span class="string">'age'</span>]]       <span class="comment"># 多列</span>
+
+<span class="comment"># iloc - 基于整数位置的索引</span>
+df.iloc[<span class="number">0</span>]                       <span class="comment"># 第0行</span>
+df.iloc[<span class="number">0</span>:<span class="number">2</span>]                     <span class="comment"># 位置切片（不含结束）</span>
+df.iloc[<span class="number">0</span>, <span class="number">1</span>]                     <span class="comment"># 第0行第1列</span>
+df.iloc[:, <span class="number">0</span>:<span class="number">2</span>]                   <span class="comment"># 第0、1列</span>
+
+<span class="comment"># 布尔索引（筛选）</span>
+df[df[<span class="string">'age'</span>] &gt; <span class="number">28</span>]                <span class="comment"># age &gt; 28 的行</span>
+df[(df[<span class="string">'age'</span>] &gt; <span class="number">25</span>) &amp; (df[<span class="string">'score'</span>] &gt;= <span class="number">80</span>)]
+
+<span class="comment"># 条件赋值</span>
+df.loc[df[<span class="string">'age'</span>] &gt; <span class="number">30</span>, <span class="string">'level'</span>] = <span class="string">'senior'</span></pre>
+          <div class="tip-box">
+            <strong>记忆口诀：
+            </strong>
+            <code>loc
+            </code>
+            =
+            <strong>l
+            </strong>
+            abel（标签），
+            <code>iloc
+            </code>
+            =
+            <strong>i
+            </strong>
+            nteger（整数位置）。
+            <code>loc
+            </code>
+            切片含结束，
+            <code>iloc
+            </code>
+            不含。
+          </div>
+        </div>
+        <div class="slide content" data-index="7">
+          <h2>数值运算与统计分析
+          </h2>
+          <div class="two-col">
+            <div>
+              <h3>基础运算
+              </h3>
+<pre><span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+
+df = pd.DataFrame({
+    <span class="string">'A'</span>: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>],
+    <span class="string">'B'</span>: [<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>, <span class="number">40</span>]
+})
+
+<span class="comment"># 算术运算（对齐索引）</span>
+df + <span class="number">10</span>               <span class="comment"># 标量广播</span>
+df * <span class="number">2</span>                <span class="comment"># 元素乘</span>
+df[<span class="string">'A'</span>] + df[<span class="string">'B'</span>]     <span class="comment"># Series相加</span>
+np.log(df)            <span class="comment"># NumPy函数</span>
+
+<span class="comment"># 统计函数</span>
+df.sum()              <span class="comment"># 每列求和</span>
+df.mean()             <span class="comment"># 均值</span>
+df.std()              <span class="comment"># 标准差</span>
+df.min()              <span class="comment"># 最小值</span>
+df.max()              <span class="comment"># 最大值</span>
+df.cumsum()           <span class="comment"># 累积和</span></pre>
+            </div>
+            <div>
+              <h3>高级统计
+              </h3>
+<pre><span class="comment"># 按轴统计</span>
+df.sum(axis=<span class="number">0</span>)        <span class="comment"># 列求和（默认）</span>
+df.sum(axis=<span class="number">1</span>)        <span class="comment"># 行求和</span>
+
+<span class="comment"># 描述统计</span>
+df.describe()         <span class="comment"># count/mean/std/min/25%/50%/75%/max</span>
+df[<span class="string">'A'</span>].value_counts() <span class="comment"># 值频数统计</span>
+df.corr()             <span class="comment"># 相关系数矩阵</span>
+df.cov()              <span class="comment"># 协方差矩阵</span>
+
+<span class="comment"># apply 自定义运算</span>
+df.apply(np.sum, axis=<span class="number">1</span>)
+df.apply(<span class="keyword">lambda</span> x: x.max() - x.min())
+
+<span class="comment"># 滚动窗口</span>
+df.rolling(window=<span class="number">3</span>).mean()   <span class="comment"># 3窗口移动平均</span></pre>
+            </div>
+          </div>
+        </div>
+        <div class="slide content" data-index="8">
+          <h2>处理缺失值
+          </h2>
+<pre><span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+
+df = pd.DataFrame({
+    <span class="string">'A'</span>: [<span class="number">1</span>, <span class="number">2</span>, np.nan, <span class="number">4</span>],
+    <span class="string">'B'</span>: [<span class="number">5</span>, np.nan, np.nan, <span class="number">8</span>],
+    <span class="string">'C'</span>: [<span class="number">9</span>, <span class="number">10</span>, <span class="number">11</span>, <span class="number">12</span>]
+})
+
+<span class="comment"># 检测缺失值</span>
+df.isnull()           <span class="comment"># 返回布尔DataFrame</span>
+df.isnull().sum()     <span class="comment"># 每列缺失值个数</span>
+df.notnull()          <span class="comment"># 非缺失值</span>
+
+<span class="comment"># 删除缺失值</span>
+df.dropna()           <span class="comment"># 删除含NaN的行</span>
+df.dropna(axis=<span class="number">1</span>)     <span class="comment"># 删除含NaN的列</span>
+df.dropna(how=<span class="string">'all'</span>)  <span class="comment"># 只删除全NaN的行</span>
+df.dropna(thresh=<span class="number">2</span>)   <span class="comment"># 保留至少有2个非NaN的行</span>
+
+<span class="comment"># 填充缺失值</span>
+df.fillna(<span class="number">0</span>)                    <span class="comment"># 用0填充</span>
+df.fillna({<span class="string">'A'</span>: <span class="number">0</span>, <span class="string">'B'</span>: <span class="number">99</span>})   <span class="comment"># 按列指定填充值</span>
+df.fillna(method=<span class="string">'ffill'</span>)       <span class="comment"># 向前填充（用前一个值）</span>
+df.fillna(method=<span class="string">'bfill'</span>)       <span class="comment"># 向后填充（用后一个值）</span>
+df[<span class="string">'A'</span>].fillna(df[<span class="string">'A'</span>].mean())  <span class="comment"># 用列均值填充</span></pre>
+        </div>
+        <div class="slide content" data-index="9">
+          <h2>数据合并与连接
+          </h2>
+<pre><span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+
+df1 = pd.DataFrame({<span class="string">'key'</span>: [<span class="string">'A'</span>,<span class="string">'B'</span>,<span class="string">'C'</span>], <span class="string">'val1'</span>: [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]})
+df2 = pd.DataFrame({<span class="string">'key'</span>: [<span class="string">'B'</span>,<span class="string">'C'</span>,<span class="string">'D'</span>], <span class="string">'val2'</span>: [<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>]})
+
+<span class="comment"># 1. merge - 数据库风格的连接</span>
+pd.merge(df1, df2, on=<span class="string">'key'</span>)               <span class="comment"># 内连接（默认）</span>
+pd.merge(df1, df2, on=<span class="string">'key'</span>, how=<span class="string">'left'</span>)  <span class="comment"># 左连接</span>
+pd.merge(df1, df2, on=<span class="string">'key'</span>, how=<span class="string">'right'</span>) <span class="comment"># 右连接</span>
+pd.merge(df1, df2, on=<span class="string">'key'</span>, how=<span class="string">'outer'</span>) <span class="comment"># 外连接</span>
+
+<span class="comment"># 2. concat - 轴向连接</span>
+pd.concat([df1, df2], axis=<span class="number">0</span>)   <span class="comment"># 纵向拼接（堆叠）</span>
+pd.concat([df1, df2], axis=<span class="number">1</span>)   <span class="comment"># 横向拼接（并排放）</span>
+
+<span class="comment"># 3. join - 按索引合并</span>
+df1.set_index(<span class="string">'key'</span>, inplace=<span class="keyword">True</span>)
+df2.set_index(<span class="string">'key'</span>, inplace=<span class="keyword">True</span>)
+df1.join(df2, how=<span class="string">'outer'</span>)
+
+<span class="comment"># 4. append（已弃用，用concat替代）</span>
+pd.concat([df1, df2])   <span class="comment"># df1.append(df2) 的替代方案</span></pre>
+          <table style="margin-top:10px; font-size:16px;">
+            <tr>
+              <th>连接方式
+              </th>
+              <th>说明
+              </th>
+            </tr>
+            <tr>
+              <td>inner
+              </td>
+              <td>只保留两表都有的键（交集）
+              </td>
+            </tr>
+            <tr>
+              <td>outer
+              </td>
+              <td>保留所有键（并集）
+              </td>
+            </tr>
+            <tr>
+              <td>left
+              </td>
+              <td>保留左表所有键，右表无匹配填NaN
+              </td>
+            </tr>
+            <tr>
+              <td>right
+              </td>
+              <td>保留右表所有键，左表无匹配填NaN
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="slide content" data-index="10">
+          <h2>分组与聚合
+          </h2>
+<pre><span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+
+df = pd.DataFrame({
+    <span class="string">'team'</span>: [<span class="string">'A'</span>, <span class="string">'B'</span>, <span class="string">'A'</span>, <span class="string">'B'</span>, <span class="string">'A'</span>, <span class="string">'B'</span>],
+    <span class="string">'year'</span>: [<span class="number">2020</span>, <span class="number">2020</span>, <span class="number">2021</span>, <span class="number">2021</span>, <span class="number">2021</span>, <span class="number">2022</span>],
+    <span class="string">'sales'</span>: [<span class="number">100</span>, <span class="number">150</span>, <span class="number">200</span>, <span class="number">120</span>, <span class="number">180</span>, <span class="number">90</span>],
+    <span class="string">'profit'</span>: [<span class="number">20</span>, <span class="number">30</span>, <span class="number">50</span>, <span class="number">25</span>, <span class="number">40</span>, <span class="number">15</span>]
+})
+
+<span class="comment"># 单列分组</span>
+df.groupby(<span class="string">'team'</span>)[<span class="string">'sales'</span>].sum()       <span class="comment"># 各团队总销售额</span>
+df.groupby(<span class="string">'team'</span>).mean()              <span class="comment"># 各团队均值</span>
+
+<span class="comment"># 多列分组</span>
+df.groupby([<span class="string">'team'</span>, <span class="string">'year'</span>]).sum()      <span class="comment"># 按团队和年份分组</span>
+
+<span class="comment"># 多指标聚合</span>
+df.groupby(<span class="string">'team'</span>).agg({
+    <span class="string">'sales'</span>: [<span class="string">'sum'</span>, <span class="string">'mean'</span>, <span class="string">'max'</span>],
+    <span class="string">'profit'</span>: [<span class="string">'sum'</span>, <span class="string">'mean'</span>]
+})
+
+<span class="comment"># apply + 自定义函数</span>
+df.groupby(<span class="string">'team'</span>).apply(<span class="keyword">lambda</span> x: x[<span class="string">'sales'</span>].max() - x[<span class="string">'sales'</span>].min())
+
+<span class="comment"># transform - 保持原形状</span>
+df[<span class="string">'sales_rank'</span>] = df.groupby(<span class="string">'team'</span>)[<span class="string">'sales'</span>].transform(<span class="string">'rank'</span>)</pre>
+        </div>
+        <div class="slide content" data-index="11">
+          <h2>透视表与其他操作
+          </h2>
+          <div class="two-col">
+            <div>
+              <h3>透视表 pivot_table
+              </h3>
+<pre><span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+
+<span class="comment"># 创建透视表</span>
+pd.pivot_table(
+    df,
+    values=<span class="string">'sales'</span>,          <span class="comment"># 聚合的值</span>
+    index=<span class="string">'team'</span>,            <span class="comment"># 行索引</span>
+    columns=<span class="string">'year'</span>,          <span class="comment"># 列索引</span>
+    aggfunc=<span class="string">'sum'</span>,           <span class="comment"># 聚合函数</span>
+    fill_value=<span class="number">0</span>             <span class="comment"># 缺失值填充</span>
+)
+
+<span class="comment"># 多值多函数</span>
+pd.pivot_table(
+    df,
+    values=[<span class="string">'sales'</span>, <span class="string">'profit'</span>],
+    index=<span class="string">'team'</span>,
+    aggfunc={<span class="string">'sales'</span>: <span class="string">'sum'</span>, <span class="string">'profit'</span>: <span class="string">'mean'</span>}
+)
+
+<span class="comment"># margins 添加总计</span>
+pd.pivot_table(df, values=<span class="string">'sales'</span>,
+    index=<span class="string">'team'</span>, columns=<span class="string">'year'</span>,
+    aggfunc=<span class="string">'sum'</span>, margins=<span class="keyword">True</span>)</pre>
+            </div>
+            <div>
+              <h3>其他常用操作
+              </h3>
+<pre><span class="comment"># 去重</span>
+df.drop_duplicates()
+df.drop_duplicates(subset=[<span class="string">'team'</span>])
+
+<span class="comment"># 排序</span>
+df.sort_values(<span class="string">'sales'</span>, ascending=<span class="keyword">False</span>)
+df.sort_values([<span class="string">'team'</span>, <span class="string">'sales'</span>])
+
+<span class="comment"># 字符串操作</span>
+df[<span class="string">'name'</span>].str.upper()
+df[<span class="string">'name'</span>].str.contains(<span class="string">'A'</span>)
+df[<span class="string">'name'</span>].str.split(<span class="string">' '</span>).str[<span class="number">0</span>]
+
+<span class="comment"># 日期处理</span>
+df[<span class="string">'date'</span>] = pd.to_datetime(df[<span class="string">'date'</span>])
+df[<span class="string">'date'</span>].dt.year
+
+<span class="comment"># 离散化（分箱）</span>
+pd.cut(df[<span class="string">'sales'</span>], bins=<span class="number">3</span>, labels=[<span class="string">'低'</span>,<span class="string">'中'</span>,<span class="string">'高'</span>])</pre>
+            </div>
+          </div>
+        </div>
+        <div class="slide summary" data-index="12">
+          <h2>本章总结
+          </h2>
+          <ul>
+            <li>
+              <strong>核心结构：
+              </strong>
+              <code>Series
+              </code>
+              （一维带标签数组）和
+              <code>DataFrame
+              </code>
+              （二维表格）
+            </li>
+            <li>
+              <strong>数据创建：
+              </strong>
+              从字典、列表、NumPy数组、CSV/Excel/JSON文件读取
+            </li>
+            <li>
+              <strong>索引选择：
+              </strong>
+              <code>loc
+              </code>
+              按标签、
+              <code>iloc
+              </code>
+              按位置、布尔索引按条件筛选
+            </li>
+            <li>
+              <strong>统计分析：
+              </strong>
+              <code>describe()
+              </code>
+              、
+              <code>mean()
+              </code>
+              、
+              <code>sum()
+              </code>
+              、
+              <code>corr()
+              </code>
+              、
+              <code>apply()
+              </code>
+            </li>
+            <li>
+              <strong>缺失值：
+              </strong>
+              <code>isnull()
+              </code>
+              检测、
+              <code>dropna()
+              </code>
+              删除、
+              <code>fillna()
+              </code>
+              填充
+            </li>
+            <li>
+              <strong>数据合并：
+              </strong>
+              <code>merge()
+              </code>
+              连接、
+              <code>concat()
+              </code>
+              拼接、
+              <code>join()
+              </code>
+              按索引合并
+            </li>
+            <li>
+              <strong>分组聚合：
+              </strong>
+              <code>groupby()
+              </code>
+              +
+              <code>agg()
+              </code>
+              +
+              <code>apply()
+              </code>
+              +
+              <code>pivot_table()
+              </code>
+            </li>
+          </ul>
+          <p style="margin-top:30px; font-size:22px; opacity:0.8;">Pandas 是数据清洗、预处理、探索性分析的首选工具，掌握它等于掌握了数据分析的半壁江山。
+          </p>
+          <div style="text-align:center; margin-top:30px;">
+            <a href="Python基础_第13章_Matplotlib库_PPT.html" style="display:inline-block; padding:10px 28px; background:rgba(255,255,255,0.9); color:#1a2a6c; text-decoration:none; border-radius:8px; font-size:16px; font-weight:600;">下一章 ▶</a>
+          </div>
+        </div>
+      </div>
+      <!-- Slide 2: 目录 -->
+      <!-- Slide 3: Pandas简介 -->
+      <!-- Slide 4: Series创建 -->
+      <!-- Slide 5: DataFrame创建 -->
+      <!-- Slide 6: DataFrame性质 -->
+      <!-- Slide 7: 索引与切片 -->
+      <!-- Slide 8: 数值运算 -->
+      <!-- Slide 9: 缺失值处理 -->
+      <!-- Slide 10: 数据合并 -->
+      <!-- Slide 11: 分组聚合 -->
+      <!-- Slide 12: 透视表 -->
+      <!-- Slide 13: 总结 -->
+      <div class="nav">
+        <button onclick="prevSlide()">◀ 上一页
+        </button>
+        <span class="page-num" id="pageNum">1 / 13
+        </span>
+        <button onclick="nextSlide()">下一页 ▶
+        </button>
+      </div>
+<script>
+    const slides = document.querySelectorAll('.slide');
+    let current = 0;
+    const total = slides.length;
+
+    function updateSlide() {
+        slides.forEach(s => s.classList.remove('active'));
+        slides[current].classList.add('active');
+        document.getElementById('pageNum').textContent = (current + 1) + ' / ' + total;
+        document.getElementById('progressBar').style.width = ((current + 1) / total * 100) + '%';
+    }
+
+    function nextSlide() {
+        if (current < total - 1) { current++; updateSlide(); }
+    }
+    function prevSlide() {
+        if (current > 0) { current--; updateSlide(); }
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ') {
+            nextSlide();
+        } else if (e.key === 'ArrowLeft') {
+            prevSlide();
+        } else if (e.key === 'Home') {
+            current = 0; updateSlide();
+        } else if (e.key === 'End') {
+            current = total - 1; updateSlide();
+        }
+    });
+
+    updateSlide();
+
+  // ===== 代码复制功能 =====
+  document.querySelectorAll('pre').forEach(pre => {
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '复制';
+    btn.type = 'button';
+    btn.addEventListener('click', () => {
+      const code = pre.querySelector('code');
+      const text = code ? code.innerText : pre.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 1500);
+      }).catch(() => {
+        // fallback
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta);
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+
+</script>
+    </body>
+  </html>

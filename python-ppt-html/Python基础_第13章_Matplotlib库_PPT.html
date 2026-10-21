@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+  <html lang="zh-CN">
+    <head>
+      <meta charset="utf-8"/>
+      <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+      <title>Python基础 - 第13章 Matplotlib库
+      </title>
+<style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background: #1a1a2e;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .slideshow {
+            width: 1280px;
+            height: 720px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            padding: 60px 80px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            overflow-y: auto;
+        }
+        .slide.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .slide.cover {
+            background: linear-gradient(135deg, #1a2a6c, #2d5a87, #007acc);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+        }
+        .slide.cover h1 {
+            font-size: 64px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .slide.cover .subtitle {
+            font-size: 28px;
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+        .slide.cover .chapter-num {
+            font-size: 20px;
+            opacity: 0.7;
+            border: 2px solid rgba(255,255,255,0.3);
+            padding: 8px 24px;
+            border-radius: 30px;
+        }
+        .slide.content {
+            background: #f8f9fa;
+        }
+        .slide.content h2 {
+            font-size: 36px;
+            color: #1a2a6c;
+            border-left: 6px solid #007acc;
+            padding-left: 20px;
+            margin-bottom: 30px;
+        }
+        .slide.content h3 {
+            font-size: 26px;
+            color: #2d5a87;
+            margin: 24px 0 12px 0;
+        }
+        .slide.content p {
+            font-size: 20px;
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 16px;
+        }
+        .slide.content ul, .slide.content ol {
+            font-size: 20px;
+            line-height: 1.9;
+            color: #333;
+            margin-left: 30px;
+            margin-bottom: 16px;
+        }
+        .slide.content li {
+            margin-bottom: 8px;
+        }
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 15px;
+            padding: 20px 24px;
+            border-radius: 8px;
+            overflow-x: auto;
+            line-height: 1.6;
+            margin: 16px 0;
+        }
+        code {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 16px;
+            background: #e8e8e8;
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #c7254e;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+            font-size: 15px;
+        }
+        .comment { color: #6a9955; }
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .number { color: #b5cea8; }
+        .function { color: #dcdcaa; }
+        .two-col {
+            display: flex;
+            gap: 40px;
+        }
+        .two-col > div {
+            flex: 1;
+        }
+        .tip-box {
+            background: #e3f2fd;
+            border-left: 4px solid #007acc;
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 16px 0;
+            font-size: 18px;
+        }
+        .tip-box strong {
+            color: #007acc;
+        }
+        .progress-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #007acc, #2d5a87);
+            transition: width 0.3s ease;
+            z-index: 100;
+        }
+        .page-num {
+            position: absolute;
+            bottom: 20px;
+            right: 40px;
+            font-size: 14px;
+            color: #999;
+        }
+        .nav-hint {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 13px;
+            color: #bbb;
+            background: rgba(0,0,0,0.05);
+            padding: 6px 16px;
+            border-radius: 20px;
+        }
+        .nav { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 100; }
+        .nav button {
+            background: rgba(0,0,0,0.3); color: white; border: none; padding: 10px 24px;
+            border-radius: 6px; cursor: pointer; font-size: 14px; backdrop-filter: blur(4px);
+        }
+        .nav button:hover { background: rgba(0,0,0,0.5); }
+        .nav .page-num { position: static !important; bottom: auto !important; right: auto !important; left: auto !important; background: #007acc; color: white; font-size: 14px; line-height: 36px; padding: 0 14px; border-radius: 6px; margin: 0 10px; }
+        .toc-list {
+            list-style: none;
+            margin-left: 0 !important;
+        }
+        .toc-list li {
+            font-size: 24px;
+            padding: 22px 0;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+        }
+        .toc-list .num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #007acc, #2d5a87);
+            color: white;
+            border-radius: 50%;
+            font-weight: 700;
+            margin-right: 20px;
+            font-size: 20px;
+        }
+        .slide.summary {
+            background: linear-gradient(135deg, #1a2a6c, #2d5a87, #007acc);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .slide.summary h2 {
+            color: white;
+            border-left-color: rgba(255,255,255,0.5);
+        }
+        .slide.summary p, .slide.summary li {
+            color: rgba(255,255,255,0.9);
+        }
+        .chart-demo {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 16px 0;
+            text-align: center;
+        }
+        .chart-demo img {
+            max-width: 100%;
+            max-height: 200px;
+        }
+  
+    /* 微信公众号推荐 */
+    .wx-promo {
+      margin-top: 40px;
+      padding-top: 30px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .wx-promo-text {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+    .wx-promo-images {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+    }
+    .wx-promo-images img {
+      width: 360px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 2px solid rgba(0, 122, 204, 0.3);
+    }
+    .slide-cover .wx-promo-text,
+    .slide-end .wx-promo-text,
+    .cover .wx-promo-text,
+    .summary .wx-promo-text {
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .slide-cover .wx-promo-images img,
+    .slide-end .wx-promo-images img,
+    .cover .wx-promo-images img,
+    .summary .wx-promo-images img {
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+  /* ===== 代码复制按钮 ===== */
+  pre { position: relative; }
+  .copy-btn {
+    position: absolute; top: 8px; right: 8px;
+    padding: 4px 10px; font-size: 12px; line-height: 1.4;
+    color: #ccc; background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 4px;
+    cursor: pointer; opacity: 0; transition: opacity 0.2s, background 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    z-index: 10;
+  }
+  pre:hover .copy-btn { opacity: 1; }
+  .copy-btn:hover { background: rgba(255,255,255,0.25); color: #fff; }
+  .copy-btn.copied { color: #4ec9b0; border-color: #4ec9b0; background: rgba(78,201,176,0.15); opacity: 1; }
+
+</style>
+    </head>
+    <body>
+      <div class="slideshow">
+        <div class="slide cover active" data-index="0">
+          <div class="chapter-num">第十三章
+          </div>
+          <h1>Matplotlib 库
+          </h1>
+          <div class="subtitle">Python数据可视化的基石
+          </div>
+          <div class="wx-promo">
+            <p class="wx-promo-text">欢迎关注微信公众号
+            </p>
+            <div class="wx-promo-images">
+              <img alt="coder程" src="../asset/coder程.png"/>
+              <img alt="查令十街84号" src="../asset/查令十街84号.png"/>
+            </div>
+          </div>
+        </div>
+        <div class="slide content" data-index="1">
+          <h2>目录
+          </h2>
+          <ul class="toc-list">
+            <li>
+              <span class="num">1
+              </span>
+              环境配置与基础概念
+            </li>
+            <li>
+              <span class="num">2
+              </span>
+              Matplotlib 基础绘图
+            </li>
+            <li>
+              <span class="num">3
+              </span>
+              常用图表类型
+            </li>
+            <li>
+              <span class="num">4
+              </span>
+              图表美化与布局
+            </li>
+            <li>
+              <span class="num">5
+              </span>
+              Seaborn 库
+            </li>
+            <li>
+              <span class="num">6
+              </span>
+              Pandas 绘图 API
+            </li>
+          </ul>
+        </div>
+        <div class="slide content" data-index="2">
+          <h2>环境配置与基础概念
+          </h2>
+<pre><span class="comment"># 安装</span>
+pip install matplotlib numpy pandas
+
+<span class="comment"># Jupyter 中显示图形</span>
+<span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt
+%matplotlib inline       <span class="comment"># Jupyter Notebook</span>
+%matplotlib widget       <span class="comment"># JupyterLab（交互式）</span>
+
+<span class="comment"># 脚本中显示</span>
+plt.show()               <span class="comment"># 显示图形窗口</span></pre>
+          <h3>Matplotlib 架构层次
+          </h3>
+          <ul>
+            <li>
+              <strong>Figure（画布）：
+              </strong>
+              最顶层的容器，可包含多个子图
+            </li>
+            <li>
+              <strong>Axes（坐标系/子图）：
+              </strong>
+              实际绘图区域，包含坐标轴、刻度、标签
+            </li>
+            <li>
+              <strong>Axis（坐标轴）：
+              </strong>
+              X轴和Y轴，包含刻度线、刻度标签
+            </li>
+            <li>
+              <strong>Artist（艺术家）：
+              </strong>
+              所有可见元素（线条、文字、图例等）
+            </li>
+          </ul>
+          <div class="tip-box">
+            <strong>两种编程风格：
+            </strong>
+            <code>pyplot
+            </code>
+            （MATLAB风格，快速绘图）和
+            <code>面向对象
+            </code>
+            （显式控制Figure/Axes，推荐用于复杂图形）。
+          </div>
+        </div>
+        <div class="slide content" data-index="3">
+          <h2>Matplotlib 基础 — 折线图
+          </h2>
+<pre><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt
+<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+
+<span class="comment"># 准备数据</span>
+x = np.linspace(<span class="number">0</span>, <span class="number">10</span>, <span class="number">100</span>)
+y1 = np.sin(x)
+y2 = np.cos(x)
+
+<span class="comment"># ========== pyplot 风格 ==========</span>
+plt.plot(x, y1, label=<span class="string">'sin(x)'</span>, color=<span class="string">'blue'</span>, linestyle=<span class="string">'-'</span>)
+plt.plot(x, y2, label=<span class="string">'cos(x)'</span>, color=<span class="string">'red'</span>, linestyle=<span class="string">'--'</span>)
+plt.xlabel(<span class="string">'X轴'</span>)
+plt.ylabel(<span class="string">'Y轴'</span>)
+plt.title(<span class="string">'正弦与余弦函数'</span>)
+plt.legend()           <span class="comment"># 显示图例</span>
+plt.grid(<span class="keyword">True</span>)       <span class="comment"># 显示网格</span>
+plt.show()
+
+<span class="comment"># ========== 面向对象风格（推荐） ==========</span>
+fig, ax = plt.subplots(figsize=(<span class="number">8</span>, <span class="number">5</span>))
+ax.plot(x, y1, label=<span class="string">'sin(x)'</span>, color=<span class="string">'blue'</span>)
+ax.plot(x, y2, label=<span class="string">'cos(x)'</span>, color=<span class="string">'red'</span>)
+ax.set_xlabel(<span class="string">'X轴'</span>)
+ax.set_ylabel(<span class="string">'Y轴'</span>)
+ax.set_title(<span class="string">'正弦与余弦函数'</span>)
+ax.legend()
+ax.grid(<span class="keyword">True</span>)
+plt.show()</pre>
+        </div>
+        <div class="slide content" data-index="4">
+          <h2>常用图表类型（一）
+          </h2>
+          <div class="two-col">
+            <div>
+              <h3>散点图 scatter
+              </h3>
+<pre><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt
+<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+
+np.random.seed(<span class="number">42</span>)
+x = np.random.rand(<span class="number">50</span>)
+y = np.random.rand(<span class="number">50</span>)
+colors = np.random.rand(<span class="number">50</span>)
+sizes = <span class="number">1000</span> * np.random.rand(<span class="number">50</span>)
+
+fig, ax = plt.subplots()
+ax.scatter(x, y, c=colors, s=sizes,
+           alpha=<span class="number">0.5</span>, cmap=<span class="string">'viridis'</span>)
+ax.set_xlabel(<span class="string">'X'</span>)
+ax.set_ylabel(<span class="string">'Y'</span>)
+ax.set_title(<span class="string">'散点图'</span>)
+plt.show()</pre>
+            </div>
+            <div>
+              <h3>柱状图 bar
+              </h3>
+<pre>categories = [<span class="string">'A'</span>, <span class="string">'B'</span>, <span class="string">'C'</span>, <span class="string">'D'</span>]
+values = [<span class="number">23</span>, <span class="number">45</span>, <span class="number">56</span>, <span class="number">78</span>]
+
+fig, ax = plt.subplots()
+bars = ax.bar(categories, values,
+              color=[<span class="string">'red'</span>, <span class="string">'green'</span>, <span class="string">'blue'</span>, <span class="string">'orange'</span>],
+              edgecolor=<span class="string">'black'</span>)
+
+<span class="comment"># 在柱子上添加数值标签</span>
+<span class="keyword">for</span> bar <span class="keyword">in</span> bars:
+    height = bar.get_height()
+    ax.annotate(<span class="string">f'{height}'</span>,
+        xy=(bar.get_x() + bar.get_width() / <span class="number">2</span>, height),
+        xytext=(<span class="number">0</span>, <span class="number">3</span>), textcoords=<span class="string">"offset points"</span>,
+        ha=<span class="string">'center'</span>, va=<span class="string">'bottom'</span>)
+
+ax.set_ylabel(<span class="string">'数值'</span>)
+ax.set_title(<span class="string">'柱状图'</span>)
+plt.show()</pre>
+            </div>
+          </div>
+        </div>
+        <div class="slide content" data-index="5">
+          <h2>常用图表类型（二）
+          </h2>
+          <div class="two-col">
+            <div>
+              <h3>直方图 hist
+              </h3>
+<pre><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt
+<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+
+data = np.random.randn(<span class="number">1000</span>)
+
+fig, ax = plt.subplots()
+ax.hist(data, bins=<span class="number">30</span>, color=<span class="string">'skyblue'</span>,
+        edgecolor=<span class="string">'black'</span>, alpha=<span class="number">0.7</span>)
+ax.set_xlabel(<span class="string">'数值'</span>)
+ax.set_ylabel(<span class="string">'频数'</span>)
+ax.set_title(<span class="string">'直方图'</span>)
+
+<span class="comment"># 添加密度曲线</span>
+<span class="keyword">from</span> scipy <span class="keyword">import</span> stats
+xmin, xmax = ax.get_xlim()
+x = np.linspace(xmin, xmax, <span class="number">100</span>)
+p = stats.norm.pdf(x, <span class="number">0</span>, <span class="number">1</span>)
+ax.plot(x, p * <span class="number">1000</span> * <span class="number">30</span> / (<span class="number">2</span>*xmax), <span class="string">'r-'</span>)
+plt.show()</pre>
+            </div>
+            <div>
+              <h3>饼图 pie
+              </h3>
+<pre>sizes = [<span class="number">30</span>, <span class="number">25</span>, <span class="number">20</span>, <span class="number">15</span>, <span class="number">10</span>]
+labels = [<span class="string">'A'</span>, <span class="string">'B'</span>, <span class="string">'C'</span>, <span class="string">'D'</span>, <span class="string">'E'</span>]
+explode = (<span class="number">0.1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)
+
+fig, ax = plt.subplots()
+ax.pie(sizes, explode=explode, labels=labels,
+       autopct=<span class="string">'%1.1f%%'</span>, startangle=<span class="number">90</span>,
+       shadow=<span class="keyword">True</span>)
+ax.set_title(<span class="string">'饼图'</span>)
+plt.show()
+
+<span class="comment"># 箱线图 boxplot</span>
+data = [np.random.normal(<span class="number">0</span>, std, <span class="number">100</span>)
+        <span class="keyword">for</span> std <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">5</span>)]
+fig, ax = plt.subplots()
+ax.boxplot(data)
+ax.set_title(<span class="string">'箱线图'</span>)
+plt.show()</pre>
+            </div>
+          </div>
+        </div>
+        <div class="slide content" data-index="6">
+          <h2>子图与布局
+          </h2>
+<pre><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt
+<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+
+<span class="comment"># ========== 方式1：subplots 创建多子图 ==========</span>
+fig, axes = plt.subplots(<span class="number">2</span>, <span class="number">2</span>, figsize=(<span class="number">10</span>, <span class="number">8</span>))   <span class="comment"># 2行2列</span>
+
+x = np.linspace(<span class="number">0</span>, <span class="number">10</span>, <span class="number">100</span>)
+axes[<span class="number">0</span>, <span class="number">0</span>].plot(x, np.sin(x))
+axes[<span class="number">0</span>, <span class="number">0</span>].set_title(<span class="string">'sin(x)'</span>)
+
+axes[<span class="number">0</span>, <span class="number">1</span>].plot(x, np.cos(x))
+axes[<span class="number">0</span>, <span class="number">1</span>].set_title(<span class="string">'cos(x)'</span>)
+
+axes[<span class="number">1</span>, <span class="number">0</span>].plot(x, np.tan(x))
+axes[<span class="number">1</span>, <span class="number">0</span>].set_title(<span class="string">'tan(x)'</span>)
+
+axes[<span class="number">1</span>, <span class="number">1</span>].plot(x, np.exp(-x))
+axes[<span class="number">1</span>, <span class="number">1</span>].set_title(<span class="string">'exp(-x)'</span>)
+
+fig.tight_layout()        <span class="comment"># 自动调整子图间距</span>
+plt.show()
+
+<span class="comment"># ========== 方式2：subplot 逐个添加 ==========</span>
+plt.figure(figsize=(<span class="number">10</span>, <span class="number">4</span>))
+plt.subplot(<span class="number">1</span>, <span class="number">2</span>, <span class="number">1</span>)       <span class="comment"># 1行2列，第1个</span>
+plt.plot(x, np.sin(x))
+plt.subplot(<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>)       <span class="comment"># 1行2列，第2个</span>
+plt.plot(x, np.cos(x))
+plt.show()</pre>
+        </div>
+        <div class="slide content" data-index="7">
+          <h2>图表美化进阶
+          </h2>
+<pre><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt
+<span class="keyword">import</span> matplotlib <span class="keyword">as</span> mpl
+
+<span class="comment"># 全局样式设置</span>
+plt.style.use(<span class="string">'seaborn-v0_8-whitegrid'</span>)   <span class="comment"># 内置样式</span>
+mpl.rcParams[<span class="string">'font.family'</span>] = <span class="string">'SimHei'</span>     <span class="comment"># 中文字体</span>
+mpl.rcParams[<span class="string">'axes.unicode_minus'</span>] = <span class="keyword">False</span>  <span class="comment"># 负号正常显示</span>
+
+<span class="comment"># 颜色与标记</span>
+fig, ax = plt.subplots()
+ax.plot(x, y1, color=<span class="string">'#FF6B6B'</span>, linewidth=<span class="number">2</span>,
+        marker=<span class="string">'o'</span>, markersize=<span class="number">6</span>, markerfacecolor=<span class="string">'white'</span>)
+
+<span class="comment"># 自定义刻度</span>
+ax.set_xticks([<span class="number">0</span>, np.pi, <span class="number">2</span>*np.pi])
+ax.set_xticklabels([<span class="string">'0'</span>, <span class="string">r'$\pi$'</span>, <span class="string">r'$2\pi$'</span>])
+
+<span class="comment"># 添加注释</span>
+ax.annotate(<span class="string">'最大值'</span>, xy=(np.pi/<span class="number">2</span>, <span class="number">1</span>),
+            xytext=(np.pi/<span class="number">2</span> + <span class="number">1</span>, <span class="number">0.5</span>),
+            arrowprops=dict(arrowstyle=<span class="string">'-&gt;'</span>, color=<span class="string">'red'</span>))
+
+<span class="comment"># 设置坐标轴范围</span>
+ax.set_xlim(<span class="number">0</span>, <span class="number">2</span>*np.pi)
+ax.set_ylim(-<span class="number">1.5</span>, <span class="number">1.5</span>)
+
+<span class="comment"># 保存图片</span>
+fig.savefig(<span class="string">'plot.png'</span>, dpi=<span class="number">300</span>, bbox_inches=<span class="string">'tight'</span>)
+plt.show()</pre>
+        </div>
+        <div class="slide content" data-index="8">
+          <h2>Seaborn 库
+          </h2>
+          <p>Seaborn 是基于 Matplotlib 的高级统计可视化库，内置美观的默认样式，一行代码即可生成复杂统计图。
+          </p>
+<pre><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns
+<span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt
+<span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+
+<span class="comment"># 设置主题</span>
+sns.set_theme(style=<span class="string">'whitegrid'</span>)   <span class="comment"># darkgrid, white, ticks</span>
+
+<span class="comment"># 示例数据</span>
+df = pd.DataFrame({
+    <span class="string">'x'</span>: np.random.randn(<span class="number">100</span>),
+    <span class="string">'y'</span>: np.random.randn(<span class="number">100</span>),
+    <span class="string">'category'</span>: np.random.choice([<span class="string">'A'</span>, <span class="string">'B'</span>, <span class="string">'C'</span>], <span class="number">100</span>),
+    <span class="string">'size'</span>: np.random.rand(<span class="number">100</span>)
+})
+
+<span class="comment"># 快速统计图</span>
+sns.scatterplot(data=df, x=<span class="string">'x'</span>, y=<span class="string">'y'</span>, hue=<span class="string">'category'</span>, size=<span class="string">'size'</span>)
+plt.show()
+
+<span class="comment"># 箱线图</span>
+sns.boxplot(data=df, x=<span class="string">'category'</span>, y=<span class="string">'y'</span>, palette=<span class="string">'Set2'</span>)
+plt.show()
+
+<span class="comment"># 热力图</span>
+corr = df[[<span class="string">'x'</span>, <span class="string">'y'</span>, <span class="string">'size'</span>]].corr()
+sns.heatmap(corr, annot=<span class="keyword">True</span>, cmap=<span class="string">'coolwarm'</span>, fmt=<span class="string">'.2f'</span>)
+plt.show()</pre>
+        </div>
+        <div class="slide content" data-index="9">
+          <h2>Seaborn 高级图表
+          </h2>
+          <div class="two-col">
+            <div>
+              <h3>分布图
+              </h3>
+<pre><span class="comment"># 核密度估计图</span>
+sns.kdeplot(data=df, x=<span class="string">'x'</span>, hue=<span class="string">'category'</span>)
+
+<span class="comment"># 直方图+密度</span>
+sns.histplot(data=df, x=<span class="string">'x'</span>, kde=<span class="keyword">True</span>)
+
+<span class="comment"># 小提琴图</span>
+sns.violinplot(data=df, x=<span class="string">'category'</span>, y=<span class="string">'y'</span>)
+
+<span class="comment"># 配对图（多变量关系）</span>
+sns.pairplot(df, hue=<span class="string">'category'</span>)</pre>
+            </div>
+            <div>
+              <h3>关系图与回归
+              </h3>
+<pre><span class="comment"># 带回归线的散点图</span>
+sns.regplot(data=df, x=<span class="string">'x'</span>, y=<span class="string">'y'</span>)
+
+<span class="comment"># 分面网格</span>
+g = sns.FacetGrid(df, col=<span class="string">'category'</span>)
+g.map(sns.histplot, <span class="string">'x'</span>)
+
+<span class="comment"># 联合分布图</span>
+sns.jointplot(data=df, x=<span class="string">'x'</span>, y=<span class="string">'y'</span>, kind=<span class="string">'scatter'</span>)
+<span class="comment"># kind: scatter, kde, hex, reg, resid</span>
+
+<span class="comment"># 条形图（带误差线）</span>
+sns.barplot(data=df, x=<span class="string">'category'</span>, y=<span class="string">'y'</span>)</pre>
+            </div>
+          </div>
+          <div class="tip-box">
+            <strong>Seaborn 精髓：
+            </strong>
+            几乎所有函数都支持
+            <code>data
+            </code>
+            + 列名参数，自动处理数据框；
+            <code>hue
+            </code>
+            参数按类别分组着色，是Seaborn最强大的特性。
+          </div>
+        </div>
+        <div class="slide content" data-index="10">
+          <h2>Pandas 绘图 API
+          </h2>
+          <p>Pandas DataFrame/Series 内置了
+            <code>.plot()
+            </code>
+            方法，底层调用 Matplotlib，实现「数据→图形」的一步直达。
+          </p>
+<pre><span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+
+<span class="comment"># 创建时间序列数据</span>
+dates = pd.date_range(<span class="string">'2024-01-01'</span>, periods=<span class="number">100</span>)
+df = pd.DataFrame({
+    <span class="string">'A'</span>: np.cumsum(np.random.randn(<span class="number">100</span>)),
+    <span class="string">'B'</span>: np.cumsum(np.random.randn(<span class="number">100</span>)),
+    <span class="string">'C'</span>: np.random.rand(<span class="number">100</span>) * <span class="number">100</span>
+}, index=dates)
+
+<span class="comment"># 1. DataFrame.plot() — 折线图（默认）</span>
+df.plot(figsize=(<span class="number">10</span>, <span class="number">5</span>), title=<span class="string">'时间序列'</span>)
+
+<span class="comment"># 2. 指定图表类型</span>
+df.plot(kind=<span class="string">'bar'</span>)       <span class="comment"># 柱状图</span>
+df.plot(kind=<span class="string">'hist'</span>)      <span class="comment"># 直方图</span>
+df.plot(kind=<span class="string">'scatter'</span>, x=<span class="string">'A'</span>, y=<span class="string">'B'</span>)   <span class="comment"># 散点图</span>
+df.plot(kind=<span class="string">'box'</span>)       <span class="comment"># 箱线图</span>
+df.plot(kind=<span class="string">'pie'</span>, y=<span class="string">'C'</span>)  <span class="comment"># 饼图</span>
+
+<span class="comment"># 3. 子图布局</span>
+df.plot(subplots=<span class="keyword">True</span>, layout=(<span class="number">3</span>, <span class="number">1</span>), figsize=(<span class="number">10</span>, <span class="number">10</span>))
+
+<span class="comment"># 4. Series 直接绘图</span>
+df[<span class="string">'A'</span>].plot(kind=<span class="string">'area'</span>, alpha=<span class="number">0.5</span>)</pre>
+        </div>
+        <div class="slide content" data-index="11">
+          <h2>综合绘图示例
+          </h2>
+<pre><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt
+<span class="keyword">import</span> seaborn <span class="keyword">as</span> sns
+<span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+
+<span class="comment"># 准备数据</span>
+np.random.seed(<span class="number">42</span>)
+df = pd.DataFrame({
+    <span class="string">'month'</span>: pd.date_range(<span class="string">'2024-01'</span>, periods=<span class="number">12</span>, freq=<span class="string">'M'</span>),
+    <span class="string">'sales'</span>: np.random.randint(<span class="number">100</span>, <span class="number">500</span>, <span class="number">12</span>),
+    <span class="string">'profit'</span>: np.random.randint(<span class="number">20</span>, <span class="number">100</span>, <span class="number">12</span>),
+    <span class="string">'region'</span>: [<span class="string">'North'</span>, <span class="string">'South'</span>, <span class="string">'East'</span>, <span class="string">'West'</span>] * <span class="number">3</span>
+})
+
+<span class="comment"># 组合图：折线+柱状</span>
+fig, ax1 = plt.subplots(figsize=(<span class="number">10</span>, <span class="number">5</span>))
+ax1.bar(df[<span class="string">'month'</span>].dt.month, df[<span class="string">'sales'</span>],
+        color=<span class="string">'skyblue'</span>, label=<span class="string">'Sales'</span>)
+ax1.set_xlabel(<span class="string">'Month'</span>)
+ax1.set_ylabel(<span class="string">'Sales'</span>, color=<span class="string">'blue'</span>)
+
+ax2 = ax1.twinx()   <span class="comment"># 共享X轴</span>
+ax2.plot(df[<span class="string">'month'</span>].dt.month, df[<span class="string">'profit'</span>],
+         color=<span class="string">'red'</span>, marker=<span class="string">'o'</span>, label=<span class="string">'Profit'</span>)
+ax2.set_ylabel(<span class="string">'Profit'</span>, color=<span class="string">'red'</span>)
+
+fig.legend(loc=<span class="string">'upper left'</span>)
+plt.title(<span class="string">'月度销售与利润'</span>)
+plt.show()</pre>
+        </div>
+        <div class="slide summary" data-index="12">
+          <h2>本章总结
+          </h2>
+          <ul>
+            <li>
+              <strong>Matplotlib 核心：
+              </strong>
+              <code>Figure
+              </code>
+              （画布）→
+              <code>Axes
+              </code>
+              （子图）→
+              <code>Axis
+              </code>
+              （坐标轴），面向对象风格更灵活
+            </li>
+            <li>
+              <strong>常用图表：
+              </strong>
+              折线图
+              <code>plot()
+              </code>
+              、散点图
+              <code>scatter()
+              </code>
+              、柱状图
+              <code>bar()
+              </code>
+              、直方图
+              <code>hist()
+              </code>
+              、饼图
+              <code>pie()
+              </code>
+              、箱线图
+              <code>boxplot()
+              </code>
+            </li>
+            <li>
+              <strong>子图布局：
+              </strong>
+              <code>plt.subplots()
+              </code>
+              创建网格子图，
+              <code>tight_layout()
+              </code>
+              自动调整间距
+            </li>
+            <li>
+              <strong>图表美化：
+              </strong>
+              样式
+              <code>style.use()
+              </code>
+              、颜色/标记/注释、中文字体设置、
+              <code>savefig()
+              </code>
+              保存
+            </li>
+            <li>
+              <strong>Seaborn：
+              </strong>
+              高级统计可视化，
+              <code>hue
+              </code>
+              分组、
+              <code>pairplot
+              </code>
+              配对、
+              <code>heatmap
+              </code>
+              热力图、
+              <code>FacetGrid
+              </code>
+              分面
+            </li>
+            <li>
+              <strong>Pandas.plot()：
+              </strong>
+              数据框一步出图，
+              <code>kind
+              </code>
+              切换图表类型，
+              <code>subplots=True
+              </code>
+              多子图
+            </li>
+          </ul>
+          <p style="margin-top:30px; font-size:22px; opacity:0.8;">可视化是数据科学最后也是最关键的一步——让数据开口说话。
+          </p>
+          <div style="text-align:center; margin-top:30px;">
+            <a href="Python基础_第14章_Sklearn库_PPT.html" style="display:inline-block; padding:10px 28px; background:rgba(255,255,255,0.9); color:#1a2a6c; text-decoration:none; border-radius:8px; font-size:16px; font-weight:600;">下一章 ▶</a>
+          </div>
+        </div>
+      </div>
+      <!-- Slide 2: 目录 -->
+      <!-- Slide 3: 环境配置 -->
+      <!-- Slide 4: 基础绘图-折线图 -->
+      <!-- Slide 5: 常用图表类型-1 -->
+      <!-- Slide 6: 常用图表类型-2 -->
+      <!-- Slide 7: 子图与布局 -->
+      <!-- Slide 8: 图表美化 -->
+      <!-- Slide 9: Seaborn简介 -->
+      <!-- Slide 10: Seaborn高级 -->
+      <!-- Slide 11: Pandas绘图 -->
+      <!-- Slide 12: 综合示例 -->
+      <!-- Slide 13: 总结 -->
+      <div class="nav">
+        <button onclick="prevSlide()">◀ 上一页
+        </button>
+        <span class="page-num" id="pageNum">1 / 13
+        </span>
+        <button onclick="nextSlide()">下一页 ▶
+        </button>
+      </div>
+<script>
+    const slides = document.querySelectorAll('.slide');
+    let current = 0;
+    const total = slides.length;
+
+    function updateSlide() {
+        slides.forEach(s => s.classList.remove('active'));
+        slides[current].classList.add('active');
+        document.getElementById('pageNum').textContent = (current + 1) + ' / ' + total;
+        document.getElementById('progressBar').style.width = ((current + 1) / total * 100) + '%';
+    }
+
+    function nextSlide() {
+        if (current < total - 1) { current++; updateSlide(); }
+    }
+    function prevSlide() {
+        if (current > 0) { current--; updateSlide(); }
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ') {
+            nextSlide();
+        } else if (e.key === 'ArrowLeft') {
+            prevSlide();
+        } else if (e.key === 'Home') {
+            current = 0; updateSlide();
+        } else if (e.key === 'End') {
+            current = total - 1; updateSlide();
+        }
+    });
+
+    updateSlide();
+
+  // ===== 代码复制功能 =====
+  document.querySelectorAll('pre').forEach(pre => {
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '复制';
+    btn.type = 'button';
+    btn.addEventListener('click', () => {
+      const code = pre.querySelector('code');
+      const text = code ? code.innerText : pre.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 1500);
+      }).catch(() => {
+        // fallback
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta);
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+
+</script>
+    </body>
+  </html>

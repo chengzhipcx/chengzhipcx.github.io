@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+  <html lang="zh-CN">
+    <head>
+      <meta charset="utf-8"/>
+      <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+      <title>Python基础 - 第06章 函数
+      </title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; overflow:hidden; font-family:"Segoe UI","Microsoft YaHei",sans-serif; }
+
+  .slide {
+    width:100%; height:100vh;
+    display:none; flex-direction:column; justify-content:center; align-items:center;
+    position:relative; padding:60px 80px;
+  }
+  .slide.active { display:flex; }
+
+  /* Cover */
+  .cover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color:#fff; text-align:center;
+  }
+  .cover h1 { font-size:3.2rem; font-weight:700; margin-bottom:20px; letter-spacing:2px; }
+  .cover .subtitle { font-size:1.4rem; opacity:0.9; margin-bottom:12px; }
+  .cover .chapter-num { font-size:1.1rem; opacity:0.7; letter-spacing:4px; text-transform:uppercase; }
+
+  /* TOC */
+  .toc { background:#f8f9fa; }
+  .toc h2 {
+    font-size:2rem; color:#333; margin-bottom:40px;
+    border-left:6px solid #007acc; padding-left:18px;
+  }
+  .toc ul { list-style:none; width:60%; max-width:700px; }
+  .toc li {
+    font-size:1.25rem; color:#444; padding:14px 0;
+    border-bottom:1px solid #e0e0e0; display:flex; align-items:center;
+  }
+  .toc li span.num { display:inline-block; width:36px; height:36px; line-height:36px; border-radius:50%; background:#007acc; color:#fff; text-align:center; margin-right:16px; font-size:0.95rem; font-weight:600; }
+  .toc li:last-child { border-bottom:none; }
+
+  /* Content */
+  .content { background:#f8f9fa; justify-content:flex-start; padding-top:50px; }
+  .content h2 {
+    font-size:1.9rem; color:#222; margin-bottom:30px; align-self:flex-start;
+    border-left:6px solid #007acc; padding-left:18px;
+  }
+  .content-body { width:100%; max-width:900px; }
+  .content-body p, .content-body li { font-size:1.15rem; color:#333; line-height:1.8; margin-bottom:12px; }
+  .content-body ul { margin-left:24px; margin-bottom:16px; }
+  .content-body ul li { margin-bottom:6px; }
+
+  /* Code block */
+  .code-block {
+    background:#1e1e1e; color:#d4d4d4; font-family:"Consolas","Monaco","Courier New",monospace;
+    padding:20px 24px; border-radius:8px; font-size:0.95rem; line-height:1.7;
+    overflow-x:auto; margin:16px 0; box-shadow:0 4px 12px rgba(0,0,0,0.15);
+  white-space: pre; }
+  .code-block .kw { color:#569cd6; }
+  .code-block .str { color:#ce9178; }
+  .code-block .num { color:#b5cea8; }
+  .code-block .com { color:#6a9955; }
+  .code-block .func { color:#dcdcaa; }
+  .code-block .var { color:#9cdcfe; }
+
+  /* Summary */
+  .summary { background:#f8f9fa; }
+  .summary h2 {
+    font-size:2rem; color:#333; margin-bottom:35px;
+    border-left:6px solid #007acc; padding-left:18px;
+  }
+  .summary ul { list-style:none; max-width:750px; }
+  .summary li {
+    font-size:1.2rem; color:#444; padding:12px 0; padding-left:28px; position:relative;
+  }
+  .summary li::before {
+    content:"✓"; position:absolute; left:0; color:#007acc; font-weight:bold;
+  }
+
+  /* Progress bar */
+  .progress-bar {
+    position:fixed; bottom:0; left:0; height:5px; background:#e0e0e0; width:100%; z-index:100;
+  }
+  .progress-fill {
+    height:100%; background: linear-gradient(90deg, #667eea, #764ba2);
+    transition:width 0.3s ease;
+  }
+
+  .page-num {
+    position:fixed; bottom:14px; right:24px; font-size:0.85rem; color:#888; z-index:101;
+  }
+  .nav-hint {
+    position:fixed; bottom:14px; left:50%; transform:translateX(-50%);
+    font-size:0.8rem; color:#aaa; z-index:101; user-select:none;
+  }
+
+  .nav { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 100; }
+  .nav button {
+    background: rgba(0,0,0,0.3); color: white; border: none; padding: 10px 24px;
+    border-radius: 6px; cursor: pointer; font-size: 14px; backdrop-filter: blur(4px);
+  }
+  .nav button:hover { background: rgba(0,0,0,0.5); }
+  .nav .page-num { position: static !important; bottom: auto !important; right: auto !important; background: #007acc; color: white; font-size: 14px; line-height: 36px; padding: 0 14px; border-radius: 6px; margin: 0 10px; }
+  @media (max-width: 900px) and (orientation: landscape) {
+    .slide { padding: 20px 30px !important; }
+    .slide h1 { font-size: 1.8rem !important; }
+    .slide h2 { font-size: 1.4rem !important; }
+    .slide h3 { font-size: 1.1rem !important; }
+    .slide p, .slide li { font-size: 0.9rem !important; line-height: 1.5 !important; }
+    pre { font-size: 0.75rem !important; padding: 10px !important; }
+    .nav button { padding: 6px 14px !important; font-size: 12px !important; }
+    .nav .page-num { font-size: 12px !important; padding: 0 10px !important; }
+  }
+  
+    /* 微信公众号推荐 */
+    .wx-promo {
+      margin-top: 40px;
+      padding-top: 30px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .wx-promo-text {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+    .wx-promo-images {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+    }
+    .wx-promo-images img {
+      width: 360px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 2px solid rgba(0, 122, 204, 0.3);
+    }
+    .slide-cover .wx-promo-text,
+    .slide-end .wx-promo-text,
+    .cover .wx-promo-text,
+    .summary .wx-promo-text {
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .slide-cover .wx-promo-images img,
+    .slide-end .wx-promo-images img,
+    .cover .wx-promo-images img,
+    .summary .wx-promo-images img {
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+  /* ===== 代码复制按钮 ===== */
+  pre { position: relative; }
+  .copy-btn {
+    position: absolute; top: 8px; right: 8px;
+    padding: 4px 10px; font-size: 12px; line-height: 1.4;
+    color: #ccc; background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 4px;
+    cursor: pointer; opacity: 0; transition: opacity 0.2s, background 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    z-index: 10;
+  }
+  pre:hover .copy-btn { opacity: 1; }
+  .copy-btn:hover { background: rgba(255,255,255,0.25); color: #fff; }
+  .copy-btn.copied { color: #4ec9b0; border-color: #4ec9b0; background: rgba(78,201,176,0.15); opacity: 1; }
+
+</style>
+    </head>
+    <body>
+      <div class="slide cover active">
+        <div class="chapter-num">Chapter 06
+        </div>
+        <h1>函 数
+        </h1>
+        <div class="subtitle">Python基础 · 模块化编程与代码复用
+        </div>
+        <div class="wx-promo">
+          <p class="wx-promo-text">欢迎关注微信公众号
+          </p>
+          <div class="wx-promo-images">
+            <img alt="coder程" src="../asset/coder程.png"/>
+            <img alt="查令十街84号" src="../asset/查令十街84号.png"/>
+          </div>
+        </div>
+      </div>
+      <div class="slide toc">
+        <h2>本章目录
+        </h2>
+        <ul>
+          <li>
+            <span class="num">1
+            </span>
+            函数的定义及调用
+          </li>
+          <li>
+            <span class="num">2
+            </span>
+            函数式编程实例
+          </li>
+          <li>
+            <span class="num">3
+            </span>
+            匿名函数 lambda
+          </li>
+          <li>
+            <span class="num">4
+            </span>
+            面向过程 vs 面向对象
+          </li>
+        </ul>
+      </div>
+      <div class="slide content">
+        <h2>1. 为什么需要函数
+        </h2>
+        <div class="content-body">
+          <p>函数是将一段可复用代码
+            <strong>封装
+            </strong>
+            起来的基本单元。使用函数的目的：
+          </p>
+          <ul>
+            <li>
+              <b>代码复用
+              </b>
+              ：写好一次，多次调用，避免重复编写
+            </li>
+            <li>
+              <b>模块化
+              </b>
+              ：将复杂问题拆解为多个独立子任务
+            </li>
+            <li>
+              <b>可读性
+              </b>
+              ：给代码块起名字，表达意图
+            </li>
+            <li>
+              <b>可维护性
+              </b>
+              ：修改一处，全局生效
+            </li>
+          </ul>
+          <div class="code-block">
+<span class="com"># 没有函数：重复写三次同样的逻辑</span>
+<span class="var">a</span>,<span class="var">b</span>,
+<span class="var">c</span>=<span class="num">3</span>,<span class="num">4</span>,<span class="num">5</span>
+<span class="var">area_a</span>=<span class="num">0.5</span>*<span class="var">a</span>*<span class="var">a</span>
+<span class="var">area_b</span>=<span class="num">0.5</span>*<span class="var">b</span>*<span class="var">b</span>
+<span class="var">area_c</span>=<span class="num">0.5</span>*<span class="var">c</span>*<span class="var">c</span>
+<span class="com"># 有函数：一次定义，处处调用</span>
+<span class="func">deftriangle_area</span>(<span class="var">base</span>):
+<span class="var">return0</span><span class="num">.5</span>*<span class="var">base</span>*<span class="var">base</span>
+<span class="var">area_a</span>=
+<span class="func">triangle_area</span>(<span class="num">3</span>)
+<span class="var">area_b</span>=
+<span class="func">triangle_area</span>(<span class="num">4</span>)
+<span class="var">area_c</span>=
+<span class="func">triangle_area</span>(<span class="num">5</span>)
+
+</div>
+        </div>
+      </div>
+      <div class="slide content">
+        <h2>1. 函数的定义与调用
+        </h2>
+        <div class="content-body">
+          <p>函数通过
+            <span class="code-inline">def
+            </span>
+            关键字定义，语法结构清晰：
+          </p>
+          <div class="code-block">
+<span class="func">def函数名</span>(<span class="var">参数1</span>,<span class="var">参数2</span>,...):
+
+<span class="str">&quot;&quot;&quot;文档字符串（docstring）说明函数作用&quot;&quot;&quot;</span>
+
+<span class="com"># 函数体</span>
+
+<span class="var">return返回值</span>
+
+</div>
+          <p>
+            <b>调用函数
+            </b>
+            ：写出函数名并传入参数。
+          </p>
+          <div class="code-block">
+<span class="com"># 定义：计算两数之和</span>
+
+<span class="func">defadd</span>(<span class="var">a</span>,<span class="var">b</span>):
+
+<span class="var">returna</span>+<span class="var">b</span>
+
+<span class="com"># 调用</span>
+
+<span class="var">result</span>=
+
+<span class="func">add</span>(<span class="num">3</span>,<span class="num">5</span>)
+
+<span class="func">print</span>(<span class="var">result</span>)
+
+<span class="com"># 8</span>
+
+<span class="com"># 无参数、无返回值</span>
+
+<span class="func">defsay_hello</span>():
+
+<span class="func">print</span>(<span class="str">&quot;Hello, Python!&quot;</span>)
+
+<span class="func">say_hello</span>()
+
+</div>
+        </div>
+      </div>
+      <div class="slide content">
+        <h2>1. 参数传递 — 位置与关键字
+        </h2>
+        <div class="content-body">
+          <p>Python 支持多种传参方式，灵活组合使用。
+          </p>
+          <div class="code-block">
+<span class="com"># 位置参数：按顺序传递</span>
+<span class="func">defgreet</span>(<span class="var">name</span>,<span class="var">greeting</span>):
+<span class="func">print</span>(f&quot;{<span class="var">greeting</span>}, {<span class="var">name</span>}!&quot;)
+<span class="func">greet</span>(<span class="str">&quot;Alice&quot;</span>,<span class="str">&quot;Good morning&quot;</span>)
+<span class="com"># 关键字参数：指定参数名，顺序无关</span>
+<span class="func">greet</span>(<span class="var">greeting</span>=<span class="str">&quot;Hi&quot;</span>,<span class="var">name</span>=<span class="str">&quot;Bob&quot;</span>)
+<span class="com"># 默认值参数</span>
+<span class="func">defpower</span>(<span class="var">base</span>,<span class="var">exp</span>=<span class="num">2</span>):
+<span class="var">returnbase</span>**<span class="var">exp</span>
+<span class="func">print</span>(<span class="func">power</span>(<span class="num">3</span>))
+<span class="com"># 9 (3²)</span>
+<span class="func">print</span>(<span class="func">power</span>(<span class="num">2</span>,<span class="num">3</span>))
+<span class="com"># 8 (2³)</span>
+
+</div>
+          <p>
+            <b>注意
+            </b>
+            ：默认参数如果使用可变对象（如列表），可能存在副作用。
+          </p>
+        </div>
+      </div>
+      <div class="slide content">
+        <h2>1. 可变参数 *args 与 **kwargs
+        </h2>
+        <div class="content-body">
+          <p>当参数数量不确定时，使用可变参数收集所有传入值。
+          </p>
+          <div class="code-block">
+<span class="com"># *args 收集多余的位置参数，变为元组</span>
+
+<span class="func">deftotal</span>(*<span class="var">args</span>):
+
+<span class="var">result</span>=<span class="num">0</span>
+
+<span class="var">fornuminargs</span>:
+
+<span class="var">result</span>+=<span class="var">num</span>
+
+<span class="var">returnresult</span>
+
+<span class="func">print</span>(<span class="func">total</span>(<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>))
+
+<span class="com"># 6</span>
+
+<span class="func">print</span>(<span class="func">total</span>(<span class="num">10</span>,<span class="num">20</span>))
+
+<span class="com"># 30</span>
+
+</div>
+          <div class="code-block">
+<span class="com"># **kwargs 收集多余的关键字参数，变为字典</span>
+
+<span class="func">defprofile</span>(**<span class="var">kwargs</span>):
+
+<span class="var">forkey</span>,<span class="var">valueinkwargs</span>.
+
+<span class="func">items</span>():
+
+<span class="func">print</span>(f&quot;{<span class="var">key</span>}: {<span class="var">value</span>}&quot;)
+
+<span class="func">profile</span>(<span class="var">name</span>=<span class="str">&quot;Alice&quot;</span>,<span class="var">age</span>=<span class="num">25</span>,<span class="var">city</span>=<span class="str">&quot;Beijing&quot;</span>)
+
+</div>
+        </div>
+      </div>
+      <div class="slide content">
+        <h2>1. 作用域 — 局部变量与全局变量
+        </h2>
+        <div class="content-body">
+          <p>变量在哪里定义，决定了它能被谁访问。
+          </p>
+          <div class="code-block">
+<span class="var">x</span>=<span class="num">10</span>
+
+
+
+<span class="com"># 全局变量</span>
+
+<span class="func">defdemo</span>():
+
+<span class="var">y</span>=<span class="num">5</span>
+
+
+
+<span class="com"># 局部变量，只能在函数内访问</span>
+
+<span class="func">print</span>(<span class="var">y</span>)
+
+<span class="com"># 5</span>
+
+<span class="func">print</span>(<span class="var">x</span>)
+
+<span class="com"># 10 (可以读取全局变量)</span>
+
+<span class="func">demo</span>()
+
+<span class="com"># print(y) # 错误！y 在函数外部不存在</span>
+
+</div>
+          <p>
+            <b>global 关键字
+            </b>
+            ：在函数内部修改全局变量。
+          </p>
+          <div class="code-block">
+<span class="var">count</span>=<span class="num">0</span>
+<span class="func">defincrement</span>():
+<span class="var">globalcount</span>
+<span class="var">count</span>+=<span class="num">1</span>
+<span class="func">increment</span>()
+<span class="func">print</span>(<span class="var">count</span>)
+<span class="com"># 1</span>
+
+</div>
+          <p>
+            <b>LEGB 规则
+            </b>
+            ：查找顺序为
+            <b>L
+            </b>
+            ocal →
+            <b>E
+            </b>
+            nclosing →
+            <b>G
+            </b>
+            lobal →
+            <b>B
+            </b>
+            uilt-in。
+          </p>
+        </div>
+      </div>
+      <div class="slide content">
+        <h2>2. 函数式编程实例
+        </h2>
+        <div class="content-body">
+          <p>Python 支持一等函数（函数可以作为参数、返回值）。
+          </p>
+          <div class="code-block">
+<span class="com"># 高阶函数：接收函数作为参数</span>
+<span class="func">defapply_twice</span>(<span class="var">f</span>,<span class="var">x</span>):
+<span class="kw">return</span>
+<span class="func">f</span>(<span class="func">f</span>(<span class="var">x</span>))
+<span class="func">defadd_ten</span>(<span class="var">x</span>):
+<span class="var">returnx</span>+<span class="num">10</span>
+<span class="func">print</span>(<span class="func">apply_twice</span>(<span class="var">add_ten</span>,<span class="num">5</span>))
+<span class="com"># 25</span>
+
+</div>
+          <p>
+            <b>map / filter / reduce
+            </b>
+            ：经典函数式工具。
+          </p>
+          <div class="code-block">
+<span class="var">nums</span> = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>]
+
+<span class="com"># map: 对每个元素应用函数</span>
+
+<span class="var">squares</span> = <span class="func">list</span>(<span class="func">map</span>(<span class="kw">lambda</span> <span class="var">x</span>: <span class="var">x</span>**<span class="num">2</span>, <span class="var">nums</span>))
+
+<span class="com"># [1, 4, 9, 16, 25]</span>
+
+<span class="com"># filter: 保留满足条件的元素</span>
+
+<span class="var">evens</span> = <span class="func">list</span>(<span class="func">filter</span>(<span class="kw">lambda</span> <span class="var">x</span>: <span class="var">x</span> % <span class="num">2</span> == <span class="num">0</span>, <span class="var">nums</span>))
+
+<span class="com"># [2, 4]</span>
+</div>
+        </div>
+      </div>
+      <div class="slide content">
+        <h2>2. 递归函数
+        </h2>
+        <div class="content-body">
+          <p>函数
+            <strong>调用自身
+            </strong>
+            来解决子问题。必须有
+            <strong>终止条件
+            </strong>
+            ，否则无限递归。
+          </p>
+          <div class="code-block">
+<span class="com"># 阶乘: n! = n × (n-1) × ... × 1</span>
+
+<span class="func">deffactorial</span>(<span class="var">n</span>):
+
+<span class="var">ifn</span>&lt;=<span class="num">1</span>:
+
+<span class="var">return1</span>
+
+<span class="var">returnn</span>*
+
+<span class="func">factorial</span>(<span class="var">n</span>-<span class="num">1</span>)
+
+<span class="func">print</span>(<span class="func">factorial</span>(<span class="num">5</span>))
+
+<span class="com"># 120</span>
+
+</div>
+          <div class="code-block">
+<span class="com"># 斐波那契数列</span>
+
+<span class="func">deffib</span>(<span class="var">n</span>):
+
+<span class="var">ifn</span>&lt;=<span class="num">1</span>:
+
+<span class="var">returnn</span>
+
+<span class="kw">return</span>
+
+<span class="func">fib</span>(<span class="var">n</span>-<span class="num">1</span>)+
+
+<span class="func">fib</span>(<span class="var">n</span>-<span class="num">2</span>)
+
+<span class="func">foriinrange</span>(<span class="num">10</span>):
+
+<span class="func">print</span>(<span class="func">fib</span>(<span class="var">i</span>),<span class="var">end</span>=<span class="str">&quot; &quot;</span>)
+
+<span class="com"># 0 1 1 2 3 5 8 13 21 34</span>
+
+</div>
+          <p>
+            <b>注意
+            </b>
+            ：递归虽然优雅，但深度过大时会栈溢出。Python 默认递归深度限制为1000。
+          </p>
+        </div>
+      </div>
+      <div class="slide content">
+        <h2>3. 匿名函数 lambda
+        </h2>
+        <div class="content-body">
+          <p>
+            <b>lambda
+            </b>
+            用于创建
+            <strong>小型、一次性
+            </strong>
+            的匿名函数，语法紧凑。
+          </p>
+          <div class="code-block">
+<span class="com"># 普通函数</span>
+
+<span class="func">defsquare</span>(<span class="var">x</span>):
+
+<span class="var">returnx</span>**<span class="num">2</span>
+
+<span class="com"># 等价的 lambda</span>
+
+<span class="var">square</span>=<span class="var">lambdax</span>:<span class="var">x</span>**<span class="num">2</span>
+
+<span class="func">print</span>(<span class="func">square</span>(<span class="num">5</span>))
+
+<span class="com"># 25</span>
+
+</div>
+          <p>
+            <b>lambda 的典型使用场景
+            </b>
+            ：
+          </p>
+          <div class="code-block">
+<span class="com"># 作为排序的 key</span>
+
+<span class="var">students</span>=[(<span class="str">&quot;Alice&quot;</span>,<span class="num">85</span>),(<span class="str">&quot;Bob&quot;</span>,<span class="num">92</span>),(<span class="str">&quot;Carol&quot;</span>,<span class="num">78</span>)]<span class="var">students</span>.
+
+<span class="func">sort</span>(<span class="var">key</span>=<span class="var">lambdax</span>:<span class="var">x</span>[<span class="num">1</span>])
+
+<span class="com"># 按成绩排序</span>
+
+<span class="com"># 配合 map 使用</span>
+
+<span class="var">nums</span>=[<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>,<span class="num">4</span>]
+
+<span class="var">doubled</span>=
+
+<span class="func">list</span>(<span class="func">map</span>(<span class="var">lambdax</span>:<span class="var">x</span>*<span class="num">2</span>,<span class="var">nums</span>))
+
+<span class="com"># [2, 4, 6, 8]</span>
+
+</div>
+          <p>
+            <b>限制
+            </b>
+            ：lambda 只能写单行表达式，不能包含语句（如赋值、循环）。
+          </p>
+        </div>
+      </div>
+      <div class="slide content">
+        <h2>4. 面向过程 vs 面向对象
+        </h2>
+        <div class="content-body">
+          <p>函数是实现
+            <strong>面向过程编程
+            </strong>
+            的核心工具。它将程序分解为按步骤执行的函数调用链。
+          </p>
+          <div class="code-block">
+<span class="com"># 面向过程：模拟体育比赛</span>
+
+<span class="func">defget_inputs</span>():
+
+<span class="var">prob_a</span>=
+
+<span class="func">float</span>(<span class="func">input</span>(<span class="str">&quot;选手A胜率: &quot;</span>))
+
+<span class="var">prob_b</span>=
+
+<span class="func">float</span>(<span class="func">input</span>(<span class="str">&quot;选手B胜率: &quot;</span>))
+
+<span class="var">n</span>=
+
+<span class="func">int</span>(<span class="func">input</span>(<span class="str">&quot;比赛场次: &quot;</span>))
+
+<span class="var">returnprob_a</span>,<span class="var">prob_b</span>,<span class="var">n</span>
+
+<span class="func">defsim_one_game</span>(<span class="var">prob_a</span>,<span class="var">prob_b</span>):
+
+<span class="com"># 模拟一场比赛</span>
+
+<span class="var">importrandomscore_a</span>,
+
+<span class="var">score_b</span>=<span class="num">0</span>,<span class="num">0</span>
+
+<span class="func">whilenotgame_over</span>(<span class="var">score_a</span>,<span class="var">score_b</span>):
+
+<span class="var">ifrandom</span>.
+
+<span class="func">random</span>()&lt;<span class="var">prob_a</span>:
+
+<span class="var">score_a</span>+=<span class="num">1</span>
+
+<span class="kw">else</span>:
+
+<span class="var">score_b</span>+=<span class="num">1</span>
+
+<span class="var">returnscore_a</span>,<span class="var">score_b</span>
+
+</div>
+          <p>面向过程适合
+            <strong>流程清晰、步骤明确
+            </strong>
+            的任务。当数据与操作变得复杂时，面向对象更合适。
+          </p>
+        </div>
+      </div>
+      <div class="slide content">
+        <h2>模块化设计思想
+        </h2>
+        <div class="content-body">
+          <p>将大型程序拆分为
+            <strong>主程序 + 多个功能函数
+            </strong>
+            ，每个函数职责单一。
+          </p>
+          <div class="code-block">
+<span class="com"># main.py — 主程序框架</span>
+
+<span class="func">defmain</span>():
+
+<span class="var">prob_a</span>,<span class="var">prob_b</span>,
+
+<span class="var">n</span>=
+
+<span class="func">get_inputs</span>()<span class="var">wins_a</span>,
+
+<span class="var">wins_b</span>=
+
+<span class="func">sim_n_games</span>(<span class="var">prob_a</span>,<span class="var">prob_b</span>,<span class="var">n</span>)
+
+<span class="func">print_summary</span>(<span class="var">wins_a</span>,<span class="var">wins_b</span>)
+
+<span class="func">defget_inputs</span>():
+
+<span class="com"># 获取用户输入</span>
+
+<span class="kw">pass</span>
+
+<span class="func">defsim_n_games</span>(<span class="var">prob_a</span>,<span class="var">prob_b</span>,<span class="var">n</span>):
+
+<span class="com"># 模拟n场比赛</span>
+
+<span class="kw">pass</span>
+
+<span class="func">defprint_summary</span>(<span class="var">wins_a</span>,<span class="var">wins_b</span>):
+
+<span class="com"># 输出结果</span>
+
+<span class="kw">pass</span>
+
+<span class="var">if__name__</span>==<span class="str">&quot;__main__&quot;</span>:
+
+<span class="func">main</span>()
+
+</div>
+          <p>
+            <b>if __name__ == "__main__"
+            </b>
+            ：确保模块被直接运行时才执行主程序，被导入时不执行。
+          </p>
+        </div>
+      </div>
+      <div class="slide content">
+        <h2>综合练习：模块化温度转换器
+        </h2>
+        <div class="content-body">
+          <div class="code-block">
+<span class="com"># 温度转换模块</span>
+<span class="func">defc_to_f</span>(<span class="var">c</span>):
+<span class="str">&quot;&quot;&quot;摄氏度转华氏度&quot;&quot;&quot;</span>
+<span class="var">returnc</span>*<span class="num">9</span>/<span class="num">5</span>+<span class="num">32</span>
+<span class="func">deff_to_c</span>(<span class="var">f</span>):
+<span class="str">&quot;&quot;&quot;华氏度转摄氏度&quot;&quot;&quot;</span>
+<span class="kw">return</span>(<span class="var">f</span>-<span class="num">32</span>)*<span class="num">5</span>/<span class="num">9</span>
+<span class="func">defbatch_convert</span>(<span class="var">temps</span>,<span class="var">direction</span>=<span class="str">&quot;c2f&quot;</span>):
+<span class="str">&quot;&quot;&quot;批量转换&quot;&quot;&quot;</span>
+<span class="var">func</span>=<span class="var">c_to_f</span>
+<span class="var">ifdirection</span>==<span class="str">&quot;c2f&quot;</span>
+<span class="var">elsef_to_creturn</span>[<span class="func">func</span>(<span class="var">t</span>)<span class="var">fortintemps</span>]
+<span class="com"># 使用</span>
+<span class="var">celsius</span>=[<span class="num">0</span>,<span class="num">10</span>,<span class="num">20</span>,<span class="num">30</span>,<span class="num">40</span>]
+<span class="var">fahrenheit</span>=
+<span class="func">batch_convert</span>(<span class="var">celsius</span>)
+<span class="func">print</span>(<span class="var">fahrenheit</span>)
+<span class="com"># [32.0, 50.0, 68.0, 86.0, 104.0]</span>
+
+</div>
+        </div>
+      </div>
+      <div class="slide summary">
+        <h2>本章总结
+        </h2>
+        <ul>
+          <li>函数通过 def 定义，实现代码复用与模块化
+          </li>
+          <li>参数支持位置、关键字、默认值、可变参数等多种形式
+          </li>
+          <li>作用域分为局部与全局，global 可修改全局变量
+          </li>
+          <li>函数是一等公民，可作为参数和返回值（高阶函数）
+          </li>
+          <li>lambda 创建匿名函数，适合简短的一次性逻辑
+          </li>
+          <li>递归函数需设置终止条件，避免无限递归
+          </li>
+          <li>面向过程通过函数分解任务，模块化设计提升可维护性
+          </li>
+        </ul>
+        <div style="text-align:center; margin-top:30px;">
+          <a href="Python基础_第07章_类_PPT.html" style="display:inline-block; padding:10px 28px; background:rgba(255,255,255,0.9); color:#1a2a6c; text-decoration:none; border-radius:8px; font-size:16px; font-weight:600;">下一章 ▶</a>
+        </div>
+      </div>
+      <!-- Slide 1: Cover -->
+      <!-- Slide 2: TOC -->
+      <!-- Slide 3: 为什么需要函数 -->
+      <!-- Slide 4: 定义与调用 -->
+      <!-- Slide 5: 参数传递 -->
+      <!-- Slide 6: 可变参数 -->
+      <!-- Slide 7: 作用域 -->
+      <!-- Slide 8: 函数式编程实例 -->
+      <!-- Slide 9: 递归函数 -->
+      <!-- Slide 10: 匿名函数 lambda -->
+      <!-- Slide 11: 面向过程 -->
+      <!-- Slide 12: 模块化设计 -->
+      <!-- Slide 13: 综合练习 -->
+      <!-- Slide 14: Summary -->
+      <!-- Progress bar -->
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress">
+        </div>
+      </div>
+      <div class="nav">
+        <button onclick="prevSlide()">◀ 上一页
+        </button>
+        <span class="page-num" id="pageNum">1 / 14
+        </span>
+        <button onclick="nextSlide()">下一页 ▶
+        </button>
+      </div>
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let current = 0;
+  const total = slides.length;
+
+  function show(i) {
+    if (i < 0) i = 0;
+    if (i >= total) i = total - 1;
+    slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+    current = i;
+    document.getElementById('progress').style.width = ((current + 1) / total * 100) + '%';
+    document.getElementById('pageNum').textContent = (current + 1) + ' / ' + total;
+  }
+
+  function nextSlide() { show(current + 1); }
+  function prevSlide() { show(current - 1); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+      e.preventDefault(); nextSlide();
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault(); prevSlide();
+    } else if (e.key === 'Home') {
+      e.preventDefault(); show(0);
+    } else if (e.key === 'End') {
+      e.preventDefault(); show(total - 1);
+    }
+  });
+
+  show(0);
+
+  // ===== 代码复制功能 =====
+  document.querySelectorAll('pre').forEach(pre => {
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '复制';
+    btn.type = 'button';
+    btn.addEventListener('click', () => {
+      const code = pre.querySelector('code');
+      const text = code ? code.innerText : pre.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 1500);
+      }).catch(() => {
+        // fallback
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta);
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+
+</script>
+    </body>
+  </html>

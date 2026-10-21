@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+  <html lang="zh-CN">
+    <head>
+      <meta charset="utf-8"/>
+      <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+      <title>Python 基础 — 第十章 · Python 标准库
+      </title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; overflow: hidden; }
+    .slides { width: 100%; height: 100%; position: relative; }
+    .slide {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      display: none; flex-direction: column; justify-content: center; align-items: center;
+      padding: 60px 80px; transition: opacity 0.3s;
+    }
+    .slide.active { display: flex; }
+
+    /* 封面 */
+    .slide-cover { background: linear-gradient(135deg, #1a2a6c 0%, #2d5a87 50%, #007acc 100%); color: white; }
+    .slide-cover h1 { font-size: 52px; font-weight: 700; margin-bottom: 16px; letter-spacing: 2px; }
+    .slide-cover .subtitle { font-size: 24px; opacity: 0.85; margin-bottom: 40px; }
+    .slide-cover .tag { display: inline-block; background: rgba(255,255,255,0.15); padding: 8px 20px; border-radius: 20px; font-size: 14px; }
+
+    /* 内容页 */
+    .slide-content { background: #f8f9fa; color: #222; }
+    .slide-content h2 { font-size: 36px; color: #1a2a6c; margin-bottom: 40px; border-left: 6px solid #007acc; padding-left: 20px; }
+    .slide-content ul { list-style: none; width: 100%; max-width: 900px; }
+    .slide-content li { font-size: 22px; line-height: 1.8; margin-bottom: 20px; padding-left: 32px; position: relative; }
+    .slide-content li::before { content: "▸"; position: absolute; left: 0; color: #007acc; font-weight: bold; }
+    .slide-content .highlight { background: #fff3cd; padding: 2px 8px; border-radius: 4px; }
+    .slide-content .code { background: #1e1e1e; color: #d4d4d4; padding: 20px 24px; border-radius: 8px; font-family: "Consolas", "Monaco", monospace; font-size: 16px; line-height: 1.6; width: 100%; max-width: 900px; margin-top: 20px; overflow-x: auto; white-space: pre; }
+    .slide-content .code .comment { color: #6a9955; }
+    .slide-content .code .cmd { color: #ce9178; }
+    .slide-content .code .keyword { color: #569cd6; }
+    .slide-content .code .string { color: #ce9178; }
+    .slide-content .code .number { color: #b5cea8; }
+    .slide-content .code .function { color: #dcdcaa; }
+    .slide-content .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; width: 100%; max-width: 900px; }
+    .slide-content .card { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .slide-content .card h3 { font-size: 20px; color: #1a2a6c; margin-bottom: 12px; }
+    .slide-content .card p { font-size: 16px; color: #555; line-height: 1.7; }
+
+    /* 总结 */
+    .slide-end { background: linear-gradient(135deg, #2d5a87 0%, #007acc 100%); color: white; }
+    .slide-end h2 { font-size: 40px; margin-bottom: 30px; }
+    .slide-end p { font-size: 22px; opacity: 0.9; }
+    .nav { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 100; }
+    .nav button {
+      background: rgba(0,0,0,0.3); color: white; border: none; padding: 10px 24px;
+      border-radius: 6px; cursor: pointer; font-size: 14px; backdrop-filter: blur(4px);
+    }
+    .nav button:hover { background: rgba(0,0,0,0.5); }
+    .nav .page-num { background: #007acc; color: white; font-size: 14px; line-height: 36px; padding: 0 14px; border-radius: 6px; margin: 0 10px; }
+    @media (max-width: 900px) and (orientation: landscape) {
+      .slide { padding: 20px 30px !important; }
+      .slide h1 { font-size: 1.8rem !important; }
+      .slide h2 { font-size: 1.4rem !important; }
+      .slide h3 { font-size: 1.1rem !important; }
+      .slide p, .slide li { font-size: 0.9rem !important; line-height: 1.5 !important; }
+      .slide-content .code { font-size: 0.75rem !important; padding: 10px !important; }
+      .nav button { padding: 6px 14px !important; font-size: 12px !important; }
+      .nav .page-num { font-size: 12px !important; padding: 0 10px !important; }
+    }
+  
+    /* 微信公众号推荐 */
+    .wx-promo {
+      margin-top: 40px;
+      padding-top: 30px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .wx-promo-text {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+    .wx-promo-images {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+    }
+    .wx-promo-images img {
+      width: 360px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 2px solid rgba(0, 122, 204, 0.3);
+    }
+    .slide-cover .wx-promo-text,
+    .slide-end .wx-promo-text,
+    .cover .wx-promo-text,
+    .summary .wx-promo-text {
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .slide-cover .wx-promo-images img,
+    .slide-end .wx-promo-images img,
+    .cover .wx-promo-images img,
+    .summary .wx-promo-images img {
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+  /* ===== 代码复制按钮 ===== */
+  pre { position: relative; }
+  .copy-btn {
+    position: absolute; top: 8px; right: 8px;
+    padding: 4px 10px; font-size: 12px; line-height: 1.4;
+    color: #ccc; background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 4px;
+    cursor: pointer; opacity: 0; transition: opacity 0.2s, background 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    z-index: 10;
+  }
+  pre:hover .copy-btn { opacity: 1; }
+  .copy-btn:hover { background: rgba(255,255,255,0.25); color: #fff; }
+  .copy-btn.copied { color: #4ec9b0; border-color: #4ec9b0; background: rgba(78,201,176,0.15); opacity: 1; }
+
+</style>
+    </head>
+    <body>
+      <div class="progress" id="progress" style="position: fixed; top: 0; left: 0; height: 3px; background: #007acc; transition: width 0.3s; z-index: 100;">
+      </div>
+      <div class="slides">
+        <div class="slide slide-cover active">
+          <h1>Python 基础
+          </h1>
+          <p class="subtitle">第十章 · Python 标准库
+          </p>
+          <span class="tag">配合机器学习系列课程
+          </span>
+          <div class="wx-promo">
+            <p class="wx-promo-text">欢迎关注微信公众号
+            </p>
+            <div class="wx-promo-images">
+              <img alt="coder程" src="../asset/coder程.png"/>
+              <img alt="查令十街84号" src="../asset/查令十街84号.png"/>
+            </div>
+          </div>
+        </div>
+        <div class="slide slide-content">
+          <h2>本章目录
+          </h2>
+          <div class="grid">
+            <div class="card">
+              <h3>1. time 库
+              </h3>
+              <p>时间戳、格式化、计时器、休眠
+              </p>
+            </div>
+            <div class="card">
+              <h3>2. random 库
+              </h3>
+              <p>随机数生成、随机选择、打乱顺序
+              </p>
+            </div>
+            <div class="card">
+              <h3>3. collections 库
+              </h3>
+              <p>Counter、defaultdict、deque、namedtuple
+              </p>
+            </div>
+            <div class="card">
+              <h3>4. itertools 库
+              </h3>
+              <p>无限迭代器、排列组合、分组
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="slide slide-content">
+          <h2>time 库 — 时间处理
+          </h2>
+          <ul>
+            <li>
+              <span class="highlight">time.time()
+              </span>
+              返回当前时间戳（秒，浮点数）
+            </li>
+            <li>
+              <span class="highlight">time.sleep(n)
+              </span>
+              暂停执行 n 秒
+            </li>
+            <li>
+              <span class="highlight">time.localtime()
+              </span>
+              将时间戳转为本地时间结构体
+            </li>
+            <li>
+              <span class="highlight">time.strftime()
+              </span>
+              格式化时间为字符串
+            </li>
+          </ul>
+          <div class="code">
+importtime
+<span class="comment"># 获取当前时间戳</span>
+now=time.
+<span class="function">time</span>()
+<span class="function">print</span>(now)
+<span class="comment"># 1714381200.12345</span>
+<span class="comment"># 格式化输出</span>
+formatted=time.
+<span class="function">strftime</span>(<span class="string">&quot;%Y-%m-%d %H:%M:%S&quot;</span>)
+<span class="function">print</span>(formatted)
+<span class="comment"># 2025-04-23 18:20:00</span>
+<span class="comment"># 计时器</span>
+start=time.
+<span class="function">time</span>()
+<span class="function">foriinrange</span>(<span class="number">1000000</span>):
+<span class="keyword">pass</span>
+<span class="function">print</span>(f&quot;耗时: {time.<span class="function">time</span>()-start: .4f } 秒&quot;)
+<span class="comment"># 休眠</span>
+<span class="function">print</span>(<span class="string">&quot;3秒后开始...&quot;</span>)time.
+<span class="function">sleep</span>(<span class="number">3</span>)
+
+</div>
+        </div>
+        <div class="slide slide-content">
+          <h2>time 库 — 结构化时间与字符串转换
+          </h2>
+          <div class="grid">
+            <div class="card">
+              <h3>struct_time 结构体
+              </h3>
+              <p>tm_year, tm_mon, tm_mday
+              </p>
+              <p>tm_hour, tm_min, tm_sec
+              </p>
+              <p>tm_wday（周一为0）, tm_yday
+              </p>
+            </div>
+            <div class="card">
+              <h3>常用格式符
+              </h3>
+              <p>%Y — 四位年份，%m — 月份
+              </p>
+              <p>%d — 日期，%H — 24小时
+              </p>
+              <p>%M — 分钟，%S — 秒
+              </p>
+            </div>
+          </div>
+          <div class="code">
+<span class="keyword">import</span>
+
+
+time
+
+<span class="comment"># 时间戳 → 结构化时间</span>
+
+
+ts=time.
+
+time
+
+
+()
+
+st=time.
+
+localtime
+
+
+(ts)
+
+<span class="function">print</span>
+
+
+(st.tm_year,st.tm_mon,st.tm_mday)
+
+<span class="comment"># 字符串 → 结构化时间</span>
+
+
+str_time=
+
+<span class="string">&quot;2025-04-23 18:30:00&quot;</span>
+
+
+st=time.
+
+strptime
+
+
+(str_time,
+
+<span class="string">&quot;%Y-%m-%d %H:%M:%S&quot;</span>
+
+
+)
+
+<span class="function">print</span>
+
+
+(st)
+
+<span class="comment"># 结构化时间 → 时间戳</span>
+
+
+ts=time.
+
+mktime
+
+
+(st)
+
+<span class="function">print</span>
+
+
+(ts)
+
+</div>
+        </div>
+        <div class="slide slide-content">
+          <h2>random 库 — 随机数生成
+          </h2>
+          <ul>
+            <li>
+              <span class="highlight">random.random()
+              </span>
+              — [0, 1) 范围内的随机浮点数
+            </li>
+            <li>
+              <span class="highlight">random.randint(a, b)
+              </span>
+              — [a, b] 范围内的随机整数
+            </li>
+            <li>
+              <span class="highlight">random.uniform(a, b)
+              </span>
+              — [a, b] 范围内的随机浮点数
+            </li>
+            <li>
+              <span class="highlight">random.choice(seq)
+              </span>
+              — 从序列中随机选择一个元素
+            </li>
+          </ul>
+          <div class="code">
+importrandom
+
+<span class="comment"># 随机浮点数</span>
+
+<span class="function">print</span>(random.<span class="function">random</span>())
+
+<span class="comment"># 0.372...</span>
+
+<span class="function">print</span>(random.<span class="function">uniform</span>(<span class="number">10</span>,<span class="number">20</span>))
+
+<span class="comment"># 14.56...</span>
+
+<span class="comment"># 随机整数</span>
+
+<span class="function">print</span>(random.<span class="function">randint</span>(<span class="number">1</span>,<span class="number">6</span>))
+
+<span class="comment"># 模拟骰子：1~6</span>
+
+<span class="function">print</span>(random.<span class="function">randrange</span>(<span class="number">0</span>,<span class="number">100</span>,<span class="number">2</span>))
+
+<span class="comment"># 0~98 的偶数</span>
+
+<span class="comment"># 随机选择</span>
+
+cards=[<span class="string">&quot;A&quot;</span>,<span class="string">&quot;2&quot;</span>,<span class="string">&quot;3&quot;</span>,<span class="string">&quot;4&quot;</span>,<span class="string">&quot;5&quot;</span>]
+
+<span class="function">print</span>(random.<span class="function">choice</span>(cards))
+
+<span class="comment"># 设置随机种子（可复现）</span>
+
+random.
+
+<span class="function">seed</span>(<span class="number">42</span>)
+
+<span class="function">print</span>(random.<span class="function">random</span>())
+
+<span class="comment"># 每次运行结果相同</span>
+
+</div>
+        </div>
+        <div class="slide slide-content">
+          <h2>random 库 — 采样与打乱
+          </h2>
+          <div class="grid">
+            <div class="card">
+              <h3>random.shuffle(list)
+              </h3>
+              <p>原地打乱列表顺序
+              </p>
+              <p>不返回新列表
+              </p>
+              <p>适用于洗牌、随机排序
+              </p>
+            </div>
+            <div class="card">
+              <h3>random.sample(pop, k)
+              </h3>
+              <p>从总体中无放回地抽取 k 个
+              </p>
+              <p>返回新列表，不改变原序列
+              </p>
+              <p>适用于抽样、抽奖
+              </p>
+            </div>
+          </div>
+          <div class="code">
+importrandom
+
+<span class="comment"># 打乱列表（原地）</span>
+
+deck=
+
+<span class="function">list</span>(<span class="function">range</span>(<span class="number">1</span>,<span class="number">53</span>))
+
+<span class="comment"># 52张牌</span>
+
+random.
+
+<span class="function">shuffle</span>(deck)
+
+<span class="function">print</span>(deck[:<span class="number">5</span>])
+
+<span class="comment"># 前5张牌</span>
+
+<span class="comment"># 随机抽样（无放回）</span>
+
+students=[<span class="string">&quot;Alice&quot;</span>,<span class="string">&quot;Bob&quot;</span>,<span class="string">&quot;Charlie&quot;</span>,<span class="string">&quot;David&quot;</span>,<span class="string">&quot;Eve&quot;</span>]
+
+winners=random.
+
+<span class="function">sample</span>(students,<span class="number">3</span>)
+
+<span class="function">print</span>(winners)
+
+<span class="comment"># 加权随机选择</span>
+
+choices=[<span class="string">&quot;A&quot;</span>,<span class="string">&quot;B&quot;</span>,<span class="string">&quot;C&quot;</span>]
+
+weights=[<span class="number">0.7</span>,<span class="number">0.2</span>,<span class="number">0.1</span>]
+
+result=random.
+
+<span class="function">choices</span>(choices,weights=weights,k=<span class="number">10</span>)
+
+<span class="function">print</span>(result)
+
+</div>
+        </div>
+        <div class="slide slide-content">
+          <h2>collections — Counter 计数器
+          </h2>
+          <ul>
+            <li>
+              <span class="highlight">Counter
+              </span>
+              是 dict 的子类，用于统计可哈希对象的频次
+            </li>
+            <li>自动为不存在的键返回 0，不会 KeyError
+            </li>
+            <li>支持数学运算：+、-、&amp;、|
+            </li>
+          </ul>
+          <div class="code">
+<span class="keyword">from</span>
+
+
+collections
+
+<span class="keyword">import</span>
+
+
+Counter
+
+<span class="comment"># 统计字符频率</span>
+
+
+text=
+
+<span class="string">&quot;hello world&quot;</span>
+
+
+counts=
+
+<span class="function">Counter</span>(text)
+
+<span class="function">print</span>
+
+
+(counts)
+
+<span class="comment"># Counter({&#x27;l&#x27;: 3, &#x27;o&#x27;: 2, &#x27;h&#x27;: 1, &#x27;e&#x27;: 1, &#x27; &#x27;: 1, &#x27;w&#x27;: 1, &#x27;r&#x27;: 1, &#x27;d&#x27;: 1})</span>
+
+
+<span class="comment"># 统计单词</span>
+
+
+words=[
+
+<span class="string">&quot;apple&quot;</span>
+
+
+,
+
+<span class="string">&quot;banana&quot;</span>
+
+
+,
+
+<span class="string">&quot;apple&quot;</span>
+
+
+,
+
+<span class="string">&quot;cherry&quot;</span>
+
+
+,
+
+<span class="string">&quot;banana&quot;</span>
+
+
+,
+
+<span class="string">&quot;apple&quot;</span>
+
+
+]
+
+word_counts=
+
+<span class="function">Counter</span>(words)
+
+<span class="function">print</span>
+
+
+(word_counts.
+
+<span class="function">most_common</span>
+
+
+(
+
+<span class="number">2</span>
+
+
+))
+
+<span class="comment"># [(&#x27;apple&#x27;, 3), (&#x27;banana&#x27;, 2)]</span>
+
+
+<span class="comment"># 更新计数</span>
+
+
+word_counts.
+
+update
+
+
+([
+
+<span class="string">&quot;apple&quot;</span>
+
+
+,
+
+<span class="string">&quot;date&quot;</span>
+
+
+])
+
+<span class="function">print</span>
+
+
+(word_counts[
+
+<span class="string">&quot;apple&quot;</span>
+
+
+])
+
+<span class="comment"># 4</span>
+
+</div>
+        </div>
+        <div class="slide slide-content">
+          <h2>collections — defaultdict
+          </h2>
+          <ul>
+            <li>
+              <span class="highlight">defaultdict
+              </span>
+              为不存在的键自动提供默认值
+            </li>
+            <li>传入工厂函数：list、dict、set、int 等
+            </li>
+            <li>免去手动检查键是否存在的繁琐代码
+            </li>
+          </ul>
+          <div class="code">
+fromcollections
+
+importdefaultdict
+
+<span class="comment"># 用 list 作默认值：自动分组</span>
+
+groups=
+
+<span class="function">defaultdict</span>(<span class="function">list</span>)
+
+students=[(<span class="string">&quot;A&quot;</span>,<span class="number">85</span>),(<span class="string">&quot;B&quot;</span>,<span class="number">92</span>),(<span class="string">&quot;A&quot;</span>,<span class="number">78</span>),(<span class="string">&quot;B&quot;</span>,<span class="number">88</span>)]
+
+forname,scoreinstudents:
+
+groups[name].
+
+<span class="function">append</span>(score)
+
+<span class="function">print</span>(<span class="function">dict</span>(groups))
+
+<span class="comment"># {&#x27;A&#x27;: [85, 78], &#x27;B&#x27;: [92, 88]}</span>
+
+<span class="comment"># 用 int 作默认值：自动计数</span>
+
+counts=
+
+<span class="function">defaultdict</span>(<span class="function">int</span>)
+
+forcharin<span class="string">&quot;hello&quot;</span>:
+
+counts[char]+=<span class="number">1</span>
+
+<span class="function">print</span>(<span class="function">dict</span>(counts))
+
+<span class="comment"># {&#x27;h&#x27;: 1, &#x27;e&#x27;: 1, &#x27;l&#x27;: 2, &#x27;o&#x27;: 1}</span>
+
+</div>
+        </div>
+        <div class="slide slide-content">
+          <h2>collections — deque 双端队列
+          </h2>
+          <div class="grid">
+            <div class="card">
+              <h3>deque 优势
+              </h3>
+              <p>两端插入/删除都是 O(1)
+              </p>
+              <p>列表头部操作是 O(n)
+              </p>
+              <p>适用于队列、滑动窗口
+              </p>
+            </div>
+            <div class="card">
+              <h3>常用方法
+              </h3>
+              <p>append() / pop() — 右端
+              </p>
+              <p>appendleft() / popleft() — 左端
+              </p>
+              <p>rotate(n) — 循环旋转
+              </p>
+            </div>
+          </div>
+          <div class="code">
+fromcollections
+
+importdeque
+
+<span class="comment"># 创建双端队列</span>
+
+dq=
+
+<span class="function">deque</span>([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>])
+
+<span class="comment"># 两端操作</span>
+
+dq.
+
+<span class="function">append</span>(<span class="number">4</span>)
+
+<span class="comment"># 右端添加: [1,2,3,4]</span>
+
+dq.
+
+<span class="function">appendleft</span>(<span class="number">0</span>)
+
+<span class="comment"># 左端添加: [0,1,2,3,4]</span>
+
+dq.
+
+<span class="function">pop</span>()
+
+<span class="comment"># 弹出右端: 4</span>
+
+dq.
+
+<span class="function">popleft</span>()
+
+<span class="comment"># 弹出左端: 0</span>
+
+<span class="comment"># 滑动窗口</span>
+
+nums=[<span class="number">1</span>,<span class="number">3</span>,-<span class="number">1</span>,-<span class="number">3</span>,<span class="number">5</span>,<span class="number">3</span>,<span class="number">6</span>,<span class="number">7</span>]
+
+window=
+
+<span class="function">deque</span>()
+
+fori,
+
+<span class="function">numinenumerate</span>(nums):
+
+ifwindowandwindow[<span class="number">0</span>]&lt;=i-<span class="number">3</span>:
+
+window.
+
+<span class="function">popleft</span>()
+
+whilewindowandnums[window[-<span class="number">1</span>]]&lt;num:
+
+window.
+
+<span class="function">pop</span>()window.
+
+<span class="function">append</span>(i)
+
+</div>
+        </div>
+        <div class="slide slide-content">
+          <h2>collections — namedtuple 命名元组
+          </h2>
+          <ul>
+            <li>
+              <span class="highlight">namedtuple
+              </span>
+              创建带有命名字段的元组子类
+            </li>
+            <li>兼具元组的不可变性和类的可读性
+            </li>
+            <li>内存占用与普通元组相同，比字典更省空间
+            </li>
+          </ul>
+          <div class="code">
+fromcollections
+
+importnamedtuple
+
+<span class="comment"># 定义一个 Point 类型</span>
+
+Point=
+
+<span class="function">namedtuple</span>(<span class="string">&quot;Point&quot;</span>,[<span class="string">&quot;x&quot;</span>,<span class="string">&quot;y&quot;</span>])
+
+<span class="comment"># 创建实例</span>
+
+p=
+
+<span class="function">Point</span>(<span class="number">10</span>,<span class="number">20</span>)
+
+<span class="function">print</span>(p.x,p.y)
+
+<span class="comment"># 10 20</span>
+
+<span class="function">print</span>(p[<span class="number">0</span>],p[<span class="number">1</span>])
+
+<span class="comment"># 仍支持索引</span>
+
+<span class="comment"># 实际应用：表示数据记录</span>
+
+Student=
+
+<span class="function">namedtuple</span>(<span class="string">&quot;Student&quot;</span>,[<span class="string">&quot;name&quot;</span>,<span class="string">&quot;age&quot;</span>,<span class="string">&quot;score&quot;</span>])
+
+s=
+
+<span class="function">Student</span>(<span class="string">&quot;Alice&quot;</span>,<span class="number">20</span>,<span class="number">92</span>)
+
+<span class="function">print</span>(f&quot; {s.name} 的成绩是 {s.score} &quot;)
+
+<span class="comment"># 从字典转换</span>
+
+data={<span class="string">&quot;x&quot;</span>:<span class="number">1</span>,<span class="string">&quot;y&quot;</span>:<span class="number">2</span>}
+
+p2=
+
+<span class="function">Point</span>(**data)
+
+</div>
+        </div>
+        <div class="slide slide-content">
+          <h2>itertools — 迭代器工具箱
+          </h2>
+          <div class="grid">
+            <div class="card">
+              <h3>无限迭代器
+              </h3>
+              <p>count(start, step)
+              </p>
+              <p>cycle(iterable)
+              </p>
+              <p>repeat(elem, n)
+              </p>
+            </div>
+            <div class="card">
+              <h3>组合迭代器
+              </h3>
+              <p>permutations(p, r) — 排列
+              </p>
+              <p>combinations(p, r) — 组合
+              </p>
+              <p>product(p, q) — 笛卡尔积
+              </p>
+            </div>
+          </div>
+          <div class="code">
+fromitertools
+
+importcount,cycle,permutations,combinations
+
+<span class="comment"># 无限计数器</span>
+
+<span class="function">foriincount</span>(<span class="number">10</span>,<span class="number">2</span>):
+
+ifi&gt;<span class="number">20</span>:
+
+<span class="keyword">break</span>
+
+<span class="function">print</span>(i,end=<span class="string">&quot; &quot;</span>)
+
+<span class="comment"># 10 12 14 16 18 20</span>
+
+<span class="comment"># 排列</span>
+
+items=[<span class="string">&quot;A&quot;</span>,<span class="string">&quot;B&quot;</span>,<span class="string">&quot;C&quot;</span>]
+
+<span class="function">forpinpermutations</span>(items,<span class="number">2</span>):
+
+<span class="function">print</span>(p,end=<span class="string">&quot; &quot;</span>)
+
+<span class="comment"># (&#x27;A&#x27;,&#x27;B&#x27;) (&#x27;A&#x27;,&#x27;C&#x27;) (&#x27;B&#x27;,&#x27;A&#x27;) (&#x27;B&#x27;,&#x27;C&#x27;) (&#x27;C&#x27;,&#x27;A&#x27;) (&#x27;C&#x27;,&#x27;B&#x27;)</span>
+
+<span class="comment"># 组合</span>
+
+<span class="function">forcincombinations</span>(items,<span class="number">2</span>):
+
+<span class="function">print</span>(c,end=<span class="string">&quot; &quot;</span>)
+
+<span class="comment"># (&#x27;A&#x27;,&#x27;B&#x27;) (&#x27;A&#x27;,&#x27;C&#x27;) (&#x27;B&#x27;,&#x27;C&#x27;)</span>
+
+</div>
+        </div>
+        <div class="slide slide-content">
+          <h2>itertools — 分组与拉链
+          </h2>
+          <ul>
+            <li>
+              <span class="highlight">groupby()
+              </span>
+              — 按相同键值对连续元素分组（需先排序）
+            </li>
+            <li>
+              <span class="highlight">zip()
+              </span>
+              — 并行遍历多个序列
+            </li>
+            <li>
+              <span class="highlight">chain()
+              </span>
+              — 将多个迭代器串接为一个
+            </li>
+            <li>
+              <span class="highlight">islice()
+              </span>
+              — 对迭代器进行切片
+            </li>
+          </ul>
+          <div class="code">
+fromitertools
+
+importgroupby,chain,islice
+
+<span class="comment"># groupby 分组（注意：需要先排序！）</span>
+
+data=[(<span class="string">&quot;A&quot;</span>,<span class="number">1</span>),(<span class="string">&quot;A&quot;</span>,<span class="number">2</span>),(<span class="string">&quot;B&quot;</span>,<span class="number">3</span>),(<span class="string">&quot;B&quot;</span>,<span class="number">4</span>)]
+
+forkey,
+
+<span class="function">groupingroupby</span>(data,key=lambdax:x[<span class="number">0</span>]):
+
+<span class="function">print</span>(f&quot; {key} : {<span class="function">list</span>(group)} &quot;)
+
+<span class="comment"># A: [(&#x27;A&#x27;,1), (&#x27;A&#x27;,2)]</span>
+
+<span class="comment"># B: [(&#x27;B&#x27;,3), (&#x27;B&#x27;,4)]</span>
+
+<span class="comment"># chain 串联迭代器</span>
+
+all_nums=
+
+<span class="function">list</span>(<span class="function">chain</span>([<span class="number">1</span>,<span class="number">2</span>],[<span class="number">3</span>,<span class="number">4</span>],[<span class="number">5</span>,<span class="number">6</span>]))
+
+<span class="function">print</span>(all_nums)
+
+<span class="comment"># [1, 2, 3, 4, 5, 6]</span>
+
+<span class="comment"># islice 迭代器切片</span>
+
+<span class="function">forxinislice</span>(<span class="function">count</span>(),<span class="number">5</span>,<span class="number">10</span>):
+
+<span class="function">print</span>(x,end=<span class="string">&quot; &quot;</span>)
+
+<span class="comment"># 5 6 7 8 9</span>
+
+</div>
+        </div>
+        <div class="slide slide-end">
+          <h2>本章总结
+          </h2>
+          <div style="max-width: 800px;">
+            <p style="margin-bottom: 16px;">▸ time：时间戳、格式化、计时器，掌握 strftime / strptime
+            </p>
+            <p style="margin-bottom: 16px;">▸ random：随机数、抽样、打乱，设置种子保证可复现
+            </p>
+            <p style="margin-bottom: 16px;">▸ collections：Counter 计数、defaultdict 自动默认值、deque 高效队列、namedtuple 命名元组
+            </p>
+            <p style="margin-bottom: 16px;">▸ itertools：无限迭代、排列组合、分组、串联，处理大规模数据不占用额外内存
+            </p>
+          </div>
+        </div>
+        <div style="text-align:center; margin-top:30px;">
+          <a href="Python基础_第11章_NumPy库_PPT.html" style="display:inline-block; padding:10px 28px; background:rgba(255,255,255,0.9); color:#1a2a6c; text-decoration:none; border-radius:8px; font-size:16px; font-weight:600;">下一章 ▶</a>
+        </div>
+      </div>
+      <!-- Slide 2: 目录 -->
+      <!-- Slide 3: time 库基础 -->
+      <!-- Slide 4: time 库进阶 -->
+      <!-- Slide 5: random 库基础 -->
+      <!-- Slide 6: random 库进阶 -->
+      <!-- Slide 7: collections — Counter -->
+      <!-- Slide 8: collections — defaultdict -->
+      <!-- Slide 9: collections — deque -->
+      <!-- Slide 10: collections — namedtuple -->
+      <!-- Slide 11: itertools -->
+      <!-- Slide 12: itertools 进阶 -->
+      <!-- Slide 13: 总结 -->
+      <div class="nav" style="position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 100;">
+        <button onclick="prevSlide()">◀ 上一页
+        </button>
+        <span class="page-num">
+          <span id="current">1
+          </span>
+          /
+          <span id="total">13
+          </span>
+        </span>
+        <button onclick="nextSlide()">下一页 ▶
+        </button>
+      </div>
+<script>
+    const slides = document.querySelectorAll('.slide');
+    let current = 0;
+    const total = slides.length;
+    document.getElementById('total').textContent = total;
+
+    function showSlide(n) {
+      slides.forEach(s => s.classList.remove('active'));
+      slides[n].classList.add('active');
+      document.getElementById('current').textContent = n + 1;
+      document.getElementById('progress').style.width = ((n + 1) / total * 100) + '%';
+    }
+
+    function nextSlide() {
+      if (current < total - 1) { current++; showSlide(current); }
+    }
+
+    function prevSlide() {
+      if (current > 0) { current--; showSlide(current); }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+      if (e.key === 'ArrowLeft') prevSlide();
+    });
+
+    showSlide(0);
+  
+  // ===== 代码复制功能 =====
+  document.querySelectorAll('pre').forEach(pre => {
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '复制';
+    btn.type = 'button';
+    btn.addEventListener('click', () => {
+      const code = pre.querySelector('code');
+      const text = code ? code.innerText : pre.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 1500);
+      }).catch(() => {
+        // fallback
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta);
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+
+</script>
+    </body>
+  </html>

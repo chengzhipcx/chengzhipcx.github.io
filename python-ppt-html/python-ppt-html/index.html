@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python 基础课程</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; overflow: hidden; }
+
+    .container {
+      display: flex;
+      width: 100%;
+      height: 100vh;
+    }
+
+    /* 左侧目录栏 */
+    .sidebar {
+      width: 20%;
+      min-width: 240px;
+      max-width: 320px;
+      background: #1a2a6c;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 2px 0 8px rgba(0,0,0,0.15);
+    }
+
+    .sidebar-header {
+      padding: 24px 20px;
+      background: rgba(0,0,0,0.15);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .sidebar-header h1 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .sidebar-header p {
+      font-size: 12px;
+      opacity: 0.7;
+    }
+
+    .nav-list {
+      flex: 1;
+      overflow-y: auto;
+      list-style: none;
+      padding: 12px 0;
+    }
+
+    .nav-list li {
+      margin: 2px 12px;
+    }
+
+    .nav-list a {
+      display: block;
+      padding: 12px 16px;
+      color: rgba(255,255,255,0.85);
+      text-decoration: none;
+      font-size: 14px;
+      border-radius: 8px;
+      transition: all 0.2s;
+      line-height: 1.5;
+    }
+
+    .nav-list a:hover {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+
+    .nav-list a.active {
+      background: #007acc;
+      color: #fff;
+      font-weight: 500;
+    }
+
+    .nav-list .chapter-num {
+      display: inline-block;
+      width: 28px;
+      font-weight: 600;
+      opacity: 0.7;
+    }
+
+    .sidebar-footer {
+      padding: 16px 20px;
+      font-size: 12px;
+      opacity: 0.5;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      text-align: center;
+    }
+
+    /* 右侧主体 */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #f0f2f5;
+    }
+
+    .toolbar {
+      height: 48px;
+      background: #fff;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+
+    .toolbar .btn {
+      padding: 6px 14px;
+      border: 1px solid #d0d0d0;
+      background: #fff;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      color: #333;
+      transition: all 0.2s;
+    }
+
+    .toolbar .btn:hover {
+      background: #f5f5f5;
+      border-color: #007acc;
+      color: #007acc;
+    }
+
+    .toolbar .title {
+      flex: 1;
+      text-align: center;
+      font-size: 14px;
+      color: #666;
+      font-weight: 500;
+    }
+
+    .content-frame {
+      flex: 1;
+      border: none;
+      width: 100%;
+      height: 100%;
+      background: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 左侧目录 -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h1>Python 基础</h1>
+        <p>课程目录导航</p>
+      </div>
+      <ul class="nav-list" id="navList">
+        <li><a href="#" data-src="Python基础_绪论与环境配置_PPT.html" class="active"><span class="chapter-num">01</span>绪论与环境配置</a></li>
+        <li><a href="#" data-src="Python基础_第02章_Python基本语法元素_PPT.html"><span class="chapter-num">02</span>基本语法元素</a></li>
+        <li><a href="#" data-src="Python基础_第03章_基本数据类型_PPT.html"><span class="chapter-num">03</span>基本数据类型</a></li>
+        <li><a href="#" data-src="Python基础_第04章_组合数据类型_PPT.html"><span class="chapter-num">04</span>组合数据类型</a></li>
+        <li><a href="#" data-src="Python基础_第05章_程序控制结构_PPT.html"><span class="chapter-num">05</span>程序控制结构</a></li>
+        <li><a href="#" data-src="Python基础_第06章_函数_PPT.html"><span class="chapter-num">06</span>函数</a></li>
+        <li><a href="#" data-src="Python基础_第07章_类_PPT.html"><span class="chapter-num">07</span>类</a></li>
+        <li><a href="#" data-src="Python基础_第08章_文件异常和模块_PPT.html"><span class="chapter-num">08</span>文件异常和模块</a></li>
+        <li><a href="#" data-src="Python基础_第09章_有益的探索_PPT.html"><span class="chapter-num">09</span>有益的探索</a></li>
+        <li><a href="#" data-src="Python基础_第10章_Python标准库_PPT.html"><span class="chapter-num">10</span>Python标准库</a></li>
+        <li><a href="#" data-src="Python基础_第11章_NumPy库_PPT.html"><span class="chapter-num">11</span>NumPy库</a></li>
+        <li><a href="#" data-src="Python基础_第12章_Pandas库_PPT.html"><span class="chapter-num">12</span>Pandas库</a></li>
+        <li><a href="#" data-src="Python基础_第13章_Matplotlib库_PPT.html"><span class="chapter-num">13</span>Matplotlib库</a></li>
+        <li><a href="#" data-src="Python基础_第14章_Sklearn库_PPT.html"><span class="chapter-num">14</span>Sklearn库</a></li>
+        <li><a href="#" data-src="Python基础_第15章_再谈编程_PPT.html"><span class="chapter-num">15</span>再谈编程</a></li>
+      </ul>
+      <div class="sidebar-footer">
+        共 15 章
+      </div>
+    </aside>
+
+    <!-- 右侧主体 -->
+    <main class="main">
+      <div class="toolbar">
+        <button class="btn" id="btnPrev">← 上一章</button>
+        <span class="title" id="pageTitle">绪论与环境配置</span>
+        <button class="btn" id="btnNext">下一章 →</button>
+      </div>
+      <iframe class="content-frame" id="contentFrame" src="Python基础_绪论与环境配置_PPT.html"></iframe>
+    </main>
+  </div>
+
+  <script>
+    const links = document.querySelectorAll('.nav-list a');
+    const frame = document.getElementById('contentFrame');
+    const titleEl = document.getElementById('pageTitle');
+    const btnPrev = document.getElementById('btnPrev');
+    const btnNext = document.getElementById('btnNext');
+
+    let currentIndex = 0;
+    const items = Array.from(links);
+
+    function loadChapter(index) {
+      if (index < 0 || index >= items.length) return;
+      currentIndex = index;
+      const link = items[index];
+      const src = link.getAttribute('data-src');
+      const text = link.textContent.replace(/^\d+/, '').trim();
+
+      links.forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+      frame.src = src;
+      titleEl.textContent = text;
+
+      // 自动滚动当前项到可视区域
+      link.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    links.forEach((link, index) => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        loadChapter(index);
+      });
+    });
+
+    btnPrev.addEventListener('click', () => loadChapter(currentIndex - 1));
+    btnNext.addEventListener('click', () => loadChapter(currentIndex + 1));
+
+    // 键盘左右箭头切换章节
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') loadChapter(currentIndex - 1);
+      if (e.key === 'ArrowRight') loadChapter(currentIndex + 1);
+    });
+  </script>
+</body>
+</html>

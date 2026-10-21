@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+  <html lang="zh-CN">
+    <head>
+      <meta charset="utf-8"/>
+      <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+      <title>Python基础 - 第04章 组合数据类型
+      </title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif; }
+
+  .slide {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    display: none; flex-direction: column; justify-content: center; align-items: center;
+    padding: 60px 80px; transition: opacity 0.4s ease;
+  }
+  .slide.active { display: flex; }
+
+  .slide.cover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff; text-align: center;
+  }
+  .slide.cover h1 { font-size: 3.2rem; font-weight: 700; margin-bottom: 0.5em; letter-spacing: 0.05em; }
+  .slide.cover .subtitle { font-size: 1.4rem; opacity: 0.9; margin-bottom: 2em; }
+  .slide.cover .badge {
+    display: inline-block; padding: 8px 24px; border: 2px solid rgba(255,255,255,0.6);
+    border-radius: 30px; font-size: 1rem; letter-spacing: 0.1em;
+  }
+
+  .slide.content {
+    background: #f8f9fa; color: #2d3436;
+  }
+  .slide.content .page-header {
+    position: absolute; top: 40px; left: 0; padding-left: 80px;
+    border-left: 5px solid #667eea;
+  }
+  .slide.content .page-header h2 { font-size: 2rem; color: #2d3436; }
+  .slide.content .page-header .section-tag {
+    font-size: 0.85rem; color: #667eea; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 4px;
+  }
+  .slide.content .body {
+    width: 100%; max-width: 1100px; margin-top: 60px;
+  }
+
+  pre {
+    background: #1e1e1e; color: #d4d4d4; padding: 20px 24px; border-radius: 8px;
+    font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace; font-size: 0.95rem;
+    line-height: 1.7; overflow-x: auto; text-align: left; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  pre .kw { color: #569cd6; }
+  pre .str { color: #ce9178; }
+  pre .num { color: #b5cea8; }
+  pre .com { color: #6a9955; }
+  pre .func { color: #dcdcaa; }
+  pre .var { color: #9cdcfe; }
+
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; width: 100%; }
+  .card {
+    background: #fff; border-radius: 10px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border-left: 4px solid #667eea;
+  }
+  .card h4 { font-size: 1.1rem; margin-bottom: 8px; color: #2d3436; }
+  .card p { font-size: 0.95rem; color: #636e72; line-height: 1.6; }
+
+  ul.teach-list { list-style: none; padding: 0; }
+  ul.teach-list li {
+    padding: 10px 0; padding-left: 28px; position: relative; font-size: 1.05rem; line-height: 1.7;
+    border-bottom: 1px solid #e9ecef;
+  }
+  ul.teach-list li::before {
+    content: "▸"; position: absolute; left: 0; color: #667eea; font-weight: 700;
+  }
+  ul.teach-list li:last-child { border-bottom: none; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; width: 100%; align-items: start; }
+  .two-col pre { font-size: 0.85rem; }
+  .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; width: 100%; }
+
+  .highlight-box {
+    background: #fff3cd; border-left: 4px solid #ffc107; padding: 16px 20px; border-radius: 0 8px 8px 0;
+    margin: 16px 0; font-size: 0.95rem; color: #856404;
+  }
+  .tip-box {
+    background: #d1ecf1; border-left: 4px solid #17a2b8; padding: 16px 20px; border-radius: 0 8px 8px 0;
+    margin: 16px 0; font-size: 0.95rem; color: #0c5460;
+  }
+
+  .toc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; width: 100%; max-width: 900px; }
+  .toc-item {
+    background: #fff; padding: 28px 32px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    display: flex; align-items: center; gap: 20px; transition: transform 0.2s;
+  }
+  .toc-item:hover { transform: translateY(-3px); }
+  .toc-num {
+    width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; font-weight: 700; flex-shrink: 0;
+  }
+  .toc-text h4 { font-size: 1.15rem; margin-bottom: 4px; }
+  .toc-text span { font-size: 0.85rem; color: #888; }
+
+  .slide.summary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; }
+  .slide.summary h2 { font-size: 2.4rem; margin-bottom: 40px; }
+  .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; width: 100%; max-width: 1100px; }
+  .summary-card {
+    background: rgba(255,255,255,0.12); backdrop-filter: blur(8px); padding: 24px; border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  .summary-card h4 { font-size: 1.05rem; margin-bottom: 12px; }
+  .summary-card p { font-size: 0.88rem; opacity: 0.9; line-height: 1.6; }
+
+  .progress-bar {
+    position: fixed; bottom: 0; left: 0; height: 4px; background: linear-gradient(90deg, #667eea, #764ba2);
+    transition: width 0.3s ease; z-index: 100;
+  }
+  .page-num {
+    position: fixed; bottom: 12px; right: 24px; font-size: 0.8rem; color: #888; z-index: 100;
+  }
+  .nav-hint {
+    position: fixed; bottom: 12px; left: 24px; font-size: 0.75rem; color: #aaa; z-index: 100;
+  }
+
+  h3 { font-size: 1.5rem; margin-bottom: 20px; color: #2d3436; }
+  p { font-size: 1.05rem; line-height: 1.8; color: #495057; }
+  .compare-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+  .compare-table th, .compare-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #e9ecef; font-size: 0.95rem; }
+  .compare-table th { background: #e9ecef; color: #495057; font-weight: 600; }
+  .compare-table td { color: #495057; }
+
+  .nav { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 100; }
+  .nav button {
+    background: rgba(0,0,0,0.3); color: white; border: none; padding: 10px 24px;
+    border-radius: 6px; cursor: pointer; font-size: 14px; backdrop-filter: blur(4px);
+  }
+  .nav button:hover { background: rgba(0,0,0,0.5); }
+  .nav .page-num { position: static !important; bottom: auto !important; right: auto !important; background: #007acc; color: white; font-size: 14px; line-height: 36px; padding: 0 14px; border-radius: 6px; margin: 0 10px; }
+  @media (max-width: 900px) and (orientation: landscape) {
+    .slide { padding: 20px 30px !important; }
+    .slide h1 { font-size: 1.8rem !important; }
+    .slide h2 { font-size: 1.4rem !important; }
+    .slide h3 { font-size: 1.1rem !important; }
+    .slide p, .slide li { font-size: 0.9rem !important; line-height: 1.5 !important; }
+    pre { font-size: 0.75rem !important; padding: 10px !important; }
+    .nav button { padding: 6px 14px !important; font-size: 12px !important; }
+    .nav .page-num { font-size: 12px !important; padding: 0 10px !important; }
+  }
+  
+    /* 微信公众号推荐 */
+    .wx-promo {
+      margin-top: 40px;
+      padding-top: 30px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .wx-promo-text {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+    .wx-promo-images {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+    }
+    .wx-promo-images img {
+      width: 360px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 2px solid rgba(0, 122, 204, 0.3);
+    }
+    .slide-cover .wx-promo-text,
+    .slide-end .wx-promo-text,
+    .cover .wx-promo-text,
+    .summary .wx-promo-text {
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .slide-cover .wx-promo-images img,
+    .slide-end .wx-promo-images img,
+    .cover .wx-promo-images img,
+    .summary .wx-promo-images img {
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+  /* ===== 代码复制按钮 ===== */
+  pre { position: relative; }
+  .copy-btn {
+    position: absolute; top: 8px; right: 8px;
+    padding: 4px 10px; font-size: 12px; line-height: 1.4;
+    color: #ccc; background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 4px;
+    cursor: pointer; opacity: 0; transition: opacity 0.2s, background 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    z-index: 10;
+  }
+  pre:hover .copy-btn { opacity: 1; }
+  .copy-btn:hover { background: rgba(255,255,255,0.25); color: #fff; }
+  .copy-btn.copied { color: #4ec9b0; border-color: #4ec9b0; background: rgba(78,201,176,0.15); opacity: 1; }
+
+</style>
+    </head>
+    <body>
+      <div class="slide cover active">
+        <div class="badge">CHAPTER 04
+        </div>
+        <h1>Python 组合数据类型
+        </h1>
+        <p class="subtitle">列表 · 元组 · 字典 · 集合
+        </p>
+        <div class="wx-promo">
+          <p class="wx-promo-text">欢迎关注微信公众号
+          </p>
+          <div class="wx-promo-images">
+            <img alt="coder程" src="../asset/coder程.png"/>
+            <img alt="查令十街84号" src="../asset/查令十街84号.png"/>
+          </div>
+        </div>
+      </div>
+      <div class="slide content">
+        <div class="page-header">
+          <div class="section-tag">Contents
+          </div>
+          <h2>本章目录
+          </h2>
+        </div>
+        <div class="body">
+          <div class="toc-grid">
+            <div class="toc-item">
+              <div class="toc-num">1
+              </div>
+              <div class="toc-text">
+                <h4>列表 List
+                </h4>
+                <span>有序可变序列，最常用
+                </span>
+              </div>
+            </div>
+            <div class="toc-item">
+              <div class="toc-num">2
+              </div>
+              <div class="toc-text">
+                <h4>元组 Tuple
+                </h4>
+                <span>有序不可变序列
+                </span>
+              </div>
+            </div>
+            <div class="toc-item">
+              <div class="toc-num">3
+              </div>
+              <div class="toc-text">
+                <h4>字典 Dict
+                </h4>
+                <span>键值对映射
+                </span>
+              </div>
+            </div>
+            <div class="toc-item">
+              <div class="toc-num">4
+              </div>
+              <div class="toc-text">
+                <h4>集合 Set
+                </h4>
+                <span>无序不重复元素
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide content">
+        <div class="page-header">
+          <div class="section-tag">4.1 列表
+          </div>
+          <h2>列表基础操作
+          </h2>
+        </div>
+        <div class="body">
+          <div class="two-col">
+            <div>
+              <h3>创建与访问
+              </h3>
+<pre><code><span class="var">fruits</span> = [<span class="str">"apple"</span>, <span class="str">"banana"</span>, <span class="str">"cherry"</span>]
+<span class="var">mixed</span> = [<span class="num">1</span>, <span class="str">"a"</span>, <span class="num">True</span>, [<span class="num">2</span>, <span class="num">3</span>]]
+
+<span class="var">fruits</span>[<span class="num">0</span>]       <span class="com"># "apple"</span>
+<span class="var">fruits</span>[-<span class="num">1</span>]      <span class="com"># "cherry"</span>
+<span class="var">fruits</span>[<span class="num">1</span>:<span class="num">3</span>]    <span class="com"># ["banana", "cherry"]</span>
+
+<span class="com"># 修改元素</span>
+<span class="var">fruits</span>[<span class="num">0</span>] = <span class="str">"orange"</span></code></pre>
+            </div>
+            <div>
+              <h3>增删改查
+              </h3>
+<pre><code><span class="var">lst</span> = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>]
+
+<span class="var">lst</span>.<span class="func">append</span>(<span class="num">4</span>)        <span class="com"># [1, 2, 3, 4]  尾部添加</span>
+<span class="var">lst</span>.<span class="func">insert</span>(<span class="num">1</span>, <span class="str">"x"</span>)   <span class="com"># [1, "x", 2, 3, 4]  插入</span>
+<span class="var">lst</span>.<span class="func">remove</span>(<span class="num">2</span>)        <span class="com"># 删除第一个 2</span>
+<span class="var">p</span> = <span class="var">lst</span>.<span class="func">pop</span>()        <span class="com"># 弹出末尾，返回元素</span>
+<span class="var">lst</span>.<span class="func">clear</span>()          <span class="com"># 清空列表</span></code></pre>
+            </div>
+          </div>
+          <div class="tip-box" style="margin-top: 20px;">
+            <strong>列表是可变的：
+            </strong>
+            可以直接修改元素，增删元素。列表中元素类型不必相同。
+          </div>
+        </div>
+      </div>
+      <div class="slide content">
+        <div class="page-header">
+          <div class="section-tag">4.1 列表
+          </div>
+          <h2>列表进阶方法
+          </h2>
+        </div>
+        <div class="body">
+          <div class="two-col">
+            <div>
+              <h3>常用方法
+              </h3>
+<pre><code><span class="var">nums</span> = [<span class="num">3</span>, <span class="num">1</span>, <span class="num">4</span>, <span class="num">1</span>, <span class="num">5</span>, <span class="num">9</span>]
+
+<span class="var">nums</span>.<span class="func">sort</span>()             <span class="com"># 原地排序 [1, 1, 3, 4, 5, 9]</span>
+<span class="var">nums</span>.<span class="func">reverse</span>()          <span class="com"># 原地反转</span>
+<span class="var">nums</span>.<span class="func">count</span>(<span class="num">1</span>)           <span class="com"># 2</span>
+<span class="var">nums</span>.<span class="func">index</span>(<span class="num">5</span>)           <span class="com"># 4 （第一个 5 的位置）</span>
+
+<span class="com"># 不改变原列表的排序</span>
+<span class="var">new</span> = <span class="func">sorted</span>(<span class="var">nums</span>, <span class="var">reverse</span>=<span class="num">True</span>)</code></pre>
+            </div>
+            <div>
+              <h3>列表推导式
+              </h3>
+<pre><code><span class="com"># 基本形式</span>
+<span class="var">squares</span> = [<span class="var">x</span>**<span class="num">2</span> <span class="kw">for</span> <span class="var">x</span> <span class="kw">in</span> <span class="func">range</span>(<span class="num">5</span>)]
+<span class="com"># [0, 1, 4, 9, 16]</span>
+
+<span class="com"># 带条件</span>
+<span class="var">evens</span> = [<span class="var">x</span> <span class="kw">for</span> <span class="var">x</span> <span class="kw">in</span> <span class="func">range</span>(<span class="num">10</span>) <span class="kw">if</span> <span class="var">x</span> % <span class="num">2</span> == <span class="num">0</span>]
+<span class="com"># [0, 2, 4, 6, 8]</span>
+
+<span class="com"># 嵌套</span>
+<span class="var">matrix</span> = [[<span class="var">i</span>*<span class="var">j</span> <span class="kw">for</span> <span class="var">j</span> <span class="kw">in</span> <span class="func">range</span>(<span class="num">3</span>)] <span class="kw">for</span> <span class="var">i</span> <span class="kw">in</span> <span class="func">range</span>(<span class="num">3</span>)]
+<span class="com"># [[0,0,0], [0,1,2], [0,2,4]]</span></code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide content">
+        <div class="page-header">
+          <div class="section-tag">4.1 列表
+          </div>
+          <h2>列表复制：赋值 vs 浅拷贝 vs 深拷贝
+          </h2>
+        </div>
+        <div class="body">
+          <div class="two-col">
+            <div>
+              <h3>赋值（引用）
+              </h3>
+<pre><code><span class="var">a</span> = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>]
+<span class="var">b</span> = <span class="var">a</span>        <span class="com"># b 和 a 指向同一个对象</span>
+<span class="var">b</span>[<span class="num">0</span>] = <span class="num">99</span>
+<span class="func">print</span>(<span class="var">a</span>)     <span class="com"># [99, 2, 3]  ← a 也变了！</span></code></pre>
+              <h3 style="margin-top: 20px;">浅拷贝
+              </h3>
+<pre><code><span class="com"># 三种浅拷贝方式</span>
+<span class="var">b</span> = <span class="var">a</span>.<span class="func">copy</span>()
+<span class="var">b</span> = <span class="var">a</span>[:]
+<span class="var">b</span> = <span class="func">list</span>(<span class="var">a</span>)
+
+<span class="com"># 浅拷贝只复制外层，</span>
+<span class="com"># 内层嵌套对象仍共享</span></code></pre>
+            </div>
+            <div>
+              <h3>深拷贝
+              </h3>
+<pre><code><span class="kw">import</span> copy
+
+<span class="var">a</span> = [[<span class="num">1</span>, <span class="num">2</span>], [<span class="num">3</span>, <span class="num">4</span>]]
+<span class="var">b</span> = copy.<span class="func">deepcopy</span>(<span class="var">a</span>)
+
+<span class="var">b</span>[<span class="num">0</span>][<span class="num">0</span>] = <span class="num">99</span>
+<span class="func">print</span>(<span class="var">a</span>)   <span class="com"># [[1, 2], [3, 4]]  a 不变</span>
+<span class="func">print</span>(<span class="var">b</span>)   <span class="com"># [[99, 2], [3, 4]]</span></code></pre>
+              <div class="highlight-box" style="margin-top: 16px;">
+                <strong>关键区别：
+                </strong>
+                浅拷贝复制"一层"；深拷贝递归复制所有层级。嵌套列表务必注意！
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide content">
+        <div class="page-header">
+          <div class="section-tag">4.2 元组
+          </div>
+          <h2>元组 Tuple
+          </h2>
+        </div>
+        <div class="body">
+          <div class="two-col">
+            <div>
+              <h3>创建与使用
+              </h3>
+<pre><code><span class="var">t</span> = (<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>)      <span class="com"># 圆括号</span>
+<span class="var">t2</span> = <span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>      <span class="com"># 括号可省略</span>
+<span class="var">single</span> = (<span class="num">5</span>,)     <span class="com"># 单元素必须加逗号！</span>
+
+<span class="com"># 支持索引和切片</span>
+<span class="var">t</span>[<span class="num">0</span>]     <span class="com"># 1</span>
+<span class="var">t</span>[:<span class="num">2</span>]   <span class="com"># (1, 2)</span>
+
+<span class="com"># 解包</span>
+<span class="var">a</span>, <span class="var">b</span>, <span class="var">c</span> = <span class="var">t</span></code></pre>
+            </div>
+            <div>
+              <h3>元组 vs 列表
+              </h3>
+              <table class="compare-table">
+                <tr>
+                  <th>特性
+                  </th>
+                  <th>列表 List
+                  </th>
+                  <th>元组 Tuple
+                  </th>
+                </tr>
+                <tr>
+                  <td>语法
+                  </td>
+                  <td>[ ]
+                  </td>
+                  <td>( )
+                  </td>
+                </tr>
+                <tr>
+                  <td>可变性
+                  </td>
+                  <td>可变
+                  </td>
+                  <td>不可变
+                  </td>
+                </tr>
+                <tr>
+                  <td>性能
+                  </td>
+                  <td>较慢
+                  </td>
+                  <td>更快
+                  </td>
+                </tr>
+                <tr>
+                  <td>用途
+                  </td>
+                  <td>动态数据
+                  </td>
+                  <td>固定配置、字典键
+                  </td>
+                </tr>
+                <tr>
+                  <td>方法
+                  </td>
+                  <td>丰富
+                  </td>
+                  <td>仅 count/index
+                  </td>
+                </tr>
+              </table>
+              <div class="tip-box" style="margin-top: 12px;">
+                <strong>什么时候用元组？
+                </strong>
+                数据不需要修改时（如坐标、配置项）、作为字典的 key 时。
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide content">
+        <div class="page-header">
+          <div class="section-tag">4.3 字典
+          </div>
+          <h2>字典 Dict
+          </h2>
+        </div>
+        <div class="body">
+          <div class="two-col">
+            <div>
+              <h3>创建与访问
+              </h3>
+<pre><code><span class="var">person</span> = {
+    <span class="str">"name"</span>: <span class="str">"Tom"</span>,
+    <span class="str">"age"</span>: <span class="num">25</span>,
+    <span class="str">"city"</span>: <span class="str">"Beijing"</span>
+}
+
+<span class="var">person</span>[<span class="str">"name"</span>]         <span class="com"># "Tom"</span>
+<span class="var">person</span>.<span class="func">get</span>(<span class="str">"age"</span>)      <span class="com"># 25</span>
+<span class="var">person</span>.<span class="func">get</span>(<span class="str">"job"</span>, <span class="str">"N/A"</span>) <span class="com"># "N/A"  默认值</span>
+
+<span class="com"># 添加/修改</span>
+<span class="var">person</span>[<span class="str">"job"</span>] = <span class="str">"Engineer"</span></code></pre>
+            </div>
+            <div>
+              <h3>遍历与操作
+              </h3>
+<pre><code><span class="com"># 遍历键值对</span>
+<span class="kw">for</span> <span class="var">k</span>, <span class="var">v</span> <span class="kw">in</span> <span class="var">person</span>.<span class="func">items</span>():
+    <span class="func">print</span>(<span class="var">k</span>, <span class="var">v</span>)
+
+<span class="com"># 仅键 / 仅值</span>
+<span class="var">person</span>.<span class="func">keys</span>()
+<span class="var">person</span>.<span class="func">values</span>()
+
+<span class="com"># 删除</span>
+<span class="kw">del</span> <span class="var">person</span>[<span class="str">"city"</span>]
+<span class="var">v</span> = <span class="var">person</span>.<span class="func">pop</span>(<span class="str">"age"</span>)   <span class="com"># 删除并返回值</span></code></pre>
+            </div>
+          </div>
+          <div class="highlight-box" style="margin-top: 16px;">
+            <strong>字典键的要求：
+            </strong>
+            键必须是
+            <strong>不可变类型
+            </strong>
+            （str、int、float、tuple），列表和字典不能当键。
+          </div>
+        </div>
+      </div>
+      <div class="slide content">
+        <div class="page-header">
+          <div class="section-tag">4.3 字典
+          </div>
+          <h2>字典推导式与合并
+          </h2>
+        </div>
+        <div class="body">
+          <div class="two-col">
+            <div>
+              <h3>字典推导式
+              </h3>
+<pre><code><span class="com"># 从列表创建</span>
+<span class="var">squares</span> = {<span class="var">x</span>: <span class="var">x</span>**<span class="num">2</span> <span class="kw">for</span> <span class="var">x</span> <span class="kw">in</span> <span class="func">range</span>(<span class="num">5</span>)}
+<span class="com"># {0:0, 1:1, 2:4, 3:9, 4:16}</span>
+
+<span class="com"># 过滤</span>
+<span class="var">d</span> = {<span class="var">k</span>: <span class="var">v</span> <span class="kw">for</span> <span class="var">k</span>, <span class="var">v</span> <span class="kw">in</span> <span class="var">items</span> <span class="kw">if</span> <span class="var">v</span> &gt; <span class="num">0</span>}</code></pre>
+              <h3 style="margin-top: 20px;">合并字典（Python 3.9+）
+              </h3>
+<pre><code><span class="var">a</span> = {<span class="str">"x"</span>: <span class="num">1</span>}
+<span class="var">b</span> = {<span class="str">"y"</span>: <span class="num">2</span>}
+<span class="var">c</span> = <span class="var">a</span> | <span class="var">b</span>    <span class="com"># {"x":1, "y":2}</span>
+<span class="var">a</span> |= <span class="var">b</span>       <span class="com"># a 原地更新</span></code></pre>
+            </div>
+            <div>
+              <h3>常用技巧
+              </h3>
+<pre><code><span class="com"># setdefault：键不存在时设置</span>
+<span class="var">d</span> = {}
+<span class="var">d</span>.<span class="func">setdefault</span>(<span class="str">"nums"</span>, []).<span class="func">append</span>(<span class="num">1</span>)
+
+<span class="com"># Counter 统计</span>
+<span class="kw">from</span> collections <span class="kw">import</span> Counter
+<span class="var">cnt</span> = Counter(<span class="str">"banana"</span>)
+<span class="com"># Counter({'a':3, 'n':2, 'b':1})</span>
+
+<span class="com"># 按值排序</span>
+<span class="func">sorted</span>(<span class="var">d</span>.<span class="func">items</span>(), <span class="var">key</span>=<span class="kw">lambda</span> <span class="var">x</span>: <span class="var">x</span>[<span class="num">1</span>])</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide content">
+        <div class="page-header">
+          <div class="section-tag">4.4 集合
+          </div>
+          <h2>集合 Set
+          </h2>
+        </div>
+        <div class="body">
+          <div class="two-col">
+            <div>
+              <h3>创建与基本操作
+              </h3>
+<pre><code><span class="var">s</span> = {<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">3</span>, <span class="num">3</span>}    <span class="com"># {1, 2, 3}  自动去重</span>
+<span class="var">s2</span> = <span class="func">set</span>([<span class="num">1</span>, <span class="num">2</span>, <span class="num">2</span>, <span class="num">3</span>])  <span class="com"># 从列表创建</span>
+
+<span class="var">s</span>.<span class="func">add</span>(<span class="num">4</span>)           <span class="com"># 添加元素</span>
+<span class="var">s</span>.<span class="func">remove</span>(<span class="num">2</span>)        <span class="com"># 删除（不存在报错）</span>
+<span class="var">s</span>.<span class="func">discard</span>(<span class="num">99</span>)      <span class="com"># 安全删除</span>
+<span class="var">s</span>.<span class="func">pop</span>()             <span class="com"># 随机弹出一个</span></code></pre>
+            </div>
+            <div>
+              <h3>集合运算
+              </h3>
+<pre><code><span class="var">a</span> = {<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>}
+<span class="var">b</span> = {<span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>}
+
+<span class="var">a</span> | <span class="var">b</span>   <span class="com"># {1,2,3,4,5}  并集</span>
+<span class="var">a</span> &amp; <span class="var">b</span>   <span class="com"># {3}          交集</span>
+<span class="var">a</span> - <span class="var">b</span>   <span class="com"># {1, 2}       差集</span>
+<span class="var">a</span> ^ <span class="var">b</span>   <span class="com"># {1,2,4,5}    对称差</span>
+
+<span class="com"># 判断子集</span>
+<span class="var">a</span>.<span class="func">issubset</span>(<span class="var">b</span>)
+<span class="var">a</span>.<span class="func">isdisjoint</span>(<span class="var">b</span>)   <span class="com"># 是否无交集</span></code></pre>
+            </div>
+          </div>
+          <div class="tip-box" style="margin-top: 16px;">
+            <strong>集合特点：
+            </strong>
+            无序、不重复、元素必须是不可变类型。集合运算效率极高，适合去重和成员检测。
+          </div>
+        </div>
+      </div>
+      <div class="slide content">
+        <div class="page-header">
+          <div class="section-tag">Review
+          </div>
+          <h2>四大组合类型对比
+          </h2>
+        </div>
+        <div class="body">
+          <table class="compare-table">
+            <tr>
+              <th>类型
+              </th>
+              <th>符号
+              </th>
+              <th>有序
+              </th>
+              <th>可变
+              </th>
+              <th>重复
+              </th>
+              <th>用途
+              </th>
+            </tr>
+            <tr>
+              <td>列表 List
+              </td>
+              <td>[ ]
+              </td>
+              <td>✓
+              </td>
+              <td>✓
+              </td>
+              <td>✓
+              </td>
+              <td>通用序列，动态数据
+              </td>
+            </tr>
+            <tr>
+              <td>元组 Tuple
+              </td>
+              <td>( )
+              </td>
+              <td>✓
+              </td>
+              <td>✗
+              </td>
+              <td>✓
+              </td>
+              <td>固定数据，字典键
+              </td>
+            </tr>
+            <tr>
+              <td>字典 Dict
+              </td>
+              <td>{key:value}
+              </td>
+              <td>✓* (3.7+)
+              </td>
+              <td>✓
+              </td>
+              <td>键唯一
+              </td>
+              <td>键值映射，快速查找
+              </td>
+            </tr>
+            <tr>
+              <td>集合 Set
+              </td>
+              <td>{ }
+              </td>
+              <td>✗
+              </td>
+              <td>✓
+              </td>
+              <td>✗
+              </td>
+              <td>去重，集合运算
+              </td>
+            </tr>
+          </table>
+          <div class="two-col" style="margin-top: 24px;">
+            <div class="highlight-box">
+              <strong>选择指南：
+              </strong>
+              数据会变 → 列表；数据固定 → 元组；键值查找 → 字典；去重/集合运算 → 集合。
+            </div>
+            <div class="tip-box">
+              <strong>性能提示：
+              </strong>
+              in 操作在集合/字典中是 O(1)，在列表中是 O(n)。大数据量查询优先用集合/字典。
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide summary">
+        <h2>本章总结
+        </h2>
+        <div class="summary-grid">
+          <div class="summary-card">
+            <h4>列表 List
+            </h4>
+            <p>有序可变，支持增删改查和切片。注意赋值是引用传递，深拷贝用 copy.deepcopy。
+            </p>
+          </div>
+          <div class="summary-card">
+            <h4>元组 Tuple
+            </h4>
+            <p>有序不可变，性能更好。适合固定数据和字典键。单元素必须加逗号。
+            </p>
+          </div>
+          <div class="summary-card">
+            <h4>字典 Dict
+            </h4>
+            <p>键值映射，键必须不可变。get() 安全取值，items() 遍历键值对。
+            </p>
+          </div>
+          <div class="summary-card">
+            <h4>集合 Set
+            </h4>
+            <p>无序不重复，支持并交差运算。去重利器，成员检测 O(1)。
+            </p>
+          </div>
+        </div>
+        <div style="text-align:center; margin-top:30px;">
+          <a href="Python基础_第05章_程序控制结构_PPT.html" style="display:inline-block; padding:10px 28px; background:rgba(255,255,255,0.9); color:#1a2a6c; text-decoration:none; border-radius:8px; font-size:16px; font-weight:600;">下一章 ▶</a>
+        </div>
+      </div>
+      <!-- ==================== 封面 ==================== -->
+      <!-- ==================== 目录 ==================== -->
+      <!-- ==================== 列表基础 ==================== -->
+      <!-- ==================== 列表方法 ==================== -->
+      <!-- ==================== 浅拷贝 ==================== -->
+      <!-- ==================== 元组 ==================== -->
+      <!-- ==================== 字典 ==================== -->
+      <!-- ==================== 字典进阶 ==================== -->
+      <!-- ==================== 集合 ==================== -->
+      <!-- ==================== 四大类型对比 ==================== -->
+      <!-- ==================== 总结 ==================== -->
+      <div class="progress-bar" id="progress">
+      </div>
+      <div class="nav">
+        <button onclick="prevSlide()">◀ 上一页
+        </button>
+        <span class="page-num" id="pageNum">1 / 12
+        </span>
+        <button onclick="nextSlide()">下一页 ▶
+        </button>
+      </div>
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let current = 0;
+  const total = slides.length;
+
+  function show(i) {
+    slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+    document.getElementById('progress').style.width = ((i + 1) / total * 100) + '%';
+    document.getElementById('pageNum').textContent = (i + 1) + ' / ' + total;
+  }
+
+  function nextSlide() {
+    if (current < total - 1) { current++; show(current); }
+  }
+  function prevSlide() {
+    if (current > 0) { current--; show(current); }
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') {
+      nextSlide();
+    } else if (e.key === 'ArrowLeft') {
+      prevSlide();
+    } else if (e.key === 'Home') {
+      current = 0; show(current);
+    } else if (e.key === 'End') {
+      current = total - 1; show(current);
+    }
+  });
+
+  show(0);
+
+  // ===== 代码复制功能 =====
+  document.querySelectorAll('pre').forEach(pre => {
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '复制';
+    btn.type = 'button';
+    btn.addEventListener('click', () => {
+      const code = pre.querySelector('code');
+      const text = code ? code.innerText : pre.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 1500);
+      }).catch(() => {
+        // fallback
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta);
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+
+</script>
+    </body>
+  </html>

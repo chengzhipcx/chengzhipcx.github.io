@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+  <html lang="zh-CN">
+    <head>
+      <meta charset="utf-8"/>
+      <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+      <title>Python基础 - 第05章 程序控制结构
+      </title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; overflow:hidden; font-family:"Segoe UI","Microsoft YaHei",sans-serif; }
+
+  .slide {
+    width:100%; height:100vh;
+    display:none; flex-direction:column; justify-content:center; align-items:center;
+    position:relative; padding:60px 80px;
+  }
+  .slide.active { display:flex; }
+
+  /* Cover */
+  .cover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color:#fff; text-align:center;
+  }
+  .cover h1 { font-size:3.2rem; font-weight:700; margin-bottom:20px; letter-spacing:2px; }
+  .cover .subtitle { font-size:1.4rem; opacity:0.9; margin-bottom:12px; }
+  .cover .chapter-num { font-size:1.1rem; opacity:0.7; letter-spacing:4px; text-transform:uppercase; }
+
+  /* TOC */
+  .toc { background:#f8f9fa; }
+  .toc h2 {
+    font-size:2rem; color:#333; margin-bottom:40px;
+    border-left:6px solid #007acc; padding-left:18px;
+  }
+  .toc ul { list-style:none; width:60%; max-width:700px; }
+  .toc li {
+    font-size:1.25rem; color:#444; padding:14px 0;
+    border-bottom:1px solid #e0e0e0; display:flex; align-items:center;
+  }
+  .toc li span.num { display:inline-block; width:36px; height:36px; line-height:36px; border-radius:50%; background:#007acc; color:#fff; text-align:center; margin-right:16px; font-size:0.95rem; font-weight:600; }
+  .toc li:last-child { border-bottom:none; }
+
+  /* Content */
+  .content { background:#f8f9fa; justify-content:flex-start; padding-top:50px; }
+  .content h2 {
+    font-size:1.9rem; color:#222; margin-bottom:30px; align-self:flex-start;
+    border-left:6px solid #007acc; padding-left:18px;
+  }
+  .content-body { width:100%; max-width:900px; }
+  .content-body p, .content-body li { font-size:1.15rem; color:#333; line-height:1.8; margin-bottom:12px; }
+  .content-body ul { margin-left:24px; margin-bottom:16px; }
+  .content-body ul li { margin-bottom:6px; }
+
+  /* Code block */
+  .code-block {
+    background:#1e1e1e; color:#d4d4d4; font-family:"Consolas","Monaco","Courier New",monospace;
+    padding:20px 24px; border-radius:8px; font-size:0.95rem; line-height:1.7;
+    overflow-x:auto; margin:16px 0; box-shadow:0 4px 12px rgba(0,0,0,0.15);
+  white-space: pre; }
+  .code-block .kw { color:#569cd6; }     /* keyword */
+  .code-block .str { color:#ce9178; }      /* string */
+  .code-block .num { color:#b5cea8; }      /* number */
+  .code-block .com { color:#6a9955; }      /* comment */
+  .code-block .func { color:#dcdcaa; }     /* function */
+  .code-block .var { color:#9cdcfe; }      /* variable */
+
+  /* Summary */
+  .summary { background:#f8f9fa; }
+  .summary h2 {
+    font-size:2rem; color:#333; margin-bottom:35px;
+    border-left:6px solid #007acc; padding-left:18px;
+  }
+  .summary ul { list-style:none; max-width:750px; }
+  .summary li {
+    font-size:1.2rem; color:#444; padding:12px 0; padding-left:28px; position:relative;
+  }
+  .summary li::before {
+    content:"✓"; position:absolute; left:0; color:#007acc; font-weight:bold;
+  }
+
+  /* Progress bar */
+  .progress-bar {
+    position:fixed; bottom:0; left:0; height:5px; background:#e0e0e0; width:100%; z-index:100;
+  }
+  .progress-fill {
+    height:100%; background: linear-gradient(90deg, #667eea, #764ba2);
+    transition:width 0.3s ease;
+  }
+
+  /* Page number */
+  .page-num {
+    position:fixed; bottom:14px; right:24px; font-size:0.85rem; color:#888; z-index:101;
+  }
+
+  /* Navigation hint */
+  .nav-hint {
+    position:fixed; bottom:14px; left:50%; transform:translateX(-50%);
+    font-size:0.8rem; color:#aaa; z-index:101; user-select:none;
+  }
+
+  .nav { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 100; }
+  .nav button {
+    background: rgba(0,0,0,0.3); color: white; border: none; padding: 10px 24px;
+    border-radius: 6px; cursor: pointer; font-size: 14px; backdrop-filter: blur(4px);
+  }
+  .nav button:hover { background: rgba(0,0,0,0.5); }
+  .nav .page-num { position: static !important; bottom: auto !important; right: auto !important; background: #007acc; color: white; font-size: 14px; line-height: 36px; padding: 0 14px; border-radius: 6px; margin: 0 10px; }
+  @media (max-width: 900px) and (orientation: landscape) {
+    .slide { padding: 20px 30px !important; }
+    .slide h1 { font-size: 1.8rem !important; }
+    .slide h2 { font-size: 1.4rem !important; }
+    .slide h3 { font-size: 1.1rem !important; }
+    .slide p, .slide li { font-size: 0.9rem !important; line-height: 1.5 !important; }
+    pre { font-size: 0.75rem !important; padding: 10px !important; }
+    .nav button { padding: 6px 14px !important; font-size: 12px !important; }
+    .nav .page-num { font-size: 12px !important; padding: 0 10px !important; }
+  }
+  
+    /* 微信公众号推荐 */
+    .wx-promo {
+      margin-top: 40px;
+      padding-top: 30px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .wx-promo-text {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+    .wx-promo-images {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+    }
+    .wx-promo-images img {
+      width: 360px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 2px solid rgba(0, 122, 204, 0.3);
+    }
+    .slide-cover .wx-promo-text,
+    .slide-end .wx-promo-text,
+    .cover .wx-promo-text,
+    .summary .wx-promo-text {
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .slide-cover .wx-promo-images img,
+    .slide-end .wx-promo-images img,
+    .cover .wx-promo-images img,
+    .summary .wx-promo-images img {
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+  /* ===== 代码复制按钮 ===== */
+  pre { position: relative; }
+  .copy-btn {
+    position: absolute; top: 8px; right: 8px;
+    padding: 4px 10px; font-size: 12px; line-height: 1.4;
+    color: #ccc; background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 4px;
+    cursor: pointer; opacity: 0; transition: opacity 0.2s, background 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    z-index: 10;
+  }
+  pre:hover .copy-btn { opacity: 1; }
+  .copy-btn:hover { background: rgba(255,255,255,0.25); color: #fff; }
+  .copy-btn.copied { color: #4ec9b0; border-color: #4ec9b0; background: rgba(78,201,176,0.15); opacity: 1; }
+
+</style>
+    </head>
+    <body>
+      <div class="slide cover active">
+        <div class="chapter-num">Chapter 05
+        </div>
+        <h1>程序控制结构
+        </h1>
+        <div class="subtitle">Python基础 · 掌握流程控制的核心语法
+        </div>
+        <div class="wx-promo">
+          <p class="wx-promo-text">欢迎关注微信公众号
+          </p>
+          <div class="wx-promo-images">
+            <img alt="coder程" src="../asset/coder程.png"/>
+            <img alt="查令十街84号" src="../asset/查令十街84号.png"/>
+          </div>
+        </div>
+      </div>
+      <div class="slide toc">
+        <h2>本章目录
+        </h2>
+        <ul>
+          <li>
+            <span class="num">1
+            </span>
+            条件测试
+          </li>
+          <li>
+            <span class="num">2
+            </span>
+            分支结构 if
+          </li>
+          <li>
+            <span class="num">3
+            </span>
+            遍历循环 for
+          </li>
+          <li>
+            <span class="num">4
+            </span>
+            无限循环 while
+          </li>
+          <li>
+            <span class="num">5
+            </span>
+            注意事项与常见陷阱
+          </li>
+        </ul>
+      </div>
+      <div class="slide content">
+        <h2>1. 条件测试
+        </h2>
+        <div class="content-body">
+          <p>条件测试是程序做出决策的基础。Python通过比较运算符产生
+            <span class="kw">True
+            </span>
+            或
+            <span class="kw">False
+            </span>
+            的布尔值。
+          </p>
+          <ul>
+            <li>
+              <b>比较运算符
+              </b>
+              ：
+              <span class="code-inline">==
+              </span>
+              、
+              <span class="code-inline">!=
+              </span>
+              、
+              <span class="code-inline">&gt;
+              </span>
+              、
+              <span class="code-inline">&lt;
+              </span>
+              、
+              <span class="code-inline">&gt;=
+              </span>
+              、
+              <span class="code-inline">&lt;=
+              </span>
+            </li>
+            <li>
+              <b>逻辑运算符
+              </b>
+              ：
+              <span class="code-inline">and
+              </span>
+              、
+              <span class="code-inline">or
+              </span>
+              、
+              <span class="code-inline">not
+              </span>
+            </li>
+            <li>
+              <b>成员测试
+              </b>
+              ：
+              <span class="code-inline">in
+              </span>
+              、
+              <span class="code-inline">not in
+              </span>
+            </li>
+          </ul>
+          <div class="code-block">
+<span class="com"># 条件测试示例</span>
+
+<span class="var">age</span> = <span class="num">18</span>
+
+<span class="func">print</span>(<span class="var">age</span> &gt;= <span class="num">18</span>)
+
+<span class="com"># True</span>
+
+<span class="func">print</span>(<span class="num">5</span> &gt; <span class="num">3</span> <span class="kw">and</span> <span class="num">2</span> &lt; <span class="num">4</span>)
+
+<span class="com"># True</span>
+
+<span class="func">print</span>(<span class="str">&quot;a&quot;</span> <span class="kw">in</span> <span class="str">&quot;apple&quot;</span>)
+
+<span class="com"># True</span>
+
+<span class="func">print</span>(<span class="num">3</span> == <span class="str">&quot;3&quot;</span>)
+
+<span class="com"># False (类型不同)</span>
+</div>
+          <p>
+            <b>注意
+            </b>
+            ：区分
+            <span class="code-inline">==
+            </span>
+            （等于比较）与
+            <span class="code-inline">=
+            </span>
+            （赋值）。
+          </p>
+        </div>
+      </div>
+      <div class="slide content">
+        <h2>2. 分支结构 — if 单分支
+        </h2>
+        <div class="content-body">
+          <p>
+            <b>if
+            </b>
+            语句根据条件决定是否执行一段代码。条件为真时执行，为假则跳过。
+          </p>
+          <div class="code-block">
+<span class="com"># if 单分支示例：判断成绩是否及格</span>
+
+<span class="var">score</span> = <span class="num">75</span>
+
+<span class="kw">if</span> <span class="var">score</span> &gt;= <span class="num">60</span>:
+    <span class="func">print</span>(<span class="str">&quot;成绩及格&quot;</span>)
+
+<span class="com"># 缩进很重要！Python用缩进表示代码块</span>
+</div>
+          <p>
+            <b>核心规则
+            </b>
+            ：
+          </p>
+          <ul>
+            <li>
+              <span class="code-inline">if
+              </span>
+              后面必须跟一个布尔表达式
+            </li>
+            <li>表达式末尾加冒号
+              <span class="code-inline">:
+              </span>
+            </li>
+            <li>代码块必须统一缩进（通常4个空格）
+            </li>
+            <li>同一代码块的缩进量必须完全一致
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="slide content">
+        <h2>2. 分支结构 — if-else 双分支
+        </h2>
+        <div class="content-body">
+          <p>当需要"二选一"时，使用
+            <span class="code-inline">if-else
+            </span>
+            结构。
+          </p>
+          <div class="code-block">
+<span class="com"># if-else 示例：判断奇偶数</span>
+
+<span class="var">num</span> = <span class="num">7</span>
+
+<span class="kw">if</span> <span class="var">num</span> % <span class="num">2</span> == <span class="num">0</span>:
+    <span class="func">print</span>(f&quot;{<span class="var">num</span>} 是偶数&quot;)
+<span class="kw">else</span>:
+    <span class="func">print</span>(f&quot;{<span class="var">num</span>} 是奇数&quot;)
+</div>
+          <p>
+            <b>if-elif-else 多分支
+            </b>
+            ：处理多种条件判断。
+          </p>
+          <div class="code-block">
+<span class="com"># 成绩等级评定</span>
+
+<span class="var">score</span> = <span class="num">82</span>
+
+<span class="kw">if</span> <span class="var">score</span> &gt;= <span class="num">90</span>:
+    <span class="var">grade</span> = <span class="str">&quot;A&quot;</span>
+<span class="kw">elif</span> <span class="var">score</span> &gt;= <span class="num">80</span>:
+    <span class="var">grade</span> = <span class="str">&quot;B&quot;</span>
+<span class="kw">elif</span> <span class="var">score</span> &gt;= <span class="num">70</span>:
+    <span class="var">grade</span> = <span class="str">&quot;C&quot;</span>
+<span class="kw">elif</span> <span class="var">score</span> &gt;= <span class="num">60</span>:
+    <span class="var">grade</span> = <span class="str">&quot;D&quot;</span>
+<span class="kw">else</span>:
+    <span class="var">grade</span> = <span class="str">&quot;F&quot;</span>
+<span class="func">print</span>(f&quot;成绩等级: {<span class="var">grade</span>}&quot;)
+</div>
+        </div>
+      </div>
+      <div class="slide content">
+        <h2>2. 分支结构 — 嵌套与三元表达式
+        </h2>
+        <div class="content-body">
+          <p>
+            <b>嵌套 if
+            </b>
+            ：在 if 代码块中再写 if，用于更精细的判断。
+          </p>
+          <div class="code-block">
+<span class="com"># 嵌套 if 示例：判断闰年</span>
+
+<span class="var">year</span> = <span class="num">2024</span>
+
+<span class="kw">if</span> <span class="var">year</span> % <span class="num">4</span> == <span class="num">0</span>:
+    <span class="kw">if</span> <span class="var">year</span> % <span class="num">100</span> == <span class="num">0</span>:
+        <span class="kw">if</span> <span class="var">year</span> % <span class="num">400</span> == <span class="num">0</span>:
+            <span class="func">print</span>(<span class="str">&quot;闰年&quot;</span>)
+<span class="kw">else</span>:
+            <span class="func">print</span>(<span class="str">&quot;平年&quot;</span>)
+<span class="kw">else</span>:
+        <span class="func">print</span>(<span class="str">&quot;闰年&quot;</span>)
+<span class="kw">else</span>:
+    <span class="func">print</span>(<span class="str">&quot;平年&quot;</span>)
+</div>
+          <p>
+            <b>三元表达式
+            </b>
+            ：将简单 if-else 写成一行。
+          </p>
+          <div class="code-block">
+<span class="var">result</span> = <span class="str">"成年"</span> <span class="kw">if</span> <span class="var">age</span> &gt;= <span class="num">18</span> <span class="kw">else</span> <span class="str">"未成年"</span>
+</div>
+        </div>
+      </div>
+      <div class="slide content">
+        <h2>3. 遍历循环 — for
+        </h2>
+        <div class="content-body">
+          <p>
+            <b>for
+            </b>
+            循环用于遍历可迭代对象（列表、字符串、字典、范围等），逐一处理每个元素。
+          </p>
+          <div class="code-block">
+<span class="com"># 遍历列表</span>
+
+<span class="var">fruits</span> = [<span class="str">&quot;apple&quot;</span>, <span class="str">&quot;banana&quot;</span>, <span class="str">&quot;cherry&quot;</span>]
+
+<span class="kw">for</span> <span class="var">fruit</span> <span class="kw">in</span> <span class="var">fruits</span>:
+    <span class="func">print</span>(<span class="var">fruit</span>)
+
+<span class="com"># 遍历字符串</span>
+<span class="kw">for</span> <span class="var">char</span> <span class="kw">in</span> <span class="str">&quot;Python&quot;</span>:
+    <span class="func">print</span>(<span class="var">char</span>, <span class="var">end</span>=<span class="str">&quot; &quot;</span>)
+
+<span class="com"># 使用 range() 生成数字序列</span>
+<span class="kw">for</span> <span class="var">i</span> <span class="kw">in</span> <span class="func">range</span>(<span class="num">5</span>):
+    <span class="func">print</span>(<span class="var">i</span>)
+
+<span class="com"># 0, 1, 2, 3, 4</span>
+<span class="kw">for</span> <span class="var">i</span> <span class="kw">in</span> <span class="func">range</span>(<span class="num">1</span>, <span class="num">10</span>, <span class="num">2</span>):
+    <span class="func">print</span>(<span class="var">i</span>)
+
+<span class="com"># 1, 3, 5, 7, 9</span>
+</div>
+          <p>
+            <b>range(start, stop, step)
+            </b>
+            ：start 含，stop 不含，step 为步长。
+          </p>
+        </div>
+      </div>
+      <div class="slide content">
+        <h2>3. 遍历循环 — for 进阶
+        </h2>
+        <div class="content-body">
+          <p>
+            <b>enumerate()
+            </b>
+            ：同时获取索引和元素。
+          </p>
+          <div class="code-block">
+<span class="var">colors</span> = [<span class="str">&quot;red&quot;</span>, <span class="str">&quot;green&quot;</span>, <span class="str">&quot;blue&quot;</span>]
+
+<span class="kw">for</span> <span class="var">idx</span>, <span class="var">color</span> <span class="kw">in</span> <span class="func">enumerate</span>(<span class="var">colors</span>):
+    <span class="func">print</span>(f&quot;{<span class="var">idx</span>}: {<span class="var">color</span>}&quot;)
+</div>
+          <p>
+            <b>zip()
+            </b>
+            ：并行遍历多个序列。
+          </p>
+          <div class="code-block">
+<span class="var">names</span> = [<span class="str">&quot;Alice&quot;</span>, <span class="str">&quot;Bob&quot;</span>, <span class="str">&quot;Carol&quot;</span>]
+
+<span class="var">scores</span> = [<span class="num">85</span>, <span class="num">92</span>, <span class="num">78</span>]
+
+<span class="kw">for</span> <span class="var">name</span>, <span class="var">score</span> <span class="kw">in</span> <span class="func">zip</span>(<span class="var">names</span>, <span class="var">scores</span>):
+    <span class="func">print</span>(f&quot;{<span class="var">name</span>}: {<span class="var">score</span>}分&quot;)
+</div>
+          <p>
+            <b>列表推导式
+            </b>
+            ：for 循环的简洁写法。
+          </p>
+          <div class="code-block">
+<span class="var">squares</span>=[<span class="var">x</span>**<span class="num">2</span><span class="kw">for</span><span class="var">x</span><span class="kw">in</span><span class="func">range</span>(<span class="num">10</span>)<span class="kw">if</span><span class="var">x</span>%<span class="num">2</span>==<span class="num">0</span>]
+<span class="com"># [0, 4, 16, 36, 64]</span>
+
+</div>
+        </div>
+      </div>
+      <div class="slide content">
+        <h2>4. 无限循环 — while
+        </h2>
+        <div class="content-body">
+          <p>
+            <b>while
+            </b>
+            循环在条件为真时持续执行，条件为假时退出。适合
+            <strong>次数不确定
+            </strong>
+            的场景。
+          </p>
+          <div class="code-block">
+<span class="com"># while 基本用法</span>
+
+<span class="var">count</span> = <span class="num">0</span>
+
+<span class="kw">while</span> <span class="var">count</span> &lt; <span class="num">5</span>:
+    <span class="func">print</span>(<span class="var">count</span>)
+
+    <span class="var">count</span> += <span class="num">1</span>
+
+<span class="com"># 用户输入验证</span>
+<span class="var">password</span> = <span class="str">&quot;&quot;</span>
+
+<span class="kw">while</span> <span class="var">password</span> != <span class="str">&quot;1234&quot;</span>:
+    <span class="var">password</span> = <span class="func">input</span>(<span class="str">&quot;请输入密码: &quot;</span>)
+<span class="func">print</span>(<span class="str">&quot;验证通过&quot;</span>)
+</div>
+          <p>
+            <b>break
+            </b>
+            ：立即跳出整个循环。
+          </p>
+          <div class="code-block">
+<span class="kw">while</span> <span class="kw">True</span>:
+    <span class="var">text</span> = <span class="func">input</span>(<span class="str">&quot;输入 &#x27;quit&#x27; 退出: &quot;</span>)
+
+    <span class="kw">if</span> <span class="var">text</span> == <span class="str">&quot;quit&quot;</span>:
+        <span class="kw">break</span>
+<span class="func">print</span>(f&quot;你输入了: {<span class="var">text</span>}&quot;)
+</div>
+        </div>
+      </div>
+      <div class="slide content">
+        <h2>4. 循环控制 — continue 与 pass
+        </h2>
+        <div class="content-body">
+          <p>
+            <b>continue
+            </b>
+            ：跳过当前迭代，继续下一次循环。
+          </p>
+          <div class="code-block">
+<span class="com"># 打印1-10中的奇数</span>
+
+<span class="kw">for</span> <span class="var">i</span> <span class="kw">in</span> <span class="func">range</span>(<span class="num">1</span>, <span class="num">11</span>):
+    <span class="kw">if</span> <span class="var">i</span> % <span class="num">2</span> == <span class="num">0</span>:
+        <span class="kw">continue</span>  <span class="com"># 偶数跳过</span>
+<span class="func">print</span>(<span class="var">i</span>)
+</div>
+          <p>
+            <b>pass
+            </b>
+            ：占位语句，不执行任何操作。常用于代码骨架。
+          </p>
+          <div class="code-block">
+<span class="kw">for</span> <span class="var">i</span> <span class="kw">in</span> <span class="func">range</span>(<span class="num">10</span>):
+    <span class="kw">if</span> <span class="var">i</span> % <span class="num">2</span> == <span class="num">0</span>:
+        <span class="kw">pass</span>  <span class="com"># 暂不处理偶数</span>
+<span class="kw">else</span>:
+        <span class="func">print</span>(<span class="var">i</span>)
+</div>
+          <p>
+            <b>else 子句
+            </b>
+            ：循环正常结束（没有被 break）时执行。
+          </p>
+          <div class="code-block">
+<span class="kw">for</span> <span class="var">n</span> <span class="kw">in</span> <span class="func">range</span>(<span class="num">2</span>, <span class="num">10</span>):
+    <span class="kw">for</span> <span class="var">x</span> <span class="kw">in</span> <span class="func">range</span>(<span class="num">2</span>, <span class="var">n</span>):
+        <span class="kw">if</span> <span class="var">n</span> % <span class="var">x</span> == <span class="num">0</span>:
+            <span class="kw">break</span>
+<span class="kw">else</span>:  <span class="com"># 没有触发 break，说明是质数</span>
+        <span class="func">print</span>(<span class="var">n</span>, <span class="str">&quot;是质数&quot;</span>)
+</div>
+        </div>
+      </div>
+      <div class="slide content">
+        <h2>4. 嵌套循环 — 经典案例
+        </h2>
+        <div class="content-body">
+          <p>循环中再写循环，常用于处理二维结构或多重迭代。
+          </p>
+          <div class="code-block">
+<span class="com"># 打印九九乘法表</span>
+
+<span class="kw">for</span> <span class="var">i</span> <span class="kw">in</span> <span class="func">range</span>(<span class="num">1</span>, <span class="num">10</span>):
+    <span class="kw">for</span> <span class="var">j</span> <span class="kw">in</span> <span class="func">range</span>(<span class="num">1</span>, <span class="var">i</span> + <span class="num">1</span>):
+        <span class="func">print</span>(f&quot;{<span class="var">j</span>}×{<span class="var">i</span>}={<span class="var">i</span>*<span class="var">j</span>}&quot;, <span class="var">end</span>=<span class="str">&quot;\t&quot;</span>)
+<span class="func">print</span>()
+</div>
+          <p>
+            <b>输出
+            </b>
+            ：
+          </p>
+          <div class="code-block">
+<span class="num">1</span>
+
+<span class="var">×1</span>=<span class="num">1</span>
+
+<span class="num">1</span>
+
+<span class="var">×2</span>=<span class="num">22</span>
+
+<span class="var">×2</span>=<span class="num">4</span>
+
+<span class="num">1</span>
+
+<span class="var">×3</span>=<span class="num">32</span>
+
+<span class="var">×3</span>=<span class="num">63</span>
+
+<span class="var">×3</span>=<span class="num">9</span>
+
+...
+
+</div>
+          <div class="code-block">
+<span class="com"># 打印直角三角形</span>
+
+<span class="var">n</span> = <span class="num">5</span>
+
+<span class="kw">for</span> <span class="var">i</span> <span class="kw">in</span> <span class="func">range</span>(<span class="num">1</span>, <span class="var">n</span> + <span class="num">1</span>):
+    <span class="func">print</span>(<span class="str">&quot;*&quot;</span> * <span class="var">i</span>)
+</div>
+        </div>
+      </div>
+      <div class="slide content">
+        <h2>5. 注意事项与常见陷阱
+        </h2>
+        <div class="content-body">
+          <ul>
+            <li>
+              <b>缩进错误 (IndentationError)
+              </b>
+              ：Python 严格依赖缩进，混用空格和 Tab 会报错。建议统一使用4个空格。
+            </li>
+            <li>
+              <b>忘记冒号
+              </b>
+              ：if / for / while / def / class 行尾都必须有
+              <span class="code-inline">:
+              </span>
+              。
+            </li>
+            <li>
+              <b>死循环
+              </b>
+              ：while 循环忘记更新条件变量，导致无限循环。Ctrl+C 强制终止。
+            </li>
+            <li>
+              <b>边界问题
+              </b>
+              ：
+              <span class="code-inline">range(5)
+              </span>
+              生成 0~4，不包含5。
+            </li>
+            <li>
+              <b>循环中修改正在遍历的序列
+              </b>
+              ：会导致意外行为，建议遍历副本。
+            </li>
+          </ul>
+          <div class="code-block">
+<span class="com"># 错误示范：遍历中删除元素</span>
+
+<span class="var">nums</span>=[<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>,<span class="num">4</span>,<span class="num">5</span>]
+
+<span class="var">forninnums</span>[:]:
+
+<span class="var">ifn</span>%<span class="num">2</span>==<span class="num">0</span>:
+
+<span class="var">nums</span>.
+
+<span class="func">remove</span>(<span class="var">n</span>)
+
+<span class="com"># 正确做法：遍历 nums 的副本 nums[:]</span>
+
+</div>
+        </div>
+      </div>
+      <div class="slide content">
+        <h2>综合练习：猜数字游戏
+        </h2>
+        <div class="content-body">
+          <p>综合运用 if、while、break 写一个猜数字小游戏。
+          </p>
+          <div class="code-block">
+<span class="kw">import</span> <span class="var">random</span>
+
+
+<span class="var">secret</span> = <span class="var">random</span>.<span class="func">randint</span>(<span class="num">1</span>, <span class="num">100</span>)
+
+<span class="var">attempts</span> = <span class="num">0</span>
+
+<span class="kw">while</span> <span class="kw">True</span>:
+    <span class="var">guess</span> = <span class="func">int</span>(<span class="func">input</span>(<span class="str">&quot;猜一个1-100的数字: &quot;</span>))
+
+    <span class="var">attempts</span> += <span class="num">1</span>
+
+    <span class="kw">if</span> <span class="var">guess</span> &lt; <span class="var">secret</span>:
+        <span class="func">print</span>(<span class="str">&quot;太小了！&quot;</span>)
+<span class="kw">elif</span> <span class="var">guess</span> &gt; <span class="var">secret</span>:
+        <span class="func">print</span>(<span class="str">&quot;太大了！&quot;</span>)
+<span class="kw">else</span>:
+        <span class="func">print</span>(f&quot;恭喜！你用了 {<span class="var">attempts</span>} 次猜对了！&quot;)
+
+        <span class="kw">break</span>
+</div>
+        </div>
+      </div>
+      <div class="slide summary">
+        <h2>本章总结
+        </h2>
+        <ul>
+          <li>条件测试通过比较/逻辑/成员运算符产生布尔值
+          </li>
+          <li>if / if-else / if-elif-else 实现多分支决策
+          </li>
+          <li>for 循环用于遍历已知序列，while 循环用于条件驱动
+          </li>
+          <li>break 退出循环，continue 跳过当前迭代，pass 占位
+          </li>
+          <li>循环可嵌套，处理复杂迭代逻辑
+          </li>
+          <li>缩进和冒号是 Python 语法的生命线
+          </li>
+        </ul>
+        <div style="text-align:center; margin-top:30px;">
+          <a href="Python基础_第06章_函数_PPT.html" style="display:inline-block; padding:10px 28px; background:rgba(255,255,255,0.9); color:#1a2a6c; text-decoration:none; border-radius:8px; font-size:16px; font-weight:600;">下一章 ▶</a>
+        </div>
+      </div>
+      <!-- Slide 1: Cover -->
+      <!-- Slide 2: TOC -->
+      <!-- Slide 3: 条件测试 -->
+      <!-- Slide 4: if 单分支 -->
+      <!-- Slide 5: if-else 双分支 -->
+      <!-- Slide 6: if 嵌套与三元表达式 -->
+      <!-- Slide 7: for 循环 -->
+      <!-- Slide 8: for 进阶 -->
+      <!-- Slide 9: while 循环 -->
+      <!-- Slide 10: continue & pass -->
+      <!-- Slide 11: 嵌套循环 -->
+      <!-- Slide 12: 注意事项 -->
+      <!-- Slide 13: 综合练习 -->
+      <!-- Slide 14: Summary -->
+      <!-- Progress bar -->
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress">
+        </div>
+      </div>
+      <div class="nav">
+        <button onclick="prevSlide()">◀ 上一页
+        </button>
+        <span class="page-num" id="pageNum">1 / 14
+        </span>
+        <button onclick="nextSlide()">下一页 ▶
+        </button>
+      </div>
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let current = 0;
+  const total = slides.length;
+
+  function show(i) {
+    if (i < 0) i = 0;
+    if (i >= total) i = total - 1;
+    slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+    current = i;
+    document.getElementById('progress').style.width = ((current + 1) / total * 100) + '%';
+    document.getElementById('pageNum').textContent = (current + 1) + ' / ' + total;
+  }
+
+  function nextSlide() {
+    if (current < total - 1) { current++; show(current); }
+  }
+  function prevSlide() {
+    if (current > 0) { current--; show(current); }
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+      e.preventDefault(); nextSlide();
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault(); prevSlide();
+    } else if (e.key === 'Home') {
+      e.preventDefault(); show(0);
+    } else if (e.key === 'End') {
+      e.preventDefault(); show(total - 1);
+    }
+  });
+
+  show(0);
+
+  // ===== 代码复制功能 =====
+  document.querySelectorAll('pre').forEach(pre => {
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '复制';
+    btn.type = 'button';
+    btn.addEventListener('click', () => {
+      const code = pre.querySelector('code');
+      const text = code ? code.innerText : pre.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 1500);
+      }).catch(() => {
+        // fallback
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta);
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+
+</script>
+    </body>
+  </html>

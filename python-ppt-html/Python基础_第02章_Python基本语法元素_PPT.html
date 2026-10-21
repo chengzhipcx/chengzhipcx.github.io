@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+  <html lang="zh-CN">
+    <head>
+      <meta charset="utf-8"/>
+      <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+      <title>Python基础 - 第02章 Python基本语法元素
+      </title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif; }
+
+  .slide {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    display: none; flex-direction: column; justify-content: center; align-items: center;
+    padding: 60px 80px; transition: opacity 0.4s ease;
+  }
+  .slide.active { display: flex; }
+
+  /* ===== 封面页 ===== */
+  .slide.cover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff; text-align: center;
+  }
+  .slide.cover h1 { font-size: 3.2rem; font-weight: 700; margin-bottom: 0.5em; letter-spacing: 0.05em; }
+  .slide.cover .subtitle { font-size: 1.4rem; opacity: 0.9; margin-bottom: 2em; }
+  .slide.cover .badge {
+    display: inline-block; padding: 8px 24px; border: 2px solid rgba(255,255,255,0.6);
+    border-radius: 30px; font-size: 1rem; letter-spacing: 0.1em;
+  }
+
+  /* ===== 内容页 ===== */
+  .slide.content {
+    background: #f8f9fa; color: #2d3436;
+  }
+  .slide.content .page-header {
+    position: absolute; top: 40px; left: 0; padding-left: 80px;
+    border-left: 5px solid #667eea;
+  }
+  .slide.content .page-header h2 { font-size: 2rem; color: #2d3436; }
+  .slide.content .page-header .section-tag {
+    font-size: 0.85rem; color: #667eea; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 4px;
+  }
+  .slide.content .body {
+    width: 100%; max-width: 1100px; margin-top: 60px;
+  }
+
+  /* ===== 代码块 ===== */
+  pre {
+    background: #1e1e1e; color: #d4d4d4; padding: 20px 24px; border-radius: 8px;
+    font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace; font-size: 0.95rem;
+    line-height: 1.7; overflow-x: auto; text-align: left; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  pre .kw { color: #569cd6; }   /* keyword */
+  pre .str { color: #ce9178; }  /* string */
+  pre .num { color: #b5cea8; }  /* number */
+  pre .com { color: #6a9955; }  /* comment */
+  pre .func { color: #dcdcaa; } /* function */
+  pre .var { color: #9cdcfe; }  /* variable */
+
+  /* ===== 列表与卡片 ===== */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; width: 100%; }
+  .card {
+    background: #fff; border-radius: 10px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border-left: 4px solid #667eea;
+  }
+  .card h4 { font-size: 1.1rem; margin-bottom: 8px; color: #2d3436; }
+  .card p { font-size: 0.95rem; color: #636e72; line-height: 1.6; }
+
+  ul.teach-list { list-style: none; padding: 0; }
+  ul.teach-list li {
+    padding: 12px 0; padding-left: 28px; position: relative; font-size: 1.05rem; line-height: 1.7;
+    border-bottom: 1px solid #e9ecef;
+  }
+  ul.teach-list li::before {
+    content: "▸"; position: absolute; left: 0; color: #667eea; font-weight: 700;
+  }
+  ul.teach-list li:last-child { border-bottom: none; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; width: 100%; align-items: start; }
+  .two-col pre { font-size: 0.85rem; }
+
+  .highlight-box {
+    background: #fff3cd; border-left: 4px solid #ffc107; padding: 16px 20px; border-radius: 0 8px 8px 0;
+    margin: 16px 0; font-size: 0.95rem; color: #856404;
+  }
+  .tip-box {
+    background: #d1ecf1; border-left: 4px solid #17a2b8; padding: 16px 20px; border-radius: 0 8px 8px 0;
+    margin: 16px 0; font-size: 0.95rem; color: #0c5460;
+  }
+
+  /* ===== 目录页 ===== */
+  .toc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; width: 100%; max-width: 900px; }
+  .toc-item {
+    background: #fff; padding: 28px 32px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    display: flex; align-items: center; gap: 20px; transition: transform 0.2s;
+  }
+  .toc-item:hover { transform: translateY(-3px); }
+  .toc-num {
+    width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; font-weight: 700; flex-shrink: 0;
+  }
+  .toc-text h4 { font-size: 1.15rem; margin-bottom: 4px; }
+  .toc-text span { font-size: 0.85rem; color: #888; }
+
+  /* ===== 总结页 ===== */
+  .slide.summary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; }
+  .slide.summary h2 { font-size: 2.4rem; margin-bottom: 40px; }
+  .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; width: 100%; max-width: 1000px; }
+  .summary-card {
+    background: rgba(255,255,255,0.12); backdrop-filter: blur(8px); padding: 28px; border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  .summary-card h4 { font-size: 1.1rem; margin-bottom: 12px; }
+  .summary-card p { font-size: 0.9rem; opacity: 0.9; line-height: 1.6; }
+
+  /* ===== 进度条 ===== */
+  .progress-bar {
+    position: fixed; bottom: 0; left: 0; height: 4px; background: linear-gradient(90deg, #667eea, #764ba2);
+    transition: width 0.3s ease; z-index: 100;
+  }
+
+  /* ===== 页码 ===== */
+  .page-num {
+    position: fixed; bottom: 12px; right: 24px; font-size: 0.8rem; color: #888; z-index: 100;
+  }
+
+  /* ===== 导航提示 ===== */
+  .nav-hint {
+    position: fixed; bottom: 12px; left: 24px; font-size: 0.75rem; color: #aaa; z-index: 100;
+  }
+
+  h3 { font-size: 1.5rem; margin-bottom: 20px; color: #2d3436; }
+  p { font-size: 1.05rem; line-height: 1.8; color: #495057; }
+
+  /* ===== 导航按钮 ===== */
+  .nav { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 100; }
+  .nav button {
+    background: rgba(0,0,0,0.3); color: white; border: none; padding: 10px 24px;
+    border-radius: 6px; cursor: pointer; font-size: 14px; backdrop-filter: blur(4px);
+  }
+  .nav button:hover { background: rgba(0,0,0,0.5); }
+  .nav .page-num { position: static !important; bottom: auto !important; right: auto !important; background: #007acc; color: white; font-size: 14px; line-height: 36px; padding: 0 14px; border-radius: 6px; margin: 0 10px; }
+  @media (max-width: 900px) and (orientation: landscape) {
+    .slide { padding: 20px 30px !important; }
+    .slide h1 { font-size: 1.8rem !important; }
+    .slide h2 { font-size: 1.4rem !important; }
+    .slide h3 { font-size: 1.1rem !important; }
+    .slide p, .slide li { font-size: 0.9rem !important; line-height: 1.5 !important; }
+    pre { font-size: 0.75rem !important; padding: 10px !important; }
+    .nav button { padding: 6px 14px !important; font-size: 12px !important; }
+    .nav .page-num { font-size: 12px !important; padding: 0 10px !important; }
+  }
+  
+    /* 微信公众号推荐 */
+    .wx-promo {
+      margin-top: 40px;
+      padding-top: 30px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .wx-promo-text {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+    .wx-promo-images {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+    }
+    .wx-promo-images img {
+      width: 360px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 2px solid rgba(0, 122, 204, 0.3);
+    }
+    .slide-cover .wx-promo-text,
+    .slide-end .wx-promo-text,
+    .cover .wx-promo-text,
+    .summary .wx-promo-text {
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .slide-cover .wx-promo-images img,
+    .slide-end .wx-promo-images img,
+    .cover .wx-promo-images img,
+    .summary .wx-promo-images img {
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+  /* ===== 代码复制按钮 ===== */
+  pre { position: relative; }
+  .copy-btn {
+    position: absolute; top: 8px; right: 8px;
+    padding: 4px 10px; font-size: 12px; line-height: 1.4;
+    color: #ccc; background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 4px;
+    cursor: pointer; opacity: 0; transition: opacity 0.2s, background 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    z-index: 10;
+  }
+  pre:hover .copy-btn { opacity: 1; }
+  .copy-btn:hover { background: rgba(255,255,255,0.25); color: #fff; }
+  .copy-btn.copied { color: #4ec9b0; border-color: #4ec9b0; background: rgba(78,201,176,0.15); opacity: 1; }
+
+</style>
+    </head>
+    <body>
+      <div class="slide cover active">
+        <div class="badge">CHAPTER 02
+        </div>
+        <h1>Python 基本语法元素
+        </h1>
+        <p class="subtitle">数据类型 · 变量 · 控制流程 · 输入输出 · 程序格式
+        </p>
+        <div class="wx-promo">
+          <p class="wx-promo-text">欢迎关注微信公众号
+          </p>
+          <div class="wx-promo-images">
+            <img alt="coder程" src="../asset/coder程.png"/>
+            <img alt="查令十街84号" src="../asset/查令十街84号.png"/>
+          </div>
+        </div>
+      </div>
+      <div class="slide content">
+        <div class="page-header">
+          <div class="section-tag">Contents
+          </div>
+          <h2>本章目录
+          </h2>
+        </div>
+        <div class="body">
+          <div class="toc-grid">
+            <div class="toc-item">
+              <div class="toc-num">1
+              </div>
+              <div class="toc-text">
+                <h4>数据类型
+                </h4>
+                <span>数字、字符串、布尔、空值
+                </span>
+              </div>
+            </div>
+            <div class="toc-item">
+              <div class="toc-num">2
+              </div>
+              <div class="toc-text">
+                <h4>变量
+                </h4>
+                <span>命名规则、赋值、动态类型
+                </span>
+              </div>
+            </div>
+            <div class="toc-item">
+              <div class="toc-num">3
+              </div>
+              <div class="toc-text">
+                <h4>控制流程
+                </h4>
+                <span>if / for / while / 保留字
+                </span>
+              </div>
+            </div>
+            <div class="toc-item">
+              <div class="toc-num">4
+              </div>
+              <div class="toc-text">
+                <h4>输入输出
+                </h4>
+                <span>print / input / 格式化输出
+                </span>
+              </div>
+            </div>
+            <div class="toc-item">
+              <div class="toc-num">5
+              </div>
+              <div class="toc-text">
+                <h4>程序格式
+                </h4>
+                <span>缩进、注释、代码风格
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide content">
+        <div class="page-header">
+          <div class="section-tag">2.1 数据类型
+          </div>
+          <h2>Python 数据类型概览
+          </h2>
+        </div>
+        <div class="body">
+          <div class="card-grid">
+            <div class="card">
+              <h4>数字 (Number)
+              </h4>
+              <p>整数 int、浮点数 float、复数 complex
+              </p>
+            </div>
+            <div class="card">
+              <h4>字符串 (String)
+              </h4>
+              <p>文本数据，用单/双引号包围
+              </p>
+            </div>
+            <div class="card">
+              <h4>布尔 (Bool)
+              </h4>
+              <p>True / False，用于逻辑判断
+              </p>
+            </div>
+            <div class="card">
+              <h4>空值 (None)
+              </h4>
+              <p>NoneType，表示"什么都没有"
+              </p>
+            </div>
+          </div>
+<pre style="margin-top: 28px;"><code><span class="num">42</span>          <span class="com"># int 整数</span>
+<span class="num">3.14</span>        <span class="com"># float 浮点数</span>
+<span class="str">"Hello"</span>     <span class="com"># str 字符串</span>
+<span class="kw">True</span>        <span class="com"># bool 布尔值</span>
+<span class="kw">None</span>        <span class="com"># NoneType 空值</span></code></pre>
+        </div>
+      </div>
+      <div class="slide content">
+        <div class="page-header">
+          <div class="section-tag">2.2 变量
+          </div>
+          <h2>变量与赋值
+          </h2>
+        </div>
+        <div class="body">
+          <p style="margin-bottom: 20px;">变量是数据的"名字"。Python 是动态类型语言，变量类型随赋值自动确定。
+          </p>
+          <div class="two-col">
+            <div>
+              <h3>基本赋值
+              </h3>
+<pre><code><span class="var">x</span> = <span class="num">10</span>          <span class="com"># 整数</span>
+<span class="var">name</span> = <span class="str">"Alice"</span>  <span class="com"># 字符串</span>
+<span class="var">pi</span> = <span class="num">3.14</span>     <span class="com"># 浮点数</span>
+
+<span class="com"># 多元赋值</span>
+<span class="var">a</span>, <span class="var">b</span>, <span class="var">c</span> = <span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>
+<span class="var">x</span> = <span class="var">y</span> = <span class="num">0</span>     <span class="com"># 链式赋值</span></code></pre>
+            </div>
+            <div>
+              <h3>命名规则
+              </h3>
+              <ul class="teach-list">
+                <li>只能含字母、数字、下划线
+                </li>
+                <li>不能以数字开头
+                </li>
+                <li>区分大小写（Name ≠ name）
+                </li>
+                <li>不能用保留字（如 if, for）
+                </li>
+                <li>建议用小写 + 下划线（snake_case）
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide content">
+        <div class="page-header">
+          <div class="section-tag">2.2 变量
+          </div>
+          <h2>Python 保留字
+          </h2>
+        </div>
+        <div class="body">
+          <p style="margin-bottom: 24px;">保留字是 Python 预定义的、具有特殊含义的单词，不能用作变量名。
+          </p>
+<pre><code><span class="kw">False</span>   <span class="kw">None</span>    <span class="kw">True</span>    <span class="kw">and</span>     <span class="kw">as</span>      <span class="kw">assert</span>  <span class="kw">break</span>   <span class="kw">class</span>
+<span class="kw">continue</span> <span class="kw">def</span>    <span class="kw">del</span>     <span class="kw">elif</span>    <span class="kw">else</span>    <span class="kw">except</span>  <span class="kw">finally</span> <span class="kw">for</span>
+<span class="kw">from</span>    <span class="kw">global</span>  <span class="kw">if</span>      <span class="kw">import</span>  <span class="kw">in</span>      <span class="kw">is</span>      <span class="kw">lambda</span>  <span class="kw">nonlocal</span>
+<span class="kw">not</span>     <span class="kw">or</span>      <span class="kw">pass</span>    <span class="kw">raise</span>   <span class="kw">return</span>  <span class="kw">try</span>     <span class="kw">while</span>   <span class="kw">with</span>    <span class="kw">yield</span></code></pre>
+          <div class="highlight-box">
+            <strong>注意：
+            </strong>
+            可通过
+            <code>import keyword; keyword.kwlist
+            </code>
+            获取全部保留字列表。
+          </div>
+        </div>
+      </div>
+      <div class="slide content">
+        <div class="page-header">
+          <div class="section-tag">2.3 控制流程
+          </div>
+          <h2>条件与循环
+          </h2>
+        </div>
+        <div class="body">
+          <div class="two-col">
+            <div>
+              <h3>if 条件语句
+              </h3>
+<pre><code><span class="var">score</span> = <span class="num">85</span>
+
+<span class="kw">if</span> <span class="var">score</span> &gt;= <span class="num">90</span>:
+    <span class="func">print</span>(<span class="str">"优秀"</span>)
+<span class="kw">elif</span> <span class="var">score</span> &gt;= <span class="num">60</span>:
+    <span class="func">print</span>(<span class="str">"及格"</span>)
+<span class="kw">else</span>:
+    <span class="func">print</span>(<span class="str">"不及格"</span>)</code></pre>
+            </div>
+            <div>
+              <h3>for 循环
+              </h3>
+<pre><code><span class="com"># 遍历列表</span>
+<span class="kw">for</span> <span class="var">i</span> <span class="kw">in</span> <span class="func">range</span>(<span class="num">5</span>):
+    <span class="func">print</span>(<span class="var">i</span>)   <span class="com"># 0 1 2 3 4</span>
+
+<span class="com"># 遍历字符串</span>
+<span class="kw">for</span> <span class="var">ch</span> <span class="kw">in</span> <span class="str">"abc"</span>:
+    <span class="func">print</span>(<span class="var">ch</span>)  <span class="com"># a b c</span></code></pre>
+            </div>
+          </div>
+          <div class="tip-box" style="margin-top: 20px;">
+            <strong>要点：
+            </strong>
+            Python 用
+            <strong>缩进
+            </strong>
+            表示代码块，不需要大括号。同一代码块缩进必须一致（通常 4 个空格）。
+          </div>
+        </div>
+      </div>
+      <div class="slide content">
+        <div class="page-header">
+          <div class="section-tag">2.3 控制流程
+          </div>
+          <h2>while 循环与跳转
+          </h2>
+        </div>
+        <div class="body">
+          <div class="two-col">
+            <div>
+              <h3>while 循环
+              </h3>
+<pre><code><span class="var">count</span> = <span class="num">0</span>
+<span class="kw">while</span> <span class="var">count</span> &lt; <span class="num">5</span>:
+    <span class="func">print</span>(<span class="var">count</span>)
+    <span class="var">count</span> += <span class="num">1</span></code></pre>
+            </div>
+            <div>
+              <h3>跳转语句
+              </h3>
+              <ul class="teach-list">
+                <li>
+                  <code>break
+                  </code>
+                  — 立即退出循环
+                </li>
+                <li>
+                  <code>continue
+                  </code>
+                  — 跳过当前迭代
+                </li>
+                <li>
+                  <code>pass
+                  </code>
+                  — 占位，什么都不做
+                </li>
+              </ul>
+<pre><code><span class="kw">for</span> <span class="var">n</span> <span class="kw">in</span> <span class="func">range</span>(<span class="num">10</span>):
+    <span class="kw">if</span> <span class="var">n</span> == <span class="num">3</span>:
+        <span class="kw">continue</span>   <span class="com"># 跳过 3</span>
+    <span class="kw">if</span> <span class="var">n</span> == <span class="num">7</span>:
+        <span class="kw">break</span>      <span class="com"># 到达 7 退出</span>
+    <span class="func">print</span>(<span class="var">n</span>)</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide content">
+        <div class="page-header">
+          <div class="section-tag">2.4 输入输出
+          </div>
+          <h2>print() 与 input()
+          </h2>
+        </div>
+        <div class="body">
+          <div class="two-col">
+            <div>
+              <h3>输出 print()
+              </h3>
+<pre><code><span class="func">print</span>(<span class="str">"Hello, World!"</span>)
+<span class="func">print</span>(<span class="num">100</span> + <span class="num">200</span>)        <span class="com"># 300</span>
+<span class="func">print</span>(<span class="str">"a"</span>, <span class="str">"b"</span>, <span class="str">"c"</span>)    <span class="com"># a b c</span>
+<span class="func">print</span>(<span class="str">"end"</span>, end=<span class="str">""</span>)   <span class="com"># 不换行</span></code></pre>
+            </div>
+            <div>
+              <h3>输入 input()
+              </h3>
+<pre><code><span class="var">name</span> = <span class="func">input</span>(<span class="str">"请输入名字："</span>)
+<span class="func">print</span>(<span class="str">"你好, "</span> + <span class="var">name</span>)
+
+<span class="com"># input 返回字符串</span>
+<span class="var">age</span> = <span class="func">int</span>(<span class="func">input</span>(<span class="str">"年龄："</span>))
+<span class="func">print</span>(<span class="var">age</span> + <span class="num">1</span>)</code></pre>
+            </div>
+          </div>
+          <div class="tip-box" style="margin-top: 20px;">
+            <strong>重要：
+            </strong>
+            <code>input()
+            </code>
+            获取的所有内容都是字符串类型，做数学运算前必须用
+            <code>int()
+            </code>
+            或
+            <code>float()
+            </code>
+            转换。
+          </div>
+        </div>
+      </div>
+      <div class="slide content">
+        <div class="page-header">
+          <div class="section-tag">2.4 输入输出
+          </div>
+          <h2>格式化输出
+          </h2>
+        </div>
+        <div class="body">
+          <p style="margin-bottom: 20px;">三种格式化方式：% 格式化、str.format()、f-string（推荐）
+          </p>
+          <div class="two-col">
+            <div>
+              <h3>format() 方法
+              </h3>
+<pre><code><span class="str">"{0} + {1} = {2}"</span>.<span class="func">format</span>(<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>)
+<span class="com"># "1 + 2 = 3"</span>
+
+<span class="str">"{name}: {score}"</span>.<span class="func">format</span>(
+    name=<span class="str">"Tom"</span>, score=<span class="num">90</span>)
+
+<span class="com"># 格式化数字</span>
+<span class="str">"{:.2f}"</span>.<span class="func">format</span>(<span class="num">3.14159</span>)  <span class="com"># 3.14</span>
+<span class="str">"{:&gt;10}"</span>.<span class="func">format</span>(<span class="str">"hi"</span>)   <span class="com"># "        hi"</span></code></pre>
+            </div>
+            <div>
+              <h3>f-string（Python 3.6+）
+              </h3>
+<pre><code><span class="var">name</span> = <span class="str">"Tom"</span>
+<span class="var">score</span> = <span class="num">95.5</span>
+<span class="func">print</span>(<span class="str">f"{name} 考了 {score:.1f} 分"</span>)
+<span class="com"># Tom 考了 95.5 分</span>
+
+<span class="com"># 常用格式符</span>
+<span class="str">"{:d}"</span>    <span class="com"># 整数</span>
+<span class="str">"{:.2f}"</span>  <span class="com"># 2位小数</span>
+<span class="str">"{:&gt;10}"</span>  <span class="com"># 右对齐，宽10</span>
+<span class="str">"{:^10}"</span>  <span class="com"># 居中对齐</span>
+<span class="str">"{:,}"</span>    <span class="com"># 千分位</span></code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide content">
+        <div class="page-header">
+          <div class="section-tag">2.5 程序格式
+          </div>
+          <h2>缩进、注释与代码风格
+          </h2>
+        </div>
+        <div class="body">
+          <div class="two-col">
+            <div>
+              <h3>缩进
+              </h3>
+              <ul class="teach-list">
+                <li>Python 用缩进表示代码层级
+                </li>
+                <li>推荐使用 4 个空格
+                </li>
+                <li>不要混用 Tab 和空格
+                </li>
+              </ul>
+<pre><code><span class="kw">if</span> <span class="num">True</span>:
+    <span class="func">print</span>(<span class="str">"正确"</span>)     <span class="com"># 4空格缩进</span>
+    <span class="kw">if</span> <span class="num">True</span>:
+        <span class="func">print</span>(<span class="str">"嵌套"</span>) <span class="com"># 8空格缩进</span></code></pre>
+            </div>
+            <div>
+              <h3>注释
+              </h3>
+<pre><code><span class="com"># 单行注释</span>
+<span class="com"># 快捷键：Ctrl + /</span>
+
+<span class="str">"""</span>
+<span class="str">多行注释（文档字符串）</span>
+<span class="str">通常放在函数/类顶部</span>
+<span class="str">"""</span></code></pre>
+              <div class="highlight-box" style="margin-top: 12px;">
+                <strong>PEP 8：
+                </strong>
+                每行不超过 79 字符，函数间空两行，运算符前后加空格。
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide summary">
+        <h2>本章总结
+        </h2>
+        <div class="summary-grid">
+          <div class="summary-card">
+            <h4>数据与变量
+            </h4>
+            <p>Python 有 int、float、str、bool、None 等基本类型。变量动态绑定，命名遵循 snake_case。
+            </p>
+          </div>
+          <div class="summary-card">
+            <h4>控制流程
+            </h4>
+            <p>if/elif/else 做分支，for/while 做循环，break/continue 控制跳转。
+            </p>
+          </div>
+          <div class="summary-card">
+            <h4>输入输出
+            </h4>
+            <p>print() 输出，input() 输入（结果为 str）。f-string 是最推荐的格式化方式。
+            </p>
+          </div>
+        </div>
+        <div style="text-align:center; margin-top:30px;">
+          <a href="Python基础_第03章_基本数据类型_PPT.html" style="display:inline-block; padding:10px 28px; background:rgba(255,255,255,0.9); color:#1a2a6c; text-decoration:none; border-radius:8px; font-size:16px; font-weight:600;">下一章 ▶</a>
+        </div>
+      </div>
+      <!-- ==================== 封面 ==================== -->
+      <!-- ==================== 目录 ==================== -->
+      <!-- ==================== 数据类型 ==================== -->
+      <!-- ==================== 变量 ==================== -->
+      <!-- ==================== 保留字 ==================== -->
+      <!-- ==================== 控制流程 ==================== -->
+      <!-- ==================== while 循环 ==================== -->
+      <!-- ==================== 输入输出 ==================== -->
+      <!-- ==================== 格式化输出 ==================== -->
+      <!-- ==================== 程序格式 ==================== -->
+      <!-- ==================== 总结 ==================== -->
+      <!-- ===== 进度条、页码、导航 ===== -->
+      <div class="progress-bar" id="progress">
+      </div>
+      <div class="nav">
+        <button onclick="prevSlide()">◀ 上一页
+        </button>
+        <span class="page-num" id="pageNum">1 / 10
+        </span>
+        <button onclick="nextSlide()">下一页 ▶
+        </button>
+      </div>
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let current = 0;
+  const total = slides.length;
+
+  function show(i) {
+    slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+    document.getElementById('progress').style.width = ((i + 1) / total * 100) + '%';
+    document.getElementById('pageNum').textContent = (i + 1) + ' / ' + total;
+  }
+
+  function nextSlide() {
+    if (current < total - 1) { current++; show(current); }
+  }
+  function prevSlide() {
+    if (current > 0) { current--; show(current); }
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') {
+      nextSlide();
+    } else if (e.key === 'ArrowLeft') {
+      prevSlide();
+    } else if (e.key === 'Home') {
+      current = 0; show(current);
+    } else if (e.key === 'End') {
+      current = total - 1; show(current);
+    }
+  });
+
+  show(0);
+
+  // ===== 代码复制功能 =====
+  document.querySelectorAll('pre').forEach(pre => {
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '复制';
+    btn.type = 'button';
+    btn.addEventListener('click', () => {
+      const code = pre.querySelector('code');
+      const text = code ? code.innerText : pre.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 1500);
+      }).catch(() => {
+        // fallback
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta);
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+
+</script>
+    </body>
+  </html>
