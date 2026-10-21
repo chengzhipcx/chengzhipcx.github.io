@@ -99,36 +99,6 @@ document.querySelectorAll('.about-card, .platform-card, .feature-item').forEach(
     observer.observe(el);
 });
 
-// ===== 表单提交处理 =====
-const contactForm = document.querySelector('.contact-form');
-const emailInput = document.querySelector('.email-input');
-
-contactForm?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    
-    const email = emailInput.value.trim();
-    
-    if (!email || !isValidEmail(email)) {
-        showNotification('请输入有效的邮箱地址', 'error');
-        return;
-    }
-    
-    // 模拟提交成功
-    showNotification('订阅成功！感谢您的关注', 'success');
-    emailInput.value = '';
-});
-
-// 点击按钮提交
-const submitBtn = document.querySelector('.contact-form .btn-primary');
-submitBtn?.addEventListener('click', (e) => {
-    e.preventDefault();
-    contactForm?.dispatchEvent(new Event('submit'));
-});
-
-function isValidEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
 // ===== 通知提示 =====
 function showNotification(message, type = 'success') {
     // 移除已存在的通知
