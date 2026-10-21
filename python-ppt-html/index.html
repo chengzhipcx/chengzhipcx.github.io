@@ -142,6 +142,77 @@
       height: 100%;
       background: #fff;
     }
+
+    /* 汉堡按钮（仅移动端显示） */
+    .menu-btn {
+      display: none;
+      padding: 6px 10px;
+      border: 1px solid #d0d0d0;
+      background: #fff;
+      border-radius: 6px;
+      font-size: 16px;
+      line-height: 1;
+      cursor: pointer;
+      color: #333;
+    }
+
+    /* 抽屉遮罩 */
+    .backdrop {
+      display: none;
+    }
+
+    /* 移动端适配 */
+    @media (max-width: 768px) {
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 78%;
+        min-width: 0;
+        max-width: 320px;
+        z-index: 200;
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+      }
+      body.nav-open .sidebar {
+        transform: translateX(0);
+      }
+      .menu-btn {
+        display: block;
+        flex-shrink: 0;
+      }
+      .backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.45);
+        z-index: 150;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s ease;
+      }
+      body.nav-open .backdrop {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .toolbar {
+        padding: 0 10px;
+        gap: 8px;
+      }
+      .toolbar .btn {
+        padding: 6px 10px;
+        font-size: 12px;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .toolbar .title {
+        font-size: 13px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
   </style>
 </head>
 <body>
@@ -177,12 +248,14 @@
     <!-- 右侧主体 -->
     <main class="main">
       <div class="toolbar">
+        <button class="menu-btn" id="menuBtn" aria-label="打开目录">☰</button>
         <button class="btn" id="btnPrev">← 上一章</button>
         <span class="title" id="pageTitle">绪论与环境配置</span>
         <button class="btn" id="btnNext">下一章 →</button>
       </div>
       <iframe class="content-frame" id="contentFrame" src="Python基础_绪论与环境配置_PPT.html"></iframe>
     </main>
+    <div class="backdrop" id="backdrop"></div>
   </div>
 
   <script>
@@ -191,6 +264,12 @@
     const titleEl = document.getElementById('pageTitle');
     const btnPrev = document.getElementById('btnPrev');
     const btnNext = document.getElementById('btnNext');
+    const menuBtn = document.getElementById('menuBtn');
+    const backdrop = document.getElementById('backdrop');
+
+    // 移动端目录抽屉
+    menuBtn.addEventListener('click', () => document.body.classList.toggle('nav-open'));
+    backdrop.addEventListener('click', () => document.body.classList.remove('nav-open'));
 
     let currentIndex = 0;
     const items = Array.from(links);
@@ -206,6 +285,9 @@
       link.classList.add('active');
       frame.src = src;
       titleEl.textContent = text;
+
+      // 移动端选择章节后收起抽屉
+      document.body.classList.remove('nav-open');
 
       // 自动滚动当前项到可视区域
       link.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
