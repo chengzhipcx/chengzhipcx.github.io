@@ -190,6 +190,18 @@
       .nav button { padding: 8px 14px !important; font-size: 12px !important; }
       .nav .page-num { font-size: 12px !important; padding: 0 10px !important; line-height: 32px !important; }
     }
+
+    /* 代码复制按钮 */
+    pre, .slide-content .code, .code-block { position: relative; }
+    .code-copy-btn {
+      position: absolute; top: 8px; right: 8px; z-index: 5;
+      padding: 4px 10px; font-size: 12px; font-family: inherit;
+      color: #d4d4d4; background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25); border-radius: 4px;
+      cursor: pointer; opacity: 0.75; transition: all 0.2s;
+    }
+    .code-copy-btn:hover { opacity: 1; background: rgba(255,255,255,0.22); }
+    .code-copy-btn.copied { color: #4ade80; border-color: #4ade80; }
 </style>
     </head>
     <body>
@@ -252,27 +264,27 @@
           </p>
           <div class="code-block">
 <span class="com"># 面向过程：数据和行为分离</span>
-<span class="var">dog_name</span>=<span class="str">&quot;Buddy&quot;</span>
-<span class="var">dog_age</span>=<span class="num">3</span>
-<span class="func">defdog_bark</span>(<span class="var">name</span>):
-<span class="func">print</span>(f&quot;{<span class="var">name</span>} says: 汪！&quot;)
-<span class="func">dog_bark</span>(<span class="var">dog_name</span>)
+<span class="var">dog_name</span> = <span class="str">&quot;Buddy&quot;</span>
+<span class="var">dog_age</span> = <span class="num">3</span>
 
+<span class="kw">def</span> <span class="func">dog_bark</span>(<span class="var">name</span>):
+    <span class="func">print</span>(<span class="str">f&quot;{name} says: 汪！&quot;</span>)
+
+<span class="func">dog_bark</span>(<span class="var">dog_name</span>)
 </div>
           <div class="code-block">
 <span class="com"># 面向对象：数据和行为绑定</span>
-<span class="var">classDog</span>:
-<span class="func">def__init__</span>(<span class="var">self</span>,<span class="var">name</span>,<span class="var">age</span>):
-<span class="var">self</span>.
-<span class="var">name</span>=<span class="var">nameself</span>.
-<span class="var">age</span>=<span class="var">age</span>
-<span class="func">defbark</span>(<span class="var">self</span>):
-<span class="func">print</span>(f&quot;{<span class="var">self</span>.<span class="var">name</span>} says: 汪！&quot;)
-<span class="var">buddy</span>=
-<span class="func">Dog</span>(<span class="str">&quot;Buddy&quot;</span>,<span class="num">3</span>)<span class="var">buddy</span>.
-<span class="func">bark</span>()
-<span class="com"># Buddy says: 汪！</span>
+<span class="kw">class</span> <span class="var">Dog</span>:
+    <span class="kw">def</span> <span class="func">__init__</span>(<span class="var">self</span>, <span class="var">name</span>, <span class="var">age</span>):
+        <span class="var">self</span>.<span class="var">name</span> = <span class="var">name</span>
+        <span class="var">self</span>.<span class="var">age</span> = <span class="var">age</span>
 
+    <span class="kw">def</span> <span class="func">bark</span>(<span class="var">self</span>):
+        <span class="func">print</span>(<span class="str">f&quot;{self.name} says: 汪！&quot;</span>)
+
+<span class="var">buddy</span> = <span class="func">Dog</span>(<span class="str">&quot;Buddy&quot;</span>, <span class="num">3</span>)
+<span class="var">buddy</span>.<span class="func">bark</span>()
+<span class="com"># Buddy says: 汪！</span>
 </div>
           <p>当数据和行为
             <strong>天然关联
@@ -297,44 +309,25 @@
             （行为）。
           </p>
           <div class="code-block">
-<span class="var">classStudent</span>:
+<span class="kw">class</span> <span class="var">Student</span>:
 
-<span class="com"># 类属性：所有实例共享</span>
+    <span class="com"># 类属性：所有实例共享</span>
+    <span class="var">school</span> = <span class="str">&quot;Python学院&quot;</span>
 
-<span class="var">school</span>=<span class="str">&quot;Python学院&quot;</span>
+    <span class="com"># 构造方法：创建实例时自动调用</span>
+    <span class="kw">def</span> <span class="func">__init__</span>(<span class="var">self</span>, <span class="var">name</span>, <span class="var">age</span>):
+        <span class="var">self</span>.<span class="var">name</span> = <span class="var">name</span>  <span class="com"># 实例属性</span>
+        <span class="var">self</span>.<span class="var">age</span> = <span class="var">age</span>
 
-<span class="com"># 构造方法：创建实例时自动调用</span>
+    <span class="com"># 实例方法</span>
+    <span class="kw">def</span> <span class="func">introduce</span>(<span class="var">self</span>):
+        <span class="kw">return</span> <span class="str">f&quot;我是{self.name}，{self.age}岁&quot;</span>
 
-<span class="func">def__init__</span>(<span class="var">self</span>,<span class="var">name</span>,<span class="var">age</span>):
-
-<span class="var">self</span>.
-
-<span class="var">name</span>=<span class="var">name</span>
-
-<span class="com"># 实例属性</span>
-
-<span class="var">self</span>.
-
-<span class="var">age</span>=<span class="var">age</span>
-
-<span class="com"># 实例方法</span>
-
-<span class="func">defintroduce</span>(<span class="var">self</span>):
-
-<span class="var">returnf</span><span class="str">&quot;我是{self.name}，{self.age}岁&quot;</span>
-
-<span class="com"># 类方法</span>
-
-@<span class="func">classmethod</span>
-
-<span class="func">deffrom_birth_year</span>(<span class="var">cls</span>,<span class="var">name</span>,<span class="var">birth_year</span>):
-
-<span class="var">age</span>=<span class="num">2024</span>-<span class="var">birth_year</span>
-
-<span class="kw">return</span>
-
-<span class="func">cls</span>(<span class="var">name</span>,<span class="var">age</span>)
-
+    <span class="com"># 类方法</span>
+    @<span class="func">classmethod</span>
+    <span class="kw">def</span> <span class="func">from_birth_year</span>(<span class="var">cls</span>, <span class="var">name</span>, <span class="var">birth_year</span>):
+        <span class="var">age</span> = <span class="num">2024</span> - <span class="var">birth_year</span>
+        <span class="kw">return</span> <span class="func">cls</span>(<span class="var">name</span>, <span class="var">age</span>)
 </div>
           <ul>
             <li>
@@ -360,40 +353,26 @@
         </h2>
         <div class="content-body">
           <div class="code-block">
-<span class="var">classCircle</span>:
+<span class="kw">class</span> <span class="var">Circle</span>:
+    <span class="var">pi</span> = <span class="num">3.14159</span>  <span class="com"># 类属性</span>
 
-<span class="var">pi</span>=<span class="num">3.14159</span>
+    <span class="kw">def</span> <span class="func">__init__</span>(<span class="var">self</span>, <span class="var">radius</span>):
+        <span class="var">self</span>.<span class="var">radius</span> = <span class="var">radius</span>
 
-<span class="com"># 类属性</span>
+    <span class="kw">def</span> <span class="func">area</span>(<span class="var">self</span>):
+        <span class="kw">return</span> <span class="var">self</span>.<span class="var">pi</span> * <span class="var">self</span>.<span class="var">radius</span> ** <span class="num">2</span>
 
-<span class="func">def__init__</span>(<span class="var">self</span>,<span class="var">radius</span>):
+    <span class="kw">def</span> <span class="func">__str__</span>(<span class="var">self</span>):
+        <span class="com"># 打印对象时的友好输出</span>
+        <span class="kw">return</span> <span class="str">f&quot;Circle(radius={self.radius})&quot;</span>
 
-<span class="var">self</span>.
+    <span class="kw">def</span> <span class="func">__repr__</span>(<span class="var">self</span>):
+        <span class="com"># 交互式环境中的表示</span>
+        <span class="kw">return</span> <span class="str">f&quot;Circle({self.radius})&quot;</span>
 
-<span class="var">radius</span>=<span class="var">radius</span>
-
-<span class="func">defarea</span>(<span class="var">self</span>):
-
-<span class="var">returnself</span>.<span class="var">pi</span>*<span class="var">self</span>.<span class="var">radius</span>**<span class="num">2</span>
-
-<span class="func">def__str__</span>(<span class="var">self</span>):
-
-<span class="com"># 打印对象时的友好输出</span>
-
-<span class="var">returnf</span><span class="str">&quot;Circle(radius={self.radius})&quot;</span>
-
-<span class="func">def__repr__</span>(<span class="var">self</span>):
-
-<span class="com"># 交互式环境中的表示</span>
-
-<span class="var">returnf</span><span class="str">&quot;Circle({self.radius})&quot;</span>
-
-<span class="func">def__eq__</span>(<span class="var">self</span>,<span class="var">other</span>):
-
-<span class="com"># == 比较逻辑</span>
-
-<span class="var">returnself</span>.<span class="var">radius</span>==<span class="var">other</span>.<span class="var">radius</span>
-
+    <span class="kw">def</span> <span class="func">__eq__</span>(<span class="var">self</span>, <span class="var">other</span>):
+        <span class="com"># == 比较逻辑</span>
+        <span class="kw">return</span> <span class="var">self</span>.<span class="var">radius</span> == <span class="var">other</span>.<span class="var">radius</span>
 </div>
           <p>
             <b>魔术方法（Dunder Methods）
@@ -442,14 +421,9 @@
             ：Python 允许运行时给实例添加新属性（但不推荐滥用）。
           </p>
           <div class="code-block">
-<span class="var">s1</span>.
-
-<span class="var">hobby</span>=<span class="str">&quot;编程&quot;</span>
-
+<span class="var">s1</span>.<span class="var">hobby</span> = <span class="str">&quot;编程&quot;</span>
 <span class="func">print</span>(<span class="var">s1</span>.<span class="var">hobby</span>)
-
 <span class="com"># 编程（仅 s1 有，不影响 s2）</span>
-
 </div>
         </div>
       </div>
@@ -466,40 +440,22 @@
             （单下划线）表示"私有"。
           </p>
           <div class="code-block">
-<span class="var">classBankAccount</span>:
+<span class="kw">class</span> <span class="var">BankAccount</span>:
+    <span class="kw">def</span> <span class="func">__init__</span>(<span class="var">self</span>, <span class="var">owner</span>, <span class="var">balance</span>=<span class="num">0</span>):
+        <span class="var">self</span>.<span class="var">owner</span> = <span class="var">owner</span>
+        <span class="var">self</span>.<span class="var">_balance</span> = <span class="var">balance</span>  <span class="com"># _ 前缀：约定私有</span>
 
-<span class="func">def__init__</span>(<span class="var">self</span>,<span class="var">owner</span>,<span class="var">balance</span>=<span class="num">0</span>):
+    <span class="kw">def</span> <span class="func">deposit</span>(<span class="var">self</span>, <span class="var">amount</span>):
+        <span class="kw">if</span> <span class="var">amount</span> &gt; <span class="num">0</span>:
+            <span class="var">self</span>.<span class="var">_balance</span> += <span class="var">amount</span>
 
-<span class="var">self</span>.
+    <span class="kw">def</span> <span class="func">get_balance</span>(<span class="var">self</span>):
+        <span class="kw">return</span> <span class="var">self</span>.<span class="var">_balance</span>
 
-<span class="var">owner</span>=<span class="var">ownerself</span>.<span class="var">_</span>
-
-<span class="var">balance</span>=<span class="var">balance</span>
-
-<span class="com"># _ 前缀：约定私有</span>
-
-<span class="func">defdeposit</span>(<span class="var">self</span>,<span class="var">amount</span>):
-
-<span class="var">ifamount</span>&gt;<span class="num">0</span>:
-
-<span class="var">self</span>.<span class="var">_</span>
-
-<span class="var">balance</span>+=<span class="var">amount</span>
-
-<span class="func">defget_balance</span>(<span class="var">self</span>):
-
-<span class="var">returnself</span>.<span class="var">_balance</span>
-
-<span class="var">acc</span>=
-
-<span class="func">BankAccount</span>(<span class="str">&quot;Alice&quot;</span>,<span class="num">1000</span>)<span class="var">acc</span>.
-
-<span class="func">deposit</span>(<span class="num">500</span>)
-
+<span class="var">acc</span> = <span class="func">BankAccount</span>(<span class="str">&quot;Alice&quot;</span>, <span class="num">1000</span>)
+<span class="var">acc</span>.<span class="func">deposit</span>(<span class="num">500</span>)
 <span class="func">print</span>(<span class="var">acc</span>.<span class="func">get_balance</span>())
-
 <span class="com"># 1500</span>
-
 </div>
           <p>
             <b>@property
@@ -508,10 +464,10 @@
           </p>
           <div class="code-block">
 @<span class="func">property</span>
-<span class="func">defbalance</span>(<span class="var">self</span>):
-<span class="var">returnself</span>.<span class="var">_balance</span>
-<span class="com"># 使用：acc.balance 而不是 acc.get_balance()</span>
+<span class="kw">def</span> <span class="func">balance</span>(<span class="var">self</span>):
+    <span class="kw">return</span> <span class="var">self</span>.<span class="var">_balance</span>
 
+<span class="com"># 使用：acc.balance 而不是 acc.get_balance()</span>
 </div>
         </div>
       </div>
@@ -531,52 +487,27 @@
             。
           </p>
           <div class="code-block">
-<span class="var">classAnimal</span>:
+<span class="kw">class</span> <span class="var">Animal</span>:
+    <span class="kw">def</span> <span class="func">__init__</span>(<span class="var">self</span>, <span class="var">name</span>):
+        <span class="var">self</span>.<span class="var">name</span> = <span class="var">name</span>
 
-<span class="func">def__init__</span>(<span class="var">self</span>,<span class="var">name</span>):
+    <span class="kw">def</span> <span class="func">speak</span>(<span class="var">self</span>):
+        <span class="kw">raise</span> <span class="func">NotImplementedError</span>(<span class="str">&quot;子类必须实现&quot;</span>)
 
-<span class="var">self</span>.
+<span class="kw">class</span> <span class="var">Dog</span>(<span class="var">Animal</span>):  <span class="com"># Dog 继承 Animal</span>
+    <span class="kw">def</span> <span class="func">speak</span>(<span class="var">self</span>):
+        <span class="kw">return</span> <span class="str">f&quot;{self.name} says: 汪！&quot;</span>
 
-<span class="var">name</span>=<span class="var">name</span>
+<span class="kw">class</span> <span class="var">Cat</span>(<span class="var">Animal</span>):  <span class="com"># Cat 继承 Animal</span>
+    <span class="kw">def</span> <span class="func">speak</span>(<span class="var">self</span>):
+        <span class="kw">return</span> <span class="str">f&quot;{self.name} says: 喵~&quot;</span>
 
-<span class="func">defspeak</span>(<span class="var">self</span>):
-
-<span class="kw">raise</span>
-
-<span class="func">NotImplementedError</span>(<span class="str">&quot;子类必须实现&quot;</span>)
-
-<span class="func">classDog</span>(<span class="var">Animal</span>):
-
-<span class="com"># Dog 继承 Animal</span>
-
-<span class="func">defspeak</span>(<span class="var">self</span>):
-
-<span class="var">returnf</span><span class="str">&quot;{self.name} says: 汪！&quot;</span>
-
-<span class="func">classCat</span>(<span class="var">Animal</span>):
-
-<span class="com"># Cat 继承 Animal</span>
-
-<span class="func">defspeak</span>(<span class="var">self</span>):
-
-<span class="var">returnf</span><span class="str">&quot;{self.name} says: 喵~&quot;</span>
-
-<span class="var">d</span>=
-
-<span class="func">Dog</span>(<span class="str">&quot;Buddy&quot;</span>)
-
-<span class="var">c</span>=
-
-<span class="func">Cat</span>(<span class="str">&quot;Kitty&quot;</span>)
-
+<span class="var">d</span> = <span class="func">Dog</span>(<span class="str">&quot;Buddy&quot;</span>)
+<span class="var">c</span> = <span class="func">Cat</span>(<span class="str">&quot;Kitty&quot;</span>)
 <span class="func">print</span>(<span class="var">d</span>.<span class="func">speak</span>())
-
 <span class="com"># Buddy says: 汪！</span>
-
 <span class="func">print</span>(<span class="var">c</span>.<span class="func">speak</span>())
-
 <span class="com"># Kitty says: 喵~</span>
-
 </div>
         </div>
       </div>
@@ -590,30 +521,17 @@
             ：调用父类的方法，避免显式指定父类名。
           </p>
           <div class="code-block">
-<span class="var">classEmployee</span>:
+<span class="kw">class</span> <span class="var">Employee</span>:
+    <span class="kw">def</span> <span class="func">__init__</span>(<span class="var">self</span>, <span class="var">name</span>, <span class="var">salary</span>):
+        <span class="var">self</span>.<span class="var">name</span> = <span class="var">name</span>
+        <span class="var">self</span>.<span class="var">salary</span> = <span class="var">salary</span>
 
-<span class="func">def__init__</span>(<span class="var">self</span>,<span class="var">name</span>,<span class="var">salary</span>):
+<span class="kw">class</span> <span class="var">Manager</span>(<span class="var">Employee</span>):
+    <span class="kw">def</span> <span class="func">__init__</span>(<span class="var">self</span>, <span class="var">name</span>, <span class="var">salary</span>, <span class="var">department</span>):
+        <span class="func">super</span>().<span class="func">__init__</span>(<span class="var">name</span>, <span class="var">salary</span>)
+        <span class="var">self</span>.<span class="var">department</span> = <span class="var">department</span>
 
-<span class="var">self</span>.
-
-<span class="var">name</span>=<span class="var">nameself</span>.
-
-<span class="var">salary</span>=<span class="var">salary</span>
-
-<span class="func">classManager</span>(<span class="var">Employee</span>):
-
-<span class="func">def__init__</span>(<span class="var">self</span>,<span class="var">name</span>,<span class="var">salary</span>,<span class="var">department</span>):
-
-<span class="func">super</span>().
-
-<span class="func">__init__</span>(<span class="var">name</span>,<span class="var">salary</span>)<span class="var">self</span>.
-
-<span class="var">department</span>=<span class="var">department</span>
-
-<span class="var">m</span>=
-
-<span class="func">Manager</span>(<span class="str">&quot;Alice&quot;</span>,<span class="num">50000</span>,<span class="str">&quot;IT&quot;</span>)
-
+<span class="var">m</span> = <span class="func">Manager</span>(<span class="str">&quot;Alice&quot;</span>, <span class="num">50000</span>, <span class="str">&quot;IT&quot;</span>)
 </div>
           <p>
             <b>多继承
@@ -624,42 +542,26 @@
             查找。
           </p>
           <div class="code-block">
-<span class="var">classA</span>:
+<span class="kw">class</span> <span class="var">A</span>:
+    <span class="kw">def</span> <span class="func">method</span>(<span class="var">self</span>):
+        <span class="func">print</span>(<span class="str">&quot;A&quot;</span>)
 
-<span class="func">defmethod</span>(<span class="var">self</span>):
+<span class="kw">class</span> <span class="var">B</span>(<span class="var">A</span>):
+    <span class="kw">def</span> <span class="func">method</span>(<span class="var">self</span>):
+        <span class="func">print</span>(<span class="str">&quot;B&quot;</span>)
 
-<span class="func">print</span>(<span class="str">&quot;A&quot;</span>)
+<span class="kw">class</span> <span class="var">C</span>(<span class="var">A</span>):
+    <span class="kw">def</span> <span class="func">method</span>(<span class="var">self</span>):
+        <span class="func">print</span>(<span class="str">&quot;C&quot;</span>)
 
-<span class="func">classB</span>(<span class="var">A</span>):
+<span class="kw">class</span> <span class="var">D</span>(<span class="var">B</span>, <span class="var">C</span>):  <span class="com"># 多继承</span>
+    <span class="kw">pass</span>
 
-<span class="func">defmethod</span>(<span class="var">self</span>):
-
-<span class="func">print</span>(<span class="str">&quot;B&quot;</span>)
-
-<span class="func">classC</span>(<span class="var">A</span>):
-
-<span class="func">defmethod</span>(<span class="var">self</span>):
-
-<span class="func">print</span>(<span class="str">&quot;C&quot;</span>)
-
-<span class="func">classD</span>(<span class="var">B</span>,<span class="var">C</span>):
-
-<span class="com"># 多继承</span>
-
-<span class="kw">pass</span>
-
-<span class="var">d</span>=
-
-<span class="func">D</span>()<span class="var">d</span>.
-
-<span class="func">method</span>()
-
+<span class="var">d</span> = <span class="func">D</span>()
+<span class="var">d</span>.<span class="func">method</span>()
 <span class="com"># B（按 MRO 顺序）</span>
-
 <span class="func">print</span>(<span class="var">D</span>.<span class="var">__mro__</span>)
-
 <span class="com"># 查看解析顺序</span>
-
 </div>
         </div>
       </div>
@@ -673,22 +575,15 @@
             。Python 作为动态语言天然支持。
           </p>
           <div class="code-block">
-<span class="func">defanimal_concert</span>(<span class="var">animals</span>):
+<span class="kw">def</span> <span class="func">animal_concert</span>(<span class="var">animals</span>):
+    <span class="kw">for</span> <span class="var">animal</span> <span class="kw">in</span> <span class="var">animals</span>:
+        <span class="func">print</span>(<span class="var">animal</span>.<span class="func">speak</span>())
 
-<span class="var">foranimalinanimals</span>:
-
-<span class="func">print</span>(<span class="var">animal</span>.<span class="func">speak</span>())
-
-<span class="var">animals</span>=[<span class="func">Dog</span>(<span class="str">&quot;Buddy&quot;</span>),<span class="func">Cat</span>(<span class="str">&quot;Kitty&quot;</span>)]
-
+<span class="var">animals</span> = [<span class="func">Dog</span>(<span class="str">&quot;Buddy&quot;</span>), <span class="func">Cat</span>(<span class="str">&quot;Kitty&quot;</span>)]
 <span class="func">animal_concert</span>(<span class="var">animals</span>)
-
 <span class="com"># 输出：</span>
-
 <span class="com"># Buddy says: 汪！</span>
-
 <span class="com"># Kitty says: 喵~</span>
-
 </div>
           <p>
             <b>鸭子类型
@@ -782,30 +677,31 @@
         </h2>
         <div class="content-body">
           <div class="code-block">
-<span class="var">classBook</span>:
-<span class="func">def__init__</span>(<span class="var">self</span>,<span class="var">title</span>,<span class="var">author</span>,<span class="var">isbn</span>):
-<span class="var">self</span>.
-<span class="var">title</span>=<span class="var">titleself</span>.
-<span class="var">author</span>=<span class="var">authorself</span>.
-<span class="var">isbn</span>=<span class="var">isbnself</span>.<span class="var">_</span>
-<span class="var">borrowed</span>=<span class="kw">False</span>
-<span class="func">defborrow</span>(<span class="var">self</span>):
-<span class="var">ifself</span>.<span class="var">_borrowed</span>:
-<span class="func">print</span>(f&quot;《{<span class="var">self</span>.<span class="var">title</span>}》已被借出&quot;)
-<span class="kw">else</span>:
-<span class="var">self</span>.<span class="var">_</span>
-<span class="var">borrowed</span>=<span class="kw">True</span>
-<span class="func">print</span>(f&quot;成功借阅《{<span class="var">self</span>.<span class="var">title</span>}》&quot;)
-<span class="func">def__str__</span>(<span class="var">self</span>):
-<span class="var">status</span>=<span class="str">&quot;已借出&quot;</span>
-<span class="var">ifself</span>.<span class="var">_borrowed</span>
-<span class="kw">else</span><span class="str">&quot;在馆&quot;</span><span class="var">returnf</span><span class="str">&quot;《{self.title}》({status})&quot;</span><span class="func">classEBook</span>(<span class="var">Book</span>):
-<span class="func">def__init__</span>(<span class="var">self</span>,<span class="var">title</span>,<span class="var">author</span>,<span class="var">isbn</span>,<span class="func">format</span>):
-<span class="func">super</span>().
-<span class="func">__init__</span>(<span class="var">title</span>,<span class="var">author</span>,<span class="var">isbn</span>)<span class="var">self</span>.
-<span class="func">format</span>=
-<span class="func">formatdef__str__</span>(<span class="var">self</span>):<span class="var">returnf</span><span class="str">&quot;[电子书] {super().__str__()} [{self.format}]&quot;</span>
+<span class="kw">class</span> <span class="var">Book</span>:
+    <span class="kw">def</span> <span class="func">__init__</span>(<span class="var">self</span>, <span class="var">title</span>, <span class="var">author</span>, <span class="var">isbn</span>):
+        <span class="var">self</span>.<span class="var">title</span> = <span class="var">title</span>
+        <span class="var">self</span>.<span class="var">author</span> = <span class="var">author</span>
+        <span class="var">self</span>.<span class="var">isbn</span> = <span class="var">isbn</span>
+        <span class="var">self</span>.<span class="var">_borrowed</span> = <span class="kw">False</span>
 
+    <span class="kw">def</span> <span class="func">borrow</span>(<span class="var">self</span>):
+        <span class="kw">if</span> <span class="var">self</span>.<span class="var">_borrowed</span>:
+            <span class="func">print</span>(<span class="str">f&quot;《{self.title}》已被借出&quot;</span>)
+        <span class="kw">else</span>:
+            <span class="var">self</span>.<span class="var">_borrowed</span> = <span class="kw">True</span>
+            <span class="func">print</span>(<span class="str">f&quot;成功借阅《{self.title}》&quot;</span>)
+
+    <span class="kw">def</span> <span class="func">__str__</span>(<span class="var">self</span>):
+        <span class="var">status</span> = <span class="str">&quot;已借出&quot;</span> <span class="kw">if</span> <span class="var">self</span>.<span class="var">_borrowed</span> <span class="kw">else</span> <span class="str">&quot;在馆&quot;</span>
+        <span class="kw">return</span> <span class="str">f&quot;《{self.title}》({status})&quot;</span>
+
+<span class="kw">class</span> <span class="var">EBook</span>(<span class="var">Book</span>):
+    <span class="kw">def</span> <span class="func">__init__</span>(<span class="var">self</span>, <span class="var">title</span>, <span class="var">author</span>, <span class="var">isbn</span>, <span class="var">format</span>):
+        <span class="func">super</span>().<span class="func">__init__</span>(<span class="var">title</span>, <span class="var">author</span>, <span class="var">isbn</span>)
+        <span class="var">self</span>.<span class="var">format</span> = <span class="var">format</span>
+
+    <span class="kw">def</span> <span class="func">__str__</span>(<span class="var">self</span>):
+        <span class="kw">return</span> <span class="str">f&quot;[电子书] {super().__str__()} [{self.format}]&quot;</span>
 </div>
         </div>
       </div>
@@ -923,5 +819,53 @@
   });
 
 </script>
-    </body>
+    
+<script>
+// 代码复制按钮
+document.addEventListener('DOMContentLoaded', function () {
+  var blocks = document.querySelectorAll('pre, div.code, div.code-block');
+  blocks.forEach(function (block) {
+    if (block.querySelector('.code-copy-btn')) return;
+    var btn = document.createElement('button');
+    btn.className = 'code-copy-btn';
+    btn.type = 'button';
+    btn.textContent = '复制';
+    btn.addEventListener('click', function () {
+      var clone = block.cloneNode(true);
+      var b = clone.querySelector('.code-copy-btn');
+      if (b) b.remove();
+      var text = clone.textContent
+        .replace(/\u00a0/g, ' ')
+        .replace(/[ \t]+\n/g, '\n')
+        .replace(/^\s*\n/, '').replace(/\s+$/, '');
+      function done() {
+        btn.textContent = '已复制 ✓';
+        btn.classList.add('copied');
+        setTimeout(function () {
+          btn.textContent = '复制';
+          btn.classList.remove('copied');
+        }, 1500);
+      }
+      function fallback() {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); done(); }
+        catch (e) { btn.textContent = '复制失败'; }
+        document.body.removeChild(ta);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(fallback);
+      } else {
+        fallback();
+      }
+    });
+    block.appendChild(btn);
+  });
+});
+</script>
+</body>
   </html>

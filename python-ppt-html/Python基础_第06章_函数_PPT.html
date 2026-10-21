@@ -190,6 +190,18 @@
       .nav button { padding: 8px 14px !important; font-size: 12px !important; }
       .nav .page-num { font-size: 12px !important; padding: 0 10px !important; line-height: 32px !important; }
     }
+
+    /* 代码复制按钮 */
+    pre, .slide-content .code, .code-block { position: relative; }
+    .code-copy-btn {
+      position: absolute; top: 8px; right: 8px; z-index: 5;
+      padding: 4px 10px; font-size: 12px; font-family: inherit;
+      color: #d4d4d4; background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25); border-radius: 4px;
+      cursor: pointer; opacity: 0.75; transition: all 0.2s;
+    }
+    .code-copy-btn:hover { opacity: 1; background: rgba(255,255,255,0.22); }
+    .code-copy-btn.copied { color: #4ade80; border-color: #4ade80; }
 </style>
     </head>
     <body>
@@ -268,20 +280,16 @@
           </ul>
           <div class="code-block">
 <span class="com"># 没有函数：重复写三次同样的逻辑</span>
-<span class="var">a</span>,<span class="var">b</span>,
-<span class="var">c</span>=<span class="num">3</span>,<span class="num">4</span>,<span class="num">5</span>
-<span class="var">area_a</span>=<span class="num">0.5</span>*<span class="var">a</span>*<span class="var">a</span>
-<span class="var">area_b</span>=<span class="num">0.5</span>*<span class="var">b</span>*<span class="var">b</span>
-<span class="var">area_c</span>=<span class="num">0.5</span>*<span class="var">c</span>*<span class="var">c</span>
+<span class="var">a</span>, <span class="var">b</span>, <span class="var">c</span> = <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>
+<span class="var">area_a</span> = <span class="num">0.5</span> * <span class="var">a</span> * <span class="var">a</span>
+<span class="var">area_b</span> = <span class="num">0.5</span> * <span class="var">b</span> * <span class="var">b</span>
+<span class="var">area_c</span> = <span class="num">0.5</span> * <span class="var">c</span> * <span class="var">c</span>
 <span class="com"># 有函数：一次定义，处处调用</span>
-<span class="func">deftriangle_area</span>(<span class="var">base</span>):
-<span class="var">return0</span><span class="num">.5</span>*<span class="var">base</span>*<span class="var">base</span>
-<span class="var">area_a</span>=
-<span class="func">triangle_area</span>(<span class="num">3</span>)
-<span class="var">area_b</span>=
-<span class="func">triangle_area</span>(<span class="num">4</span>)
-<span class="var">area_c</span>=
-<span class="func">triangle_area</span>(<span class="num">5</span>)
+<span class="func">def triangle_area</span>(<span class="var">base</span>):
+    <span class="var">return 0</span><span class="num">.5</span> * <span class="var">base</span> * <span class="var">base</span>
+<span class="var">area_a</span> = <span class="func">triangle_area</span>(<span class="num">3</span>)
+<span class="var">area_b</span> = <span class="func">triangle_area</span>(<span class="num">4</span>)
+<span class="var">area_c</span> = <span class="func">triangle_area</span>(<span class="num">5</span>)
 
 </div>
         </div>
@@ -296,13 +304,10 @@
             关键字定义，语法结构清晰：
           </p>
           <div class="code-block">
-<span class="func">def函数名</span>(<span class="var">参数1</span>,<span class="var">参数2</span>,...):
-
-<span class="str">&quot;&quot;&quot;文档字符串（docstring）说明函数作用&quot;&quot;&quot;</span>
-
-<span class="com"># 函数体</span>
-
-<span class="var">return返回值</span>
+<span class="func">def 函数名</span>(<span class="var">参数1</span>, <span class="var">参数2</span>, ...):
+    <span class="str">&quot;&quot;&quot;文档字符串（docstring）说明函数作用&quot;&quot;&quot;</span>
+    <span class="com"># 函数体</span>
+    <span class="var">return 返回值</span>
 
 </div>
           <p>
@@ -312,27 +317,15 @@
           </p>
           <div class="code-block">
 <span class="com"># 定义：计算两数之和</span>
-
-<span class="func">defadd</span>(<span class="var">a</span>,<span class="var">b</span>):
-
-<span class="var">returna</span>+<span class="var">b</span>
-
+<span class="func">def add</span>(<span class="var">a</span>, <span class="var">b</span>):
+    <span class="var">return a</span> + <span class="var">b</span>
 <span class="com"># 调用</span>
-
-<span class="var">result</span>=
-
-<span class="func">add</span>(<span class="num">3</span>,<span class="num">5</span>)
-
+<span class="var">result</span> = <span class="func">add</span>(<span class="num">3</span>, <span class="num">5</span>)
 <span class="func">print</span>(<span class="var">result</span>)
-
 <span class="com"># 8</span>
-
 <span class="com"># 无参数、无返回值</span>
-
-<span class="func">defsay_hello</span>():
-
-<span class="func">print</span>(<span class="str">&quot;Hello, Python!&quot;</span>)
-
+<span class="func">def say_hello</span>():
+    <span class="func">print</span>(<span class="str">&quot;Hello, Python!&quot;</span>)
 <span class="func">say_hello</span>()
 
 </div>
@@ -346,17 +339,17 @@
           </p>
           <div class="code-block">
 <span class="com"># 位置参数：按顺序传递</span>
-<span class="func">defgreet</span>(<span class="var">name</span>,<span class="var">greeting</span>):
-<span class="func">print</span>(f&quot;{<span class="var">greeting</span>}, {<span class="var">name</span>}!&quot;)
-<span class="func">greet</span>(<span class="str">&quot;Alice&quot;</span>,<span class="str">&quot;Good morning&quot;</span>)
+<span class="func">def greet</span>(<span class="var">name</span>, <span class="var">greeting</span>):
+    <span class="func">print</span>(f&quot;{<span class="var">greeting</span>}, {<span class="var">name</span>}!&quot;)
+<span class="func">greet</span>(<span class="str">&quot;Alice&quot;</span>, <span class="str">&quot;Good morning&quot;</span>)
 <span class="com"># 关键字参数：指定参数名，顺序无关</span>
-<span class="func">greet</span>(<span class="var">greeting</span>=<span class="str">&quot;Hi&quot;</span>,<span class="var">name</span>=<span class="str">&quot;Bob&quot;</span>)
+<span class="func">greet</span>(<span class="var">greeting</span>=<span class="str">&quot;Hi&quot;</span>, <span class="var">name</span>=<span class="str">&quot;Bob&quot;</span>)
 <span class="com"># 默认值参数</span>
-<span class="func">defpower</span>(<span class="var">base</span>,<span class="var">exp</span>=<span class="num">2</span>):
-<span class="var">returnbase</span>**<span class="var">exp</span>
+<span class="func">def power</span>(<span class="var">base</span>, <span class="var">exp</span>=<span class="num">2</span>):
+    <span class="var">return base</span> ** <span class="var">exp</span>
 <span class="func">print</span>(<span class="func">power</span>(<span class="num">3</span>))
 <span class="com"># 9 (3²)</span>
-<span class="func">print</span>(<span class="func">power</span>(<span class="num">2</span>,<span class="num">3</span>))
+<span class="func">print</span>(<span class="func">power</span>(<span class="num">2</span>, <span class="num">3</span>))
 <span class="com"># 8 (2³)</span>
 
 </div>
@@ -375,38 +368,23 @@
           </p>
           <div class="code-block">
 <span class="com"># *args 收集多余的位置参数，变为元组</span>
-
-<span class="func">deftotal</span>(*<span class="var">args</span>):
-
-<span class="var">result</span>=<span class="num">0</span>
-
-<span class="var">fornuminargs</span>:
-
-<span class="var">result</span>+=<span class="var">num</span>
-
-<span class="var">returnresult</span>
-
-<span class="func">print</span>(<span class="func">total</span>(<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>))
-
+<span class="func">def total</span>(*<span class="var">args</span>):
+    <span class="var">result</span> = <span class="num">0</span>
+    <span class="var">for num in args</span>:
+        <span class="var">result</span> += <span class="var">num</span>
+    <span class="var">return result</span>
+<span class="func">print</span>(<span class="func">total</span>(<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>))
 <span class="com"># 6</span>
-
-<span class="func">print</span>(<span class="func">total</span>(<span class="num">10</span>,<span class="num">20</span>))
-
+<span class="func">print</span>(<span class="func">total</span>(<span class="num">10</span>, <span class="num">20</span>))
 <span class="com"># 30</span>
 
 </div>
           <div class="code-block">
 <span class="com"># **kwargs 收集多余的关键字参数，变为字典</span>
-
-<span class="func">defprofile</span>(**<span class="var">kwargs</span>):
-
-<span class="var">forkey</span>,<span class="var">valueinkwargs</span>.
-
-<span class="func">items</span>():
-
-<span class="func">print</span>(f&quot;{<span class="var">key</span>}: {<span class="var">value</span>}&quot;)
-
-<span class="func">profile</span>(<span class="var">name</span>=<span class="str">&quot;Alice&quot;</span>,<span class="var">age</span>=<span class="num">25</span>,<span class="var">city</span>=<span class="str">&quot;Beijing&quot;</span>)
+<span class="func">def profile</span>(**<span class="var">kwargs</span>):
+    <span class="var">for key</span>, <span class="var">value in kwargs</span>.<span class="func">items</span>():
+        <span class="func">print</span>(f&quot;{<span class="var">key</span>}: {<span class="var">value</span>}&quot;)
+<span class="func">profile</span>(<span class="var">name</span>=<span class="str">&quot;Alice&quot;</span>, <span class="var">age</span>=<span class="num">25</span>, <span class="var">city</span>=<span class="str">&quot;Beijing&quot;</span>)
 
 </div>
         </div>
@@ -418,30 +396,16 @@
           <p>变量在哪里定义，决定了它能被谁访问。
           </p>
           <div class="code-block">
-<span class="var">x</span>=<span class="num">10</span>
-
-
-
+<span class="var">x</span> = <span class="num">10</span>
 <span class="com"># 全局变量</span>
-
-<span class="func">defdemo</span>():
-
-<span class="var">y</span>=<span class="num">5</span>
-
-
-
-<span class="com"># 局部变量，只能在函数内访问</span>
-
-<span class="func">print</span>(<span class="var">y</span>)
-
-<span class="com"># 5</span>
-
-<span class="func">print</span>(<span class="var">x</span>)
-
-<span class="com"># 10 (可以读取全局变量)</span>
-
+<span class="func">def demo</span>():
+    <span class="var">y</span> = <span class="num">5</span>
+    <span class="com"># 局部变量，只能在函数内访问</span>
+    <span class="func">print</span>(<span class="var">y</span>)
+    <span class="com"># 5</span>
+    <span class="func">print</span>(<span class="var">x</span>)
+    <span class="com"># 10 (可以读取全局变量)</span>
 <span class="func">demo</span>()
-
 <span class="com"># print(y) # 错误！y 在函数外部不存在</span>
 
 </div>
@@ -451,10 +415,10 @@
             ：在函数内部修改全局变量。
           </p>
           <div class="code-block">
-<span class="var">count</span>=<span class="num">0</span>
-<span class="func">defincrement</span>():
-<span class="var">globalcount</span>
-<span class="var">count</span>+=<span class="num">1</span>
+<span class="var">count</span> = <span class="num">0</span>
+<span class="func">def increment</span>():
+    <span class="var">global count</span>
+    <span class="var">count</span> += <span class="num">1</span>
 <span class="func">increment</span>()
 <span class="func">print</span>(<span class="var">count</span>)
 <span class="com"># 1</span>
@@ -487,12 +451,11 @@
           </p>
           <div class="code-block">
 <span class="com"># 高阶函数：接收函数作为参数</span>
-<span class="func">defapply_twice</span>(<span class="var">f</span>,<span class="var">x</span>):
-<span class="kw">return</span>
-<span class="func">f</span>(<span class="func">f</span>(<span class="var">x</span>))
-<span class="func">defadd_ten</span>(<span class="var">x</span>):
-<span class="var">returnx</span>+<span class="num">10</span>
-<span class="func">print</span>(<span class="func">apply_twice</span>(<span class="var">add_ten</span>,<span class="num">5</span>))
+<span class="func">def apply_twice</span>(<span class="var">f</span>, <span class="var">x</span>):
+    <span class="kw">return</span> <span class="func">f</span>(<span class="func">f</span>(<span class="var">x</span>))
+<span class="func">def add_ten</span>(<span class="var">x</span>):
+    <span class="var">return x</span> + <span class="num">10</span>
+<span class="func">print</span>(<span class="func">apply_twice</span>(<span class="var">add_ten</span>, <span class="num">5</span>))
 <span class="com"># 25</span>
 
 </div>
@@ -532,41 +495,22 @@
           </p>
           <div class="code-block">
 <span class="com"># 阶乘: n! = n × (n-1) × ... × 1</span>
-
-<span class="func">deffactorial</span>(<span class="var">n</span>):
-
-<span class="var">ifn</span>&lt;=<span class="num">1</span>:
-
-<span class="var">return1</span>
-
-<span class="var">returnn</span>*
-
-<span class="func">factorial</span>(<span class="var">n</span>-<span class="num">1</span>)
-
+<span class="func">def factorial</span>(<span class="var">n</span>):
+    <span class="var">if n</span> &lt;= <span class="num">1</span>:
+        <span class="var">return 1</span>
+    <span class="var">return n</span> * <span class="func">factorial</span>(<span class="var">n</span> - <span class="num">1</span>)
 <span class="func">print</span>(<span class="func">factorial</span>(<span class="num">5</span>))
-
 <span class="com"># 120</span>
 
 </div>
           <div class="code-block">
 <span class="com"># 斐波那契数列</span>
-
-<span class="func">deffib</span>(<span class="var">n</span>):
-
-<span class="var">ifn</span>&lt;=<span class="num">1</span>:
-
-<span class="var">returnn</span>
-
-<span class="kw">return</span>
-
-<span class="func">fib</span>(<span class="var">n</span>-<span class="num">1</span>)+
-
-<span class="func">fib</span>(<span class="var">n</span>-<span class="num">2</span>)
-
-<span class="func">foriinrange</span>(<span class="num">10</span>):
-
-<span class="func">print</span>(<span class="func">fib</span>(<span class="var">i</span>),<span class="var">end</span>=<span class="str">&quot; &quot;</span>)
-
+<span class="func">def fib</span>(<span class="var">n</span>):
+    <span class="var">if n</span> &lt;= <span class="num">1</span>:
+        <span class="var">return n</span>
+    <span class="kw">return</span> <span class="func">fib</span>(<span class="var">n</span> - <span class="num">1</span>) + <span class="func">fib</span>(<span class="var">n</span> - <span class="num">2</span>)
+<span class="func">for i in range</span>(<span class="num">10</span>):
+    <span class="func">print</span>(<span class="func">fib</span>(<span class="var">i</span>), <span class="var">end</span>=<span class="str">&quot; &quot;</span>)
 <span class="com"># 0 1 1 2 3 5 8 13 21 34</span>
 
 </div>
@@ -591,17 +535,11 @@
           </p>
           <div class="code-block">
 <span class="com"># 普通函数</span>
-
-<span class="func">defsquare</span>(<span class="var">x</span>):
-
-<span class="var">returnx</span>**<span class="num">2</span>
-
+<span class="func">def square</span>(<span class="var">x</span>):
+    <span class="var">return x</span> ** <span class="num">2</span>
 <span class="com"># 等价的 lambda</span>
-
-<span class="var">square</span>=<span class="var">lambdax</span>:<span class="var">x</span>**<span class="num">2</span>
-
+<span class="var">square</span> = <span class="var">lambda x</span>: <span class="var">x</span> ** <span class="num">2</span>
 <span class="func">print</span>(<span class="func">square</span>(<span class="num">5</span>))
-
 <span class="com"># 25</span>
 
 </div>
@@ -612,21 +550,12 @@
           </p>
           <div class="code-block">
 <span class="com"># 作为排序的 key</span>
-
-<span class="var">students</span>=[(<span class="str">&quot;Alice&quot;</span>,<span class="num">85</span>),(<span class="str">&quot;Bob&quot;</span>,<span class="num">92</span>),(<span class="str">&quot;Carol&quot;</span>,<span class="num">78</span>)]<span class="var">students</span>.
-
-<span class="func">sort</span>(<span class="var">key</span>=<span class="var">lambdax</span>:<span class="var">x</span>[<span class="num">1</span>])
-
+<span class="var">students</span> = [(<span class="str">&quot;Alice&quot;</span>, <span class="num">85</span>), (<span class="str">&quot;Bob&quot;</span>, <span class="num">92</span>), (<span class="str">&quot;Carol&quot;</span>, <span class="num">78</span>)]
+<span class="var">students</span>.<span class="func">sort</span>(<span class="var">key</span>=<span class="var">lambda x</span>: <span class="var">x</span>[<span class="num">1</span>])
 <span class="com"># 按成绩排序</span>
-
 <span class="com"># 配合 map 使用</span>
-
-<span class="var">nums</span>=[<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>,<span class="num">4</span>]
-
-<span class="var">doubled</span>=
-
-<span class="func">list</span>(<span class="func">map</span>(<span class="var">lambdax</span>:<span class="var">x</span>*<span class="num">2</span>,<span class="var">nums</span>))
-
+<span class="var">nums</span> = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>]
+<span class="var">doubled</span> = <span class="func">list</span>(<span class="func">map</span>(<span class="var">lambda x</span>: <span class="var">x</span> * <span class="num">2</span>, <span class="var">nums</span>))
 <span class="com"># [2, 4, 6, 8]</span>
 
 </div>
@@ -648,44 +577,21 @@
           </p>
           <div class="code-block">
 <span class="com"># 面向过程：模拟体育比赛</span>
-
-<span class="func">defget_inputs</span>():
-
-<span class="var">prob_a</span>=
-
-<span class="func">float</span>(<span class="func">input</span>(<span class="str">&quot;选手A胜率: &quot;</span>))
-
-<span class="var">prob_b</span>=
-
-<span class="func">float</span>(<span class="func">input</span>(<span class="str">&quot;选手B胜率: &quot;</span>))
-
-<span class="var">n</span>=
-
-<span class="func">int</span>(<span class="func">input</span>(<span class="str">&quot;比赛场次: &quot;</span>))
-
-<span class="var">returnprob_a</span>,<span class="var">prob_b</span>,<span class="var">n</span>
-
-<span class="func">defsim_one_game</span>(<span class="var">prob_a</span>,<span class="var">prob_b</span>):
-
-<span class="com"># 模拟一场比赛</span>
-
-<span class="var">importrandomscore_a</span>,
-
-<span class="var">score_b</span>=<span class="num">0</span>,<span class="num">0</span>
-
-<span class="func">whilenotgame_over</span>(<span class="var">score_a</span>,<span class="var">score_b</span>):
-
-<span class="var">ifrandom</span>.
-
-<span class="func">random</span>()&lt;<span class="var">prob_a</span>:
-
-<span class="var">score_a</span>+=<span class="num">1</span>
-
-<span class="kw">else</span>:
-
-<span class="var">score_b</span>+=<span class="num">1</span>
-
-<span class="var">returnscore_a</span>,<span class="var">score_b</span>
+<span class="func">def get_inputs</span>():
+    <span class="var">prob_a</span> = <span class="func">float</span>(<span class="func">input</span>(<span class="str">&quot;选手A胜率: &quot;</span>))
+    <span class="var">prob_b</span> = <span class="func">float</span>(<span class="func">input</span>(<span class="str">&quot;选手B胜率: &quot;</span>))
+    <span class="var">n</span> = <span class="func">int</span>(<span class="func">input</span>(<span class="str">&quot;比赛场次: &quot;</span>))
+    <span class="var">return prob_a</span>, <span class="var">prob_b</span>, <span class="var">n</span>
+<span class="func">def sim_one_game</span>(<span class="var">prob_a</span>, <span class="var">prob_b</span>):
+    <span class="com"># 模拟一场比赛</span>
+    <span class="var">import random</span>
+    <span class="var">score_a</span>, <span class="var">score_b</span> = <span class="num">0</span>, <span class="num">0</span>
+    <span class="func">while not game_over</span>(<span class="var">score_a</span>, <span class="var">score_b</span>):
+        <span class="var">if random</span>.<span class="func">random</span>() &lt; <span class="var">prob_a</span>:
+            <span class="var">score_a</span> += <span class="num">1</span>
+        <span class="kw">else</span>:
+            <span class="var">score_b</span> += <span class="num">1</span>
+    <span class="var">return score_a</span>, <span class="var">score_b</span>
 
 </div>
           <p>面向过程适合
@@ -706,42 +612,21 @@
           </p>
           <div class="code-block">
 <span class="com"># main.py — 主程序框架</span>
-
-<span class="func">defmain</span>():
-
-<span class="var">prob_a</span>,<span class="var">prob_b</span>,
-
-<span class="var">n</span>=
-
-<span class="func">get_inputs</span>()<span class="var">wins_a</span>,
-
-<span class="var">wins_b</span>=
-
-<span class="func">sim_n_games</span>(<span class="var">prob_a</span>,<span class="var">prob_b</span>,<span class="var">n</span>)
-
-<span class="func">print_summary</span>(<span class="var">wins_a</span>,<span class="var">wins_b</span>)
-
-<span class="func">defget_inputs</span>():
-
-<span class="com"># 获取用户输入</span>
-
-<span class="kw">pass</span>
-
-<span class="func">defsim_n_games</span>(<span class="var">prob_a</span>,<span class="var">prob_b</span>,<span class="var">n</span>):
-
-<span class="com"># 模拟n场比赛</span>
-
-<span class="kw">pass</span>
-
-<span class="func">defprint_summary</span>(<span class="var">wins_a</span>,<span class="var">wins_b</span>):
-
-<span class="com"># 输出结果</span>
-
-<span class="kw">pass</span>
-
-<span class="var">if__name__</span>==<span class="str">&quot;__main__&quot;</span>:
-
-<span class="func">main</span>()
+<span class="func">def main</span>():
+    <span class="var">prob_a</span>, <span class="var">prob_b</span>, <span class="var">n</span> = <span class="func">get_inputs</span>()
+    <span class="var">wins_a</span>, <span class="var">wins_b</span> = <span class="func">sim_n_games</span>(<span class="var">prob_a</span>, <span class="var">prob_b</span>, <span class="var">n</span>)
+    <span class="func">print_summary</span>(<span class="var">wins_a</span>, <span class="var">wins_b</span>)
+<span class="func">def get_inputs</span>():
+    <span class="com"># 获取用户输入</span>
+    <span class="kw">pass</span>
+<span class="func">def sim_n_games</span>(<span class="var">prob_a</span>, <span class="var">prob_b</span>, <span class="var">n</span>):
+    <span class="com"># 模拟n场比赛</span>
+    <span class="kw">pass</span>
+<span class="func">def print_summary</span>(<span class="var">wins_a</span>, <span class="var">wins_b</span>):
+    <span class="com"># 输出结果</span>
+    <span class="kw">pass</span>
+<span class="var">if __name__</span> == <span class="str">&quot;__main__&quot;</span>:
+    <span class="func">main</span>()
 
 </div>
           <p>
@@ -757,21 +642,19 @@
         <div class="content-body">
           <div class="code-block">
 <span class="com"># 温度转换模块</span>
-<span class="func">defc_to_f</span>(<span class="var">c</span>):
-<span class="str">&quot;&quot;&quot;摄氏度转华氏度&quot;&quot;&quot;</span>
-<span class="var">returnc</span>*<span class="num">9</span>/<span class="num">5</span>+<span class="num">32</span>
-<span class="func">deff_to_c</span>(<span class="var">f</span>):
-<span class="str">&quot;&quot;&quot;华氏度转摄氏度&quot;&quot;&quot;</span>
-<span class="kw">return</span>(<span class="var">f</span>-<span class="num">32</span>)*<span class="num">5</span>/<span class="num">9</span>
-<span class="func">defbatch_convert</span>(<span class="var">temps</span>,<span class="var">direction</span>=<span class="str">&quot;c2f&quot;</span>):
-<span class="str">&quot;&quot;&quot;批量转换&quot;&quot;&quot;</span>
-<span class="var">func</span>=<span class="var">c_to_f</span>
-<span class="var">ifdirection</span>==<span class="str">&quot;c2f&quot;</span>
-<span class="var">elsef_to_creturn</span>[<span class="func">func</span>(<span class="var">t</span>)<span class="var">fortintemps</span>]
+<span class="func">def c_to_f</span>(<span class="var">c</span>):
+    <span class="str">&quot;&quot;&quot;摄氏度转华氏度&quot;&quot;&quot;</span>
+    <span class="var">return c</span> * <span class="num">9</span> / <span class="num">5</span> + <span class="num">32</span>
+<span class="func">def f_to_c</span>(<span class="var">f</span>):
+    <span class="str">&quot;&quot;&quot;华氏度转摄氏度&quot;&quot;&quot;</span>
+    <span class="kw">return</span> (<span class="var">f</span> - <span class="num">32</span>) * <span class="num">5</span> / <span class="num">9</span>
+<span class="func">def batch_convert</span>(<span class="var">temps</span>, <span class="var">direction</span>=<span class="str">&quot;c2f&quot;</span>):
+    <span class="str">&quot;&quot;&quot;批量转换&quot;&quot;&quot;</span>
+    <span class="var">func</span> = <span class="var">c_to_f</span> <span class="kw">if</span> <span class="var">direction</span> == <span class="str">&quot;c2f&quot;</span> <span class="kw">else</span> <span class="var">f_to_c</span>
+    <span class="kw">return</span> [<span class="func">func</span>(<span class="var">t</span>) <span class="kw">for</span> <span class="var">t</span> <span class="kw">in</span> <span class="var">temps</span>]
 <span class="com"># 使用</span>
-<span class="var">celsius</span>=[<span class="num">0</span>,<span class="num">10</span>,<span class="num">20</span>,<span class="num">30</span>,<span class="num">40</span>]
-<span class="var">fahrenheit</span>=
-<span class="func">batch_convert</span>(<span class="var">celsius</span>)
+<span class="var">celsius</span> = [<span class="num">0</span>, <span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>]
+<span class="var">fahrenheit</span> = <span class="func">batch_convert</span>(<span class="var">celsius</span>)
 <span class="func">print</span>(<span class="var">fahrenheit</span>)
 <span class="com"># [32.0, 50.0, 68.0, 86.0, 104.0]</span>
 
@@ -891,5 +774,53 @@
   });
 
 </script>
-    </body>
+    
+<script>
+// 代码复制按钮
+document.addEventListener('DOMContentLoaded', function () {
+  var blocks = document.querySelectorAll('pre, div.code, div.code-block');
+  blocks.forEach(function (block) {
+    if (block.querySelector('.code-copy-btn')) return;
+    var btn = document.createElement('button');
+    btn.className = 'code-copy-btn';
+    btn.type = 'button';
+    btn.textContent = '复制';
+    btn.addEventListener('click', function () {
+      var clone = block.cloneNode(true);
+      var b = clone.querySelector('.code-copy-btn');
+      if (b) b.remove();
+      var text = clone.textContent
+        .replace(/\u00a0/g, ' ')
+        .replace(/[ \t]+\n/g, '\n')
+        .replace(/^\s*\n/, '').replace(/\s+$/, '');
+      function done() {
+        btn.textContent = '已复制 ✓';
+        btn.classList.add('copied');
+        setTimeout(function () {
+          btn.textContent = '复制';
+          btn.classList.remove('copied');
+        }, 1500);
+      }
+      function fallback() {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); done(); }
+        catch (e) { btn.textContent = '复制失败'; }
+        document.body.removeChild(ta);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(fallback);
+      } else {
+        fallback();
+      }
+    });
+    block.appendChild(btn);
+  });
+});
+</script>
+</body>
   </html>

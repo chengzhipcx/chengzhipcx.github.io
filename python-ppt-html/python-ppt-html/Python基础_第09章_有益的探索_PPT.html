@@ -141,6 +141,18 @@
       .nav button { padding: 8px 14px !important; font-size: 12px !important; }
       .nav .page-num { font-size: 12px !important; padding: 0 10px !important; line-height: 32px !important; }
     }
+
+    /* 代码复制按钮 */
+    pre, .slide-content .code, .code-block { position: relative; }
+    .code-copy-btn {
+      position: absolute; top: 8px; right: 8px; z-index: 5;
+      padding: 4px 10px; font-size: 12px; font-family: inherit;
+      color: #d4d4d4; background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25); border-radius: 4px;
+      cursor: pointer; opacity: 0.75; transition: all 0.2s;
+    }
+    .code-copy-btn:hover { opacity: 1; background: rgba(255,255,255,0.22); }
+    .code-copy-btn.copied { color: #4ade80; border-color: #4ade80; }
 </style>
     </head>
     <body>
@@ -216,13 +228,13 @@
           <div class="code">
 <span class="comment"># 列表存储的是引用，不是值本身</span>
 
-a=[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]
+a = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]
 
-b=a
+b = a
 
 <span class="comment"># b 和 a 指向同一个列表对象</span>
 
-b[<span class="number">0</span>]=<span class="number">100</span>
+b[<span class="number">0</span>] = <span class="number">100</span>
 
 <span class="comment"># 修改 b 也会影响 a</span>
 
@@ -232,7 +244,7 @@ b[<span class="number">0</span>]=<span class="number">100</span>
 
 <span class="comment"># 验证：a 和 b 是同一个对象</span>
 
-<span class="function">print</span>(aisb)
+<span class="function">print</span>(a <span class="keyword">is</span> b)
 
 <span class="comment"># True</span>
 
@@ -264,17 +276,17 @@ b[<span class="number">0</span>]=<span class="number">100</span>
             </div>
           </div>
           <div class="code">
-importcopy
+<span class="keyword">import</span> copy
 
 <span class="comment"># 嵌套列表</span>
 
-matrix=[[<span class="number">1</span>,<span class="number">2</span>],[<span class="number">3</span>,<span class="number">4</span>]]
+matrix = [[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>]]
 
 <span class="comment"># 浅拷贝：外层独立，内层共享</span>
 
-shallow=matrix.
+shallow = matrix.<span class="function">copy</span>()
 
-<span class="function">copy</span>()shallow[<span class="number">0</span>][<span class="number">0</span>]=<span class="number">99</span>
+shallow[<span class="number">0</span>][<span class="number">0</span>] = <span class="number">99</span>
 
 <span class="function">print</span>(matrix)
 
@@ -282,9 +294,9 @@ shallow=matrix.
 
 <span class="comment"># 深拷贝：完全独立</span>
 
-deep=copy.
+deep = copy.<span class="function">deepcopy</span>(matrix)
 
-<span class="function">deepcopy</span>(matrix)deep[<span class="number">0</span>][<span class="number">0</span>]=<span class="number">100</span>
+deep[<span class="number">0</span>][<span class="number">0</span>] = <span class="number">100</span>
 
 <span class="function">print</span>(matrix)
 
@@ -311,13 +323,13 @@ deep=copy.
           <div class="code">
 <span class="comment"># 字典的键必须可哈希</span>
 
-d={<span class="string">&quot;name&quot;</span>:<span class="string">&quot;Sarah&quot;</span>,<span class="number">42</span>:<span class="string">&quot;answer&quot;</span>,(<span class="number">1</span>,<span class="number">2</span>):<span class="string">&quot;tuple key&quot;</span>}
+d = {<span class="string">&quot;name&quot;</span>: <span class="string">&quot;Sarah&quot;</span>, <span class="number">42</span>: <span class="string">&quot;answer&quot;</span>, (<span class="number">1</span>, <span class="number">2</span>): <span class="string">&quot;tuple key&quot;</span>}
 
 <span class="comment"># 查看哈希值</span>
 
 <span class="function">print</span>(<span class="function">hash</span>(<span class="string">&quot;name&quot;</span>))
 
-<span class="function">print</span>(<span class="function">hash</span>((<span class="number">1</span>,<span class="number">2</span>)))
+<span class="function">print</span>(<span class="function">hash</span>((<span class="number">1</span>, <span class="number">2</span>)))
 
 <span class="comment"># 列表不可哈希，不能作为键</span>
 
@@ -350,29 +362,27 @@ d={<span class="string">&quot;name&quot;</span>:<span class="string">&quot;Sarah
           <div class="code">
 <span class="comment"># 字符串不可变</span>
 
-s=<span class="string">&quot;hello&quot;</span>
+s = <span class="string">&quot;hello&quot;</span>
 
-s=s+<span class="string">&quot; world&quot;</span>
+s = s + <span class="string">&quot; world&quot;</span>
 
 <span class="comment"># 创建了新的字符串对象</span>
 
 <span class="comment"># 字符串驻留优化</span>
 
-a=<span class="string">&quot;python&quot;</span>
+a = <span class="string">&quot;python&quot;</span>
 
-b=<span class="string">&quot;python&quot;</span>
+b = <span class="string">&quot;python&quot;</span>
 
-<span class="function">print</span>(aisb)
+<span class="function">print</span>(a <span class="keyword">is</span> b)
 
 <span class="comment"># True — 同一对象</span>
 
 <span class="comment"># 高效的字符串拼接</span>
 
-words=[<span class="string">&quot;I&quot;</span>,<span class="string">&quot;love&quot;</span>,<span class="string">&quot;Python&quot;</span>]
+words = [<span class="string">&quot;I&quot;</span>, <span class="string">&quot;love&quot;</span>, <span class="string">&quot;Python&quot;</span>]
 
-sentence=<span class="string">&quot; &quot;</span>.
-
-<span class="function">join</span>(words)
+sentence = <span class="string">&quot; &quot;</span>.<span class="function">join</span>(words)
 
 <span class="function">print</span>(sentence)
 
@@ -396,18 +406,16 @@ sentence=<span class="string">&quot; &quot;</span>.
           </ul>
           <div class="code">
 <span class="comment"># 传统写法 vs 列表推导式</span>
-squares=[]
-<span class="function">forxinrange</span>(<span class="number">10</span>):
-squares.
-<span class="function">append</span>(x**<span class="number">2</span>)
+squares = []
+<span class="keyword">for</span> x <span class="keyword">in</span> <span class="function">range</span>(<span class="number">10</span>):
+    squares.<span class="function">append</span>(x ** <span class="number">2</span>)
 <span class="comment"># 等价推导式</span>
-squares=[x**<span class="number">2</span>
-<span class="function">forxinrange</span>(<span class="number">10</span>)]
+squares = [x ** <span class="number">2</span> <span class="keyword">for</span> x <span class="keyword">in</span> <span class="function">range</span>(<span class="number">10</span>)]
 <span class="comment"># 带条件过滤</span>
-evens=[<span class="function">xforxinrange</span>(<span class="number">20</span>)ifx%<span class="number">2</span>==<span class="number">0</span>]
+evens = [x <span class="keyword">for</span> x <span class="keyword">in</span> <span class="function">range</span>(<span class="number">20</span>) <span class="keyword">if</span> x % <span class="number">2</span> == <span class="number">0</span>]
 <span class="comment"># 嵌套推导式：展平矩阵</span>
-matrix=[[<span class="number">1</span>,<span class="number">2</span>],[<span class="number">3</span>,<span class="number">4</span>],[<span class="number">5</span>,<span class="number">6</span>]]
-flat=[xforrowinmatrixforxinrow]
+matrix = [[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>], [<span class="number">5</span>, <span class="number">6</span>]]
+flat = [x <span class="keyword">for</span> row <span class="keyword">in</span> matrix <span class="keyword">for</span> x <span class="keyword">in</span> row]
 <span class="function">print</span>(flat)
 <span class="comment"># [1, 2, 3, 4, 5, 6]</span>
 
@@ -436,19 +444,15 @@ flat=[xforrowinmatrixforxinrow]
           </div>
           <div class="code">
 <span class="comment"># 字典推导式</span>
-names=[<span class="string">&quot;Alice&quot;</span>,<span class="string">&quot;Bob&quot;</span>,<span class="string">&quot;Charlie&quot;</span>]
-name_lengths={name:<span class="function">len</span>(name)
-fornameinnames}
+names = [<span class="string">&quot;Alice&quot;</span>, <span class="string">&quot;Bob&quot;</span>, <span class="string">&quot;Charlie&quot;</span>]
+name_lengths = {name: <span class="function">len</span>(name) <span class="keyword">for</span> name <span class="keyword">in</span> names}
 <span class="function">print</span>(name_lengths)
 <span class="comment"># {&#x27;Alice&#x27;: 5, &#x27;Bob&#x27;: 3, &#x27;Charlie&#x27;: 7}</span>
 <span class="comment"># 集合推导式</span>
-unique_lengths={<span class="function">len</span>(name)
-fornameinnames}
+unique_lengths = {<span class="function">len</span>(name) <span class="keyword">for</span> name <span class="keyword">in</span> names}
 <span class="comment"># 三元表达式</span>
-score=<span class="number">75</span>
-grade=<span class="string">&quot;及格&quot;</span>
-ifscore&gt;=<span class="number">60</span>
-<span class="keyword">else</span><span class="string">&quot;不及格&quot;</span>
+score = <span class="number">75</span>
+grade = <span class="string">&quot;及格&quot;</span> <span class="keyword">if</span> score &gt;= <span class="number">60</span> <span class="keyword">else</span> <span class="string">&quot;不及格&quot;</span>
 <span class="function">print</span>(grade)
 
 </div>
@@ -474,7 +478,7 @@ ifscore&gt;=<span class="number">60</span>
           <div class="code">
 <span class="comment"># lambda 基本用法</span>
 
-square=lambdax:x**<span class="number">2</span>
+square = <span class="keyword">lambda</span> x: x ** <span class="number">2</span>
 
 <span class="function">print</span>(<span class="function">square</span>(<span class="number">5</span>))
 
@@ -482,9 +486,9 @@ square=lambdax:x**<span class="number">2</span>
 
 <span class="comment"># 用于排序</span>
 
-students=[(<span class="string">&quot;Alice&quot;</span>,<span class="number">85</span>),(<span class="string">&quot;Bob&quot;</span>,<span class="number">92</span>),(<span class="string">&quot;Charlie&quot;</span>,<span class="number">78</span>)]students.
+students = [(<span class="string">&quot;Alice&quot;</span>, <span class="number">85</span>), (<span class="string">&quot;Bob&quot;</span>, <span class="number">92</span>), (<span class="string">&quot;Charlie&quot;</span>, <span class="number">78</span>)]
 
-<span class="function">sort</span>(key=lambdax:x[<span class="number">1</span>],reverse=<span class="keyword">True</span>)
+students.<span class="function">sort</span>(key=<span class="keyword">lambda</span> x: x[<span class="number">1</span>], reverse=<span class="keyword">True</span>)
 
 <span class="function">print</span>(students)
 
@@ -492,11 +496,9 @@ students=[(<span class="string">&quot;Alice&quot;</span>,<span class="number">85
 
 <span class="comment"># lambda 与 map 结合</span>
 
-nums=[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>]
+nums = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]
 
-doubled=
-
-<span class="function">list</span>(<span class="function">map</span>(lambdax:x*<span class="number">2</span>,nums))
+doubled = <span class="function">list</span>(<span class="function">map</span>(<span class="keyword">lambda</span> x: x * <span class="number">2</span>, nums))
 
 <span class="function">print</span>(doubled)
 
@@ -532,11 +534,9 @@ doubled=
           <div class="code">
 <span class="comment"># map 示例</span>
 
-temps_c=[<span class="number">0</span>,<span class="number">10</span>,<span class="number">20</span>,<span class="number">30</span>,<span class="number">40</span>]
+temps_c = [<span class="number">0</span>, <span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>, <span class="number">40</span>]
 
-temps_f=
-
-<span class="function">list</span>(<span class="function">map</span>(lambdac:c*<span class="number">9</span>/<span class="number">5</span>+<span class="number">32</span>,temps_c))
+temps_f = <span class="function">list</span>(<span class="function">map</span>(<span class="keyword">lambda</span> c: c * <span class="number">9</span> / <span class="number">5</span> + <span class="number">32</span>, temps_c))
 
 <span class="function">print</span>(temps_f)
 
@@ -544,11 +544,9 @@ temps_f=
 
 <span class="comment"># filter 示例</span>
 
-numbers=[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">10</span>]
+numbers = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>]
 
-primes=
-
-<span class="function">list</span>(<span class="function">filter</span>(lambdax:xin{<span class="number">2</span>,<span class="number">3</span>,<span class="number">5</span>,<span class="number">7</span>},numbers))
+primes = <span class="function">list</span>(<span class="function">filter</span>(<span class="keyword">lambda</span> x: x <span class="keyword">in</span> {<span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>}, numbers))
 
 <span class="function">print</span>(primes)
 
@@ -573,24 +571,20 @@ primes=
             </li>
           </ul>
           <div class="code">
-fromfunctools
-importreduce
+<span class="keyword">from</span> functools <span class="keyword">import</span> reduce
 <span class="comment"># 求阶乘</span>
-n=<span class="number">5</span>
-factorial=
-<span class="function">reduce</span>(lambdax,y:x*y,<span class="function">range</span>(<span class="number">1</span>,n+<span class="number">1</span>))
+n = <span class="number">5</span>
+factorial = <span class="function">reduce</span>(<span class="keyword">lambda</span> x, y: x * y, <span class="function">range</span>(<span class="number">1</span>, n + <span class="number">1</span>))
 <span class="function">print</span>(factorial)
 <span class="comment"># 120</span>
 <span class="comment"># 求列表最大值</span>
-nums=[<span class="number">3</span>,<span class="number">1</span>,<span class="number">4</span>,<span class="number">1</span>,<span class="number">5</span>,<span class="number">9</span>,<span class="number">2</span>,<span class="number">6</span>]
-max_val=
-<span class="function">reduce</span>(lambdaa,b:aifa&gt;belseb,nums)
+nums = [<span class="number">3</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">1</span>, <span class="number">5</span>, <span class="number">9</span>, <span class="number">2</span>, <span class="number">6</span>]
+max_val = <span class="function">reduce</span>(<span class="keyword">lambda</span> a, b: a <span class="keyword">if</span> a &gt; b <span class="keyword">else</span> b, nums)
 <span class="function">print</span>(max_val)
 <span class="comment"># 9</span>
 <span class="comment"># 字符串拼接</span>
-words=[<span class="string">&quot;I&quot;</span>,<span class="string">&quot; &quot;</span>,<span class="string">&quot;love&quot;</span>,<span class="string">&quot; &quot;</span>,<span class="string">&quot;Python&quot;</span>]
-sentence=
-<span class="function">reduce</span>(lambdax,y:x+y,words)
+words = [<span class="string">&quot;I&quot;</span>, <span class="string">&quot; &quot;</span>, <span class="string">&quot;love&quot;</span>, <span class="string">&quot; &quot;</span>, <span class="string">&quot;Python&quot;</span>]
+sentence = <span class="function">reduce</span>(<span class="keyword">lambda</span> x, y: x + y, words)
 <span class="function">print</span>(sentence)
 <span class="comment"># &quot;I love Python&quot;</span>
 
@@ -698,5 +692,53 @@ sentence=
   });
 
 </script>
-    </body>
+    
+<script>
+// 代码复制按钮
+document.addEventListener('DOMContentLoaded', function () {
+  var blocks = document.querySelectorAll('pre, div.code, div.code-block');
+  blocks.forEach(function (block) {
+    if (block.querySelector('.code-copy-btn')) return;
+    var btn = document.createElement('button');
+    btn.className = 'code-copy-btn';
+    btn.type = 'button';
+    btn.textContent = '复制';
+    btn.addEventListener('click', function () {
+      var clone = block.cloneNode(true);
+      var b = clone.querySelector('.code-copy-btn');
+      if (b) b.remove();
+      var text = clone.textContent
+        .replace(/\u00a0/g, ' ')
+        .replace(/[ \t]+\n/g, '\n')
+        .replace(/^\s*\n/, '').replace(/\s+$/, '');
+      function done() {
+        btn.textContent = '已复制 ✓';
+        btn.classList.add('copied');
+        setTimeout(function () {
+          btn.textContent = '复制';
+          btn.classList.remove('copied');
+        }, 1500);
+      }
+      function fallback() {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); done(); }
+        catch (e) { btn.textContent = '复制失败'; }
+        document.body.removeChild(ta);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(fallback);
+      } else {
+        fallback();
+      }
+    });
+    block.appendChild(btn);
+  });
+});
+</script>
+</body>
   </html>

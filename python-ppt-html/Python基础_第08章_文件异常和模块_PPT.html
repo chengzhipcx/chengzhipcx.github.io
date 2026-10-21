@@ -144,6 +144,18 @@
       .nav button { padding: 8px 14px !important; font-size: 12px !important; }
       .nav .page-num { font-size: 12px !important; padding: 0 10px !important; line-height: 32px !important; }
     }
+
+    /* 代码复制按钮 */
+    pre, .slide-content .code, .code-block { position: relative; }
+    .code-copy-btn {
+      position: absolute; top: 8px; right: 8px; z-index: 5;
+      padding: 4px 10px; font-size: 12px; font-family: inherit;
+      color: #d4d4d4; background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25); border-radius: 4px;
+      cursor: pointer; opacity: 0.75; transition: all 0.2s;
+    }
+    .code-copy-btn:hover { opacity: 1; background: rgba(255,255,255,0.22); }
+    .code-copy-btn.copied { color: #4ade80; border-color: #4ade80; }
 </style>
     </head>
     <body>
@@ -226,15 +238,12 @@
           </ul>
           <div class="code">
 <span class="comment"># 基础写法（不推荐）</span>
-f=
-<span class="function">open</span>(<span class="string">&#x27;data.txt&#x27;</span>,<span class="string">&#x27;r&#x27;</span>,encoding=<span class="string">&#x27;utf-8&#x27;</span>)
-text=f.
-<span class="function">read</span>()f.
-<span class="function">close</span>()
+f = <span class="function">open</span>(<span class="string">&#x27;data.txt&#x27;</span>, <span class="string">&#x27;r&#x27;</span>, encoding=<span class="string">&#x27;utf-8&#x27;</span>)
+text = f.<span class="function">read</span>()
+f.<span class="function">close</span>()
 <span class="comment"># 推荐写法：with 上下文管理器</span>
-<span class="function">withopen</span>(<span class="string">&#x27;data.txt&#x27;</span>,<span class="string">&#x27;r&#x27;</span>,encoding=<span class="string">&#x27;utf-8&#x27;</span>)asf:
-text=f.
-<span class="function">read</span>()
+<span class="keyword">with</span> <span class="function">open</span>(<span class="string">&#x27;data.txt&#x27;</span>, <span class="string">&#x27;r&#x27;</span>, encoding=<span class="string">&#x27;utf-8&#x27;</span>) as f:
+    text = f.<span class="function">read</span>()
 <span class="comment"># 自动关闭文件，即使发生异常</span>
 
 </div>
@@ -284,15 +293,13 @@ text=f.
           </div>
           <div class="code">
 <span class="comment"># 逐行读取大文件（推荐）</span>
-<span class="function">withopen</span>(<span class="string">&#x27;big_file.txt&#x27;</span>,<span class="string">&#x27;r&#x27;</span>)
-asf:
-forlineinf:
-<span class="function">print</span>(line.<span class="function">strip</span>())
+<span class="keyword">with</span> <span class="function">open</span>(<span class="string">&#x27;big_file.txt&#x27;</span>, <span class="string">&#x27;r&#x27;</span>) as f:
+    <span class="keyword">for</span> line in f:
+        <span class="function">print</span>(line.<span class="function">strip</span>())
 <span class="comment"># 写入多行</span>
-lines=[<span class="string">&#x27;line1\n&#x27;</span>,<span class="string">&#x27;line2\n&#x27;</span>,<span class="string">&#x27;line3\n&#x27;</span>]
-<span class="function">withopen</span>(<span class="string">&#x27;output.txt&#x27;</span>,<span class="string">&#x27;w&#x27;</span>)asf:
-f.
-<span class="function">writelines</span>(lines)
+lines = [<span class="string">&#x27;line1\n&#x27;</span>, <span class="string">&#x27;line2\n&#x27;</span>, <span class="string">&#x27;line3\n&#x27;</span>]
+<span class="keyword">with</span> <span class="function">open</span>(<span class="string">&#x27;output.txt&#x27;</span>, <span class="string">&#x27;w&#x27;</span>) as f:
+    f.<span class="function">writelines</span>(lines)
 
 </div>
         </div>
@@ -301,52 +308,22 @@ f.
           </h2>
           <div class="code">
 <span class="comment"># 读取 CSV 数据并计算平均值</span>
-
-<span class="function">defcalc_average</span>(filename):
-
-total=<span class="number">0</span>
-
-count=<span class="number">0</span>
-
-<span class="function">withopen</span>(filename,<span class="string">&#x27;r&#x27;</span>,encoding=<span class="string">&#x27;utf-8&#x27;</span>)asf:
-
-forlineinf:
-
-line=line.
-
-<span class="function">strip</span>()
-
-iflineandnotline.
-
-<span class="function">startswith</span>(<span class="string">&#x27;#&#x27;</span>):
-
-total+=
-
-<span class="function">float</span>(line)
-
-count+=<span class="number">1</span>
-
-returntotal/count
-
-ifcount&gt;<span class="number">0</span>
-
-else0
+<span class="keyword">def</span> <span class="function">calc_average</span>(filename):
+    total = <span class="number">0</span>
+    count = <span class="number">0</span>
+    <span class="keyword">with</span> <span class="function">open</span>(filename, <span class="string">&#x27;r&#x27;</span>, encoding=<span class="string">&#x27;utf-8&#x27;</span>) as f:
+        <span class="keyword">for</span> line in f:
+            line = line.<span class="function">strip</span>()
+            <span class="keyword">if</span> line and not line.<span class="function">startswith</span>(<span class="string">&#x27;#&#x27;</span>):
+                total += <span class="function">float</span>(line)
+                count += <span class="number">1</span>
+    <span class="keyword">return</span> total / count <span class="keyword">if</span> count &gt; <span class="number">0</span> <span class="keyword">else</span> <span class="number">0</span>
 
 <span class="comment"># 复制二进制文件</span>
-
-<span class="function">withopen</span>(<span class="string">&#x27;source.jpg&#x27;</span>,<span class="string">&#x27;rb&#x27;</span>)
-
-assrc:
-
-data=src.
-
-<span class="function">read</span>()
-
-<span class="function">withopen</span>(<span class="string">&#x27;copy.jpg&#x27;</span>,<span class="string">&#x27;wb&#x27;</span>)
-
-asdst:dst.
-
-<span class="function">write</span>(data)
+<span class="keyword">with</span> <span class="function">open</span>(<span class="string">&#x27;source.jpg&#x27;</span>, <span class="string">&#x27;rb&#x27;</span>) as src:
+    data = src.<span class="function">read</span>()
+<span class="keyword">with</span> <span class="function">open</span>(<span class="string">&#x27;copy.jpg&#x27;</span>, <span class="string">&#x27;wb&#x27;</span>) as dst:
+    dst.<span class="function">write</span>(data)
 
 </div>
         </div>
@@ -373,26 +350,15 @@ asdst:dst.
           </ul>
           <div class="code">
 <span class="keyword">try</span>:
-
-x=
-
-<span class="function">int</span>(<span class="function">input</span>(<span class="string">&quot;请输入一个数字：&quot;</span>))
-
-result=<span class="number">100</span>/x
-
-<span class="function">print</span>(f&quot;结果是: {result} &quot;)
-
-exceptValueError:
-
-<span class="function">print</span>(<span class="string">&quot;输入无效，请输入数字&quot;</span>)
-
-exceptZeroDivisionError:
-
-<span class="function">print</span>(<span class="string">&quot;不能除以零&quot;</span>)
-
+    x = <span class="function">int</span>(<span class="function">input</span>(<span class="string">&quot;请输入一个数字：&quot;</span>))
+    result = <span class="number">100</span> / x
+    <span class="function">print</span>(f&quot;结果是: {result} &quot;)
+<span class="keyword">except</span> ValueError:
+    <span class="function">print</span>(<span class="string">&quot;输入无效，请输入数字&quot;</span>)
+<span class="keyword">except</span> ZeroDivisionError:
+    <span class="function">print</span>(<span class="string">&quot;不能除以零&quot;</span>)
 <span class="keyword">finally</span>:
-
-<span class="function">print</span>(<span class="string">&quot;程序执行完毕&quot;</span>)
+    <span class="function">print</span>(<span class="string">&quot;程序执行完毕&quot;</span>)
 
 </div>
         </div>
@@ -447,17 +413,14 @@ exceptZeroDivisionError:
           <div class="code">
 <span class="comment"># 捕获多个异常 + else 子句</span>
 <span class="keyword">try</span>:
-<span class="function">withopen</span>(<span class="string">&#x27;config.json&#x27;</span>,<span class="string">&#x27;r&#x27;</span>)
-asf:
-data=json.
-<span class="function">load</span>(f)
-<span class="keyword">except</span>(<span class="function">FileNotFoundError</span>,<span class="function">PermissionError</span>)
-ase:
-<span class="function">print</span>(f&quot;文件访问失败: {e} &quot;)
-exceptjson.JSONDecodeError:
-<span class="function">print</span>(<span class="string">&quot;JSON 格式错误&quot;</span>)
+    <span class="keyword">with</span> <span class="function">open</span>(<span class="string">&#x27;config.json&#x27;</span>, <span class="string">&#x27;r&#x27;</span>) as f:
+        data = json.<span class="function">load</span>(f)
+<span class="keyword">except</span> (<span class="function">FileNotFoundError</span>, <span class="function">PermissionError</span>) as e:
+    <span class="function">print</span>(f&quot;文件访问失败: {e} &quot;)
+<span class="keyword">except</span> json.JSONDecodeError:
+    <span class="function">print</span>(<span class="string">&quot;JSON 格式错误&quot;</span>)
 <span class="keyword">else</span>:
-<span class="function">print</span>(<span class="string">&quot;读取成功！&quot;</span>,data)
+    <span class="function">print</span>(<span class="string">&quot;读取成功！&quot;</span>, data)
 
 </div>
         </div>
@@ -479,31 +442,19 @@ exceptjson.JSONDecodeError:
             </li>
           </ul>
           <div class="code">
-<span class="function">classValidationError</span>(<span class="function">Exception</span>):
+<span class="keyword">class</span> ValidationError(<span class="function">Exception</span>):
+    <span class="string">&quot;&quot;&quot;参数验证失败时抛出&quot;&quot;&quot;</span>
+    <span class="keyword">pass</span>
 
-<span class="string">&quot;&quot;&quot;参数验证失败时抛出&quot;&quot;&quot;</span>
-
-<span class="keyword">pass</span>
-
-<span class="function">defset_age</span>(age):
-
-<span class="function">ifnotisinstance</span>(age,<span class="function">int</span>)
-
-orage&lt;<span class="number">0</span>:
-
-<span class="keyword">raise</span>
-
-<span class="function">ValidationError</span>(<span class="string">&quot;年龄必须是正整数&quot;</span>)
-
-returnage
+<span class="keyword">def</span> <span class="function">set_age</span>(age):
+    <span class="keyword">if</span> not <span class="function">isinstance</span>(age, <span class="function">int</span>) or age &lt; <span class="number">0</span>:
+        <span class="keyword">raise</span> <span class="function">ValidationError</span>(<span class="string">&quot;年龄必须是正整数&quot;</span>)
+    <span class="keyword">return</span> age
 
 <span class="keyword">try</span>:
-
-<span class="function">set_age</span>(-<span class="number">5</span>)
-
-exceptValidationErrorase:
-
-<span class="function">print</span>(f&quot;验证失败: {e} &quot;)
+    <span class="function">set_age</span>(-<span class="number">5</span>)
+<span class="keyword">except</span> ValidationError as e:
+    <span class="function">print</span>(f&quot;验证失败: {e} &quot;)
 
 </div>
         </div>
@@ -529,30 +480,19 @@ exceptValidationErrorase:
           </ul>
           <div class="code">
 <span class="comment"># 导入整个模块</span>
-
-importmath
-
+<span class="keyword">import</span> math
 <span class="function">print</span>(math.<span class="function">sqrt</span>(<span class="number">16</span>))
 
 <span class="comment"># 导入模块中的特定函数</span>
-
-frommath
-
-importsqrt,pi
-
-<span class="function">print</span>(<span class="function">sqrt</span>(<span class="number">16</span>),pi)
+<span class="keyword">from</span> math <span class="keyword">import</span> sqrt, pi
+<span class="function">print</span>(<span class="function">sqrt</span>(<span class="number">16</span>), pi)
 
 <span class="comment"># 给模块起别名</span>
-
-importnumpyasnp
-
-<span class="function">print</span>(np.<span class="function">array</span>([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]))
+<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+<span class="function">print</span>(np.<span class="function">array</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]))
 
 <span class="comment"># 导入所有内容（不推荐）</span>
-
-frommath
-
-<span class="keyword">import</span>*
+<span class="keyword">from</span> math <span class="keyword">import</span> *
 
 </div>
         </div>
@@ -589,12 +529,13 @@ frommath
           </div>
           <div class="code">
 <span class="comment"># mymodule.py — 标准模块模板</span>
-<span class="function">defhello</span>(name):
-returnf<span class="string">&quot;Hello, {name} !&quot;</span>
-if__name__==<span class="string">&quot;__main__&quot;</span>:
-<span class="comment"># 直接运行时的测试代码</span>
-<span class="function">print</span>(<span class="function">hello</span>(<span class="string">&quot;World&quot;</span>))
-<span class="function">print</span>(<span class="function">hello</span>(<span class="string">&quot;Python&quot;</span>))
+<span class="keyword">def</span> <span class="function">hello</span>(name):
+    <span class="keyword">return</span> f<span class="string">&quot;Hello, {name} !&quot;</span>
+
+<span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:
+    <span class="comment"># 直接运行时的测试代码</span>
+    <span class="function">print</span>(<span class="function">hello</span>(<span class="string">&quot;World&quot;</span>))
+    <span class="function">print</span>(<span class="function">hello</span>(<span class="string">&quot;Python&quot;</span>))
 
 </div>
         </div>
@@ -699,5 +640,53 @@ if__name__==<span class="string">&quot;__main__&quot;</span>:
   });
 
 </script>
-    </body>
+    
+<script>
+// 代码复制按钮
+document.addEventListener('DOMContentLoaded', function () {
+  var blocks = document.querySelectorAll('pre, div.code, div.code-block');
+  blocks.forEach(function (block) {
+    if (block.querySelector('.code-copy-btn')) return;
+    var btn = document.createElement('button');
+    btn.className = 'code-copy-btn';
+    btn.type = 'button';
+    btn.textContent = '复制';
+    btn.addEventListener('click', function () {
+      var clone = block.cloneNode(true);
+      var b = clone.querySelector('.code-copy-btn');
+      if (b) b.remove();
+      var text = clone.textContent
+        .replace(/\u00a0/g, ' ')
+        .replace(/[ \t]+\n/g, '\n')
+        .replace(/^\s*\n/, '').replace(/\s+$/, '');
+      function done() {
+        btn.textContent = '已复制 ✓';
+        btn.classList.add('copied');
+        setTimeout(function () {
+          btn.textContent = '复制';
+          btn.classList.remove('copied');
+        }, 1500);
+      }
+      function fallback() {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); done(); }
+        catch (e) { btn.textContent = '复制失败'; }
+        document.body.removeChild(ta);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(fallback);
+      } else {
+        fallback();
+      }
+    });
+    block.appendChild(btn);
+  });
+});
+</script>
+</body>
   </html>
