@@ -716,6 +716,16 @@ section {
 }
 
 @media (max-width: 768px) {
+    /* hero 在窄屏下改为块级布局：flex 会让容器按内容最小宽度（代码块长行）撑开，导致整页被裁切 */
+    .hero {
+        display: block;
+    }
+
+    .hero-title {
+        font-size: clamp(1.9rem, 8vw, 2.5rem);
+        overflow-wrap: break-word;
+    }
+
     .nav-menu {
         position: fixed;
         top: 70px;
