@@ -175,7 +175,9 @@ if (codeElement) {
         animation: blink 1s step-end infinite;
         color: var(--primary);
     `;
-    codeElement.appendChild(cursor);
+    // 光标挂在最后一行代码末尾
+    const lastLine = codeElement.querySelector('.code-line:last-child');
+    (lastLine || codeElement).appendChild(cursor);
     
     const blinkStyle = document.createElement('style');
     blinkStyle.textContent = `

@@ -1158,6 +1158,51 @@ section {
                 inset 0 0 60px rgba(99, 102, 241, 0.06);
 }
 
+/* 代码窗口：左对齐 + 行号 */
+.code-body pre {
+    text-align: left;
+    white-space: normal; /* 行节点之间的源码换行不再产生空行 */
+}
+
+.code-body pre code {
+    counter-reset: code-line;
+    display: block;
+}
+
+.code-line {
+    display: block;
+    counter-increment: code-line;
+    padding-left: 3.4em;
+    position: relative;
+    white-space: pre; /* 行内缩进保持 */
+}
+
+.code-line::before {
+    content: counter(code-line);
+    position: absolute;
+    left: 0;
+    width: 2.4em;
+    text-align: right;
+    color: rgba(161, 161, 170, 0.35);
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+@media (max-width: 768px) {
+    .code-body {
+        font-size: 0.78rem;
+        padding: 14px 12px;
+    }
+
+    .code-line {
+        padding-left: 2.8em;
+    }
+
+    .code-line::before {
+        width: 2em;
+    }
+}
+
 /* 向下滚动提示 */
 .scroll-hint {
     position: absolute;
