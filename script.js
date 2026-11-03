@@ -92,6 +92,21 @@ document.querySelectorAll('.about-grid, .platform-grid, .features-list').forEach
     });
 });
 
+// 揭示兜底：滚动/加载时直接检查视口内的卡片（防止极端环境下 IO 失效）
+const pendingReveals = new Set(document.querySelectorAll('.about-card, .platform-card, .feature-item'));
+const checkReveals = () => {
+    pendingReveals.forEach(el => {
+        const r = el.getBoundingClientRect();
+        if (r.top < window.innerHeight - 40 && r.bottom > 0) {
+            pendingReveals.delete(el);
+            el.classList.add('revealed');
+        }
+    });
+};
+window.addEventListener('scroll', checkReveals, { passive: true });
+window.addEventListener('resize', checkReveals);
+checkReveals();
+
 // ===== 通知提示 =====
 function showNotification(message, type = 'success') {
     // 移除已存在的通知
@@ -210,51 +225,53 @@ document.querySelectorAll('.platform-card').forEach(card => {
     });
 });
 
-// ===== 粒子背景效果（可选）=====
-function createParticle() {
-    const particle = document.createElement('div');
-    particle.style.cssText = `
-        position: fixed;
-        width: 4px;
-        height: 4px;
-        background: var(--primary);
-        border-radius: 50%;
-        pointer-events: none;
-        opacity: 0.5;
-        z-index: -1;
-        left: ${Math.random() * 100}vw;
-        top: ${Math.random() * 100}vh;
-        animation: float-particle ${5 + Math.random() * 10}s linear infinite;
-    `;
-    
-    document.body.appendChild(particle);
-    
-    setTimeout(() => particle.remove(), 15000);
-}
+// ===== 全页代码雨背景 =====
+(function initMatrixRain() {
+    const canvas = document.querySelector('.matrix-rain');
+    if (!canvas) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-// 每5秒创建一个粒子
-setInterval(createParticle, 5000);
+    const ctx = canvas.getContext('2d');
+    const CHARS = 'アイウエオカキクケコサシスセソ0123456789PYTHON<>{}[]/*+=';
+    const FONT = 14;
+    let cols = 0;
+    let drops = [];
+    let speeds = [];
+    let w = 0;
+    let h = 0;
+    let last = 0;
 
-const particleStyle = document.createElement('style');
-particleStyle.textContent = `
-    @keyframes float-particle {
-        0% {
-            transform: translateY(100vh) rotate(0deg);
-            opacity: 0;
+    const rebuild = () => {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+        cols = Math.min(Math.ceil(w / FONT), window.innerWidth < 768 ? 28 : 70);
+        drops = Array.from({ length: cols }, () => Math.random() * (h / FONT));
+        speeds = Array.from({ length: cols }, () => 0.4 + Math.random() * 0.9);
+        ctx.fillStyle = '#0f0f1a';
+        ctx.fillRect(0, 0, w, h);
+    };
+
+    const draw = (ts) => {
+        requestAnimationFrame(draw);
+        if (document.hidden || ts - last < 50) return;
+        last = ts;
+        // 半透明底色擦除，形成拖尾
+        ctx.fillStyle = 'rgba(15, 15, 26, 0.2)';
+        ctx.fillRect(0, 0, w, h);
+        ctx.font = FONT + 'px "JetBrains Mono", monospace';
+        for (let i = 0; i < cols; i++) {
+            const ch = CHARS[(Math.random() * CHARS.length) | 0];
+            ctx.fillStyle = 'rgba(129, 140, 248, 0.4)';
+            ctx.fillText(ch, i * FONT, drops[i] * FONT);
+            if (drops[i] * FONT > h && Math.random() > 0.975) drops[i] = 0;
+            drops[i] += speeds[i];
         }
-        10% {
-            opacity: 0.5;
-        }
-        90% {
-            opacity: 0.5;
-        }
-        100% {
-            transform: translateY(-100vh) rotate(720deg);
-            opacity: 0;
-        }
-    }
-`;
-document.head.appendChild(particleStyle);
+    };
+
+    rebuild();
+    window.addEventListener('resize', rebuild);
+    requestAnimationFrame(draw);
+})();
 
 // ===== 二维码弹窗 =====
 const qrcodeModal = document.getElementById('qrcode-modal');
@@ -388,6 +405,125 @@ if (heroSection && heroSpotlight && window.matchMedia('(hover: hover)').matches)
     window.addEventListener('resize', resize);
     requestAnimationFrame(step);
 })();
+
+// ============================================================
+// 炫彩升级特效 · Round 2
+// ============================================================
+
+// Hero 鼠标视差（桌面端）
+const heroParallaxTargets = [
+    [document.querySelector('.hero-badge'), 14],
+    [document.querySelector('.hero-title'), 8],
+    [document.querySelector('.hero-buttons'), 10],
+    [document.querySelector('.code-window'), -12]
+].filter(([el]) => el);
+
+if (heroSection && window.matchMedia('(hover: hover)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    heroSection.addEventListener('pointermove', (e) => {
+        const rect = heroSection.getBoundingClientRect();
+        const dx = (e.clientX - rect.left) / rect.width - 0.5;
+        const dy = (e.clientY - rect.top) / rect.height - 0.5;
+        heroParallaxTargets.forEach(([el, depth]) => {
+            el.style.transform = 'translate3d(' + (dx * depth) + 'px, ' + (dy * depth) + 'px, 0)';
+        });
+    });
+    heroSection.addEventListener('pointerleave', () => {
+        heroParallaxTargets.forEach(([el]) => { el.style.transform = ''; });
+    });
+}
+
+// 卡片鼠标眩光
+if (window.matchMedia('(hover: hover)').matches) {
+    document.querySelectorAll('.about-card, .platform-card').forEach(card => {
+        card.addEventListener('pointermove', (e) => {
+            const r = card.getBoundingClientRect();
+            card.style.setProperty('--gx', (e.clientX - r.left) + 'px');
+            card.style.setProperty('--gy', (e.clientY - r.top) + 'px');
+        });
+    });
+}
+
+// 数据统计数字滚动（滚动进入视口时触发，带兜底检查）
+const statNumbers = document.querySelectorAll('.stat-number[data-count]');
+if (statNumbers.length) {
+    const animateCount = (el) => {
+        if (el.dataset.done) return;
+        el.dataset.done = '1';
+        const target = parseInt(el.dataset.count, 10);
+        const suffix = el.dataset.suffix || '';
+        const start = performance.now();
+        const duration = 1400;
+        const tick = (now) => {
+            const p = Math.min((now - start) / duration, 1);
+            const eased = 1 - Math.pow(1 - p, 3);
+            el.textContent = Math.round(target * eased) + suffix;
+            if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+    };
+
+    const pendingStats = new Set(statNumbers);
+    const checkStats = () => {
+        pendingStats.forEach(el => {
+            const r = el.getBoundingClientRect();
+            if (r.top < window.innerHeight && r.bottom > 0) {
+                pendingStats.delete(el);
+                animateCount(el);
+            }
+        });
+    };
+    window.addEventListener('scroll', checkStats, { passive: true });
+    window.addEventListener('resize', checkStats);
+    checkStats();
+}
+
+// 磁性按钮（桌面端）
+if (window.matchMedia('(hover: hover)').matches) {
+    document.querySelectorAll('.btn').forEach(btn => {
+        btn.addEventListener('pointermove', (e) => {
+            const r = btn.getBoundingClientRect();
+            const dx = e.clientX - (r.left + r.width / 2);
+            const dy = e.clientY - (r.top + r.height / 2);
+            btn.style.transform = 'translate(' + (dx * 0.18) + 'px, ' + (dy * 0.18) + 'px)';
+        });
+        btn.addEventListener('pointerleave', () => { btn.style.transform = ''; });
+    });
+}
+
+// 按钮点击涟漪
+document.querySelectorAll('.btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        const r = btn.getBoundingClientRect();
+        const size = Math.max(r.width, r.height);
+        const ripple = document.createElement('span');
+        ripple.className = 'ripple';
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = (e.clientX - r.left - size / 2) + 'px';
+        ripple.style.top = (e.clientY - r.top - size / 2) + 'px';
+        btn.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 700);
+    });
+});
+
+// 全页鼠标跟随光晕（惯性拖尾）
+const cursorGlow = document.querySelector('.cursor-glow');
+if (cursorGlow && window.matchMedia('(hover: hover)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let gx = -500;
+    let gy = -500;
+    let tx = gx;
+    let ty = gy;
+    window.addEventListener('pointermove', (e) => {
+        tx = e.clientX;
+        ty = e.clientY;
+    });
+    const lerpGlow = () => {
+        gx += (tx - gx) * 0.12;
+        gy += (ty - gy) * 0.12;
+        cursorGlow.style.transform = 'translate(' + gx + 'px, ' + gy + 'px)';
+        requestAnimationFrame(lerpGlow);
+    };
+    requestAnimationFrame(lerpGlow);
+}
 
 console.log('🚀 coder程 官方网站已加载完成！');
 console.log('📧 欢迎订阅获取更多精彩内容');

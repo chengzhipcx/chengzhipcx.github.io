@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>coder程 - 程序员成长之路 | 技术分享</title>
-    <link rel="stylesheet" href="styles.css?v=4">
+    <link rel="stylesheet" href="styles.css?v=5">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- 全页代码雨 & 鼠标光晕 -->
+    <canvas class="matrix-rain"></canvas>
+    <div class="cursor-glow"></div>
+
     <!-- 顶部滚动进度条 -->
     <div class="scroll-progress"></div>
 
@@ -83,6 +87,13 @@
         <a href="#about" class="scroll-hint" aria-label="向下滚动">⌄</a>
     </section>
 
+    <!-- 技术栈跑马灯 -->
+    <div class="tech-marquee" aria-hidden="true">
+        <div class="marquee-track">
+            <span>PYTHON</span><span>JAVASCRIPT</span><span>AI 应用</span><span>NUMPY</span><span>PANDAS</span><span>DOCKER</span><span>LINUX</span><span>MYSQL</span><span>GIT</span><span>MACHINE LEARNING</span><span>PYTHON</span><span>JAVASCRIPT</span><span>AI 应用</span><span>NUMPY</span><span>PANDAS</span><span>DOCKER</span><span>LINUX</span><span>MYSQL</span><span>GIT</span><span>MACHINE LEARNING</span>
+        </div>
+    </div>
+
     <!-- 关于区域 -->
     <section id="about" class="about">
         <div class="container">
@@ -105,6 +116,30 @@
                     <div class="about-icon">🎯</div>
                     <h3>成长记录者</h3>
                     <p>记录程序员的成长轨迹，分享职场经验、学习方法和效率工具，陪伴你一起成长</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 数据统计 -->
+    <section class="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" data-count="15" data-suffix="+">0+</div>
+                    <div class="stat-label">系统课程章节</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-count="4">0</div>
+                    <div class="stat-label">大内容平台</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-count="100" data-suffix="%">0%</div>
+                    <div class="stat-label">干货分享</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">∞</div>
+                    <div class="stat-label">成长空间</div>
                 </div>
             </div>
         </div>
@@ -246,6 +281,6 @@
         </div>
     </div>
 
-    <script src="script.js?v=3"></script>
+    <script src="script.js?v=4"></script>
 </body>
 </html>

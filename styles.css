@@ -1265,6 +1265,203 @@ section {
     .hero-spotlight { display: none; }
 }
 
+/* ============================================================
+   炫彩升级层 · Round 2
+   ============================================================ */
+
+/* 全页代码雨画布（替换底部，body 同色） */
+.matrix-rain {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.55;
+}
+
+/* 全页鼠标跟随光晕 */
+.cursor-glow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 340px;
+    height: 340px;
+    margin: -170px 0 0 -170px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.09), rgba(6, 182, 212, 0.04) 40%, transparent 65%);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+body:hover .cursor-glow { opacity: 1; }
+
+/* 技术栈跑马灯 */
+.tech-marquee {
+    overflow: hidden;
+    padding: 20px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.015);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+
+.marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marqueeScroll 30s linear infinite;
+}
+
+.marquee-track span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.95rem;
+    letter-spacing: 3px;
+    color: rgba(161, 161, 170, 0.55);
+    white-space: nowrap;
+    padding-right: 56px;
+    transition: color 0.3s ease;
+}
+
+.marquee-track span:hover {
+    color: var(--primary-light);
+    text-shadow: 0 0 12px rgba(129, 140, 248, 0.6);
+}
+
+.tech-marquee:hover .marquee-track {
+    animation-play-state: paused;
+}
+
+@keyframes marqueeScroll {
+    to { transform: translateX(-50%); }
+}
+
+/* 数据统计条 */
+.stats {
+    padding: 48px 0 8px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    text-align: center;
+}
+
+.stat-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(2.2rem, 4vw, 3.2rem);
+    font-weight: 700;
+    background: linear-gradient(135deg, #818cf8, #22d3ee);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 18px rgba(99, 102, 241, 0.35));
+}
+
+.stat-label {
+    margin-top: 6px;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 32px 16px;
+    }
+}
+
+/* 卡片鼠标眩光 */
+.about-card,
+.platform-card {
+    --gx: 50%;
+    --gy: 50%;
+}
+
+.about-card::before,
+.platform-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(300px circle at var(--gx) var(--gy), rgba(255, 255, 255, 0.08), transparent 55%);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+}
+
+.about-card:hover::before,
+.platform-card:hover::before {
+    opacity: 1;
+}
+
+/* 代码窗口旋转霓虹边框 */
+.code-window {
+    position: relative;
+}
+
+@property --border-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+.code-window::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(from var(--border-angle), transparent 0%, rgba(99, 102, 241, 0.9) 12%, rgba(34, 211, 238, 0.9) 24%, transparent 36%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    animation: borderSpin 5s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes borderSpin {
+    to { --border-angle: 360deg; }
+}
+
+/* 导航品牌 hover 故障抖动 */
+.nav-brand:hover .brand-name {
+    animation: glitchShake 0.35s steps(2, end) 2;
+    text-shadow: 2px 0 rgba(244, 63, 94, 0.7), -2px 0 rgba(6, 182, 212, 0.7);
+}
+
+@keyframes glitchShake {
+    0% { transform: translate(0); }
+    25% { transform: translate(-2px, 1px) skewX(-4deg); }
+    50% { transform: translate(2px, -1px); }
+    75% { transform: translate(-1px, 2px) skewX(4deg); }
+    100% { transform: translate(0); }
+}
+
+/* 按钮点击涟漪 */
+.btn .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    transform: scale(0);
+    animation: rippleOut 0.65s ease-out forwards;
+    pointer-events: none;
+}
+
+@keyframes rippleOut {
+    to { transform: scale(4); opacity: 0; }
+}
+
+/* Hero 视差元素 */
+.hero-badge,
+.hero-title,
+.hero-buttons,
+.code-window {
+    will-change: transform;
+}
+
 /* 无障碍：减少动态效果 */
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
@@ -1272,4 +1469,9 @@ section {
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
     }
+}
+
+/* 触屏设备减少特效 */
+@media (hover: none) {
+    .cursor-glow { display: none; }
 }
