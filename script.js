@@ -75,28 +75,21 @@ const highlightNav = () => {
 
 window.addEventListener('scroll', highlightNav);
 
-// ===== 元素进入视口动画 =====
-const observerOptions = {
-    root: null,
-    rootMargin: '0px',
-    threshold: 0.1
-};
-
-const observer = new IntersectionObserver((entries) => {
+// ===== 元素进入视口动画（class 驱动 + 交错延迟） =====
+const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
+            entry.target.classList.add('revealed');
+            revealObserver.unobserve(entry.target);
         }
     });
-}, observerOptions);
+}, { root: null, rootMargin: '0px', threshold: 0.12 });
 
-// 观察需要动画的元素
-document.querySelectorAll('.about-card, .platform-card, .feature-item').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(30px)';
-    el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
-    observer.observe(el);
+document.querySelectorAll('.about-grid, .platform-grid, .features-list').forEach(grid => {
+    Array.from(grid.children).forEach((el, i) => {
+        el.style.transitionDelay = (i * 0.08) + 's';
+        revealObserver.observe(el);
+    });
 });
 
 // ===== 通知提示 =====
@@ -295,6 +288,104 @@ if (qrcodeModal) {
 window.addEventListener('load', () => {
     document.body.classList.add('loaded');
 });
+
+// ============================================================
+// 炫彩升级特效
+// ============================================================
+
+// 顶部滚动进度条
+const progressBar = document.querySelector('.scroll-progress');
+if (progressBar) {
+    const updateProgress = () => {
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        progressBar.style.width = (max > 0 ? (window.scrollY / max) * 100 : 0) + '%';
+    };
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    window.addEventListener('resize', updateProgress);
+    updateProgress();
+}
+
+// Hero 鼠标聚光
+const heroSection = document.querySelector('.hero');
+const heroSpotlight = document.querySelector('.hero-spotlight');
+if (heroSection && heroSpotlight && window.matchMedia('(hover: hover)').matches) {
+    heroSection.addEventListener('pointermove', (e) => {
+        const rect = heroSection.getBoundingClientRect();
+        heroSpotlight.style.setProperty('--mx', (e.clientX - rect.left) + 'px');
+        heroSpotlight.style.setProperty('--my', (e.clientY - rect.top) + 'px');
+    });
+}
+
+// Hero 粒子网络背景
+(function initParticles() {
+    const canvas = document.querySelector('.hero-canvas');
+    if (!canvas) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let w = 0;
+    let h = 0;
+    const LINK_DIST = 130;
+
+    const buildParticles = () => {
+        const count = window.innerWidth < 768 ? 26 : 64;
+        particles = Array.from({ length: count }, () => ({
+            x: Math.random() * w,
+            y: Math.random() * h,
+            vx: (Math.random() - 0.5) * 0.45,
+            vy: (Math.random() - 0.5) * 0.45,
+            r: Math.random() * 1.6 + 0.7
+        }));
+    };
+
+    const resize = () => {
+        const parent = canvas.parentElement;
+        w = canvas.width = parent.offsetWidth;
+        h = canvas.height = parent.offsetHeight;
+        buildParticles();
+    };
+
+    const step = () => {
+        if (!document.hidden) {
+            ctx.clearRect(0, 0, w, h);
+
+            particles.forEach((p) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.x < 0 || p.x > w) p.vx *= -1;
+                if (p.y < 0 || p.y > h) p.vy *= -1;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(129, 140, 248, 0.75)';
+                ctx.fill();
+            });
+
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const a = particles[i];
+                    const b = particles[j];
+                    const dx = a.x - b.x;
+                    const dy = a.y - b.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < LINK_DIST) {
+                        ctx.strokeStyle = 'rgba(99, 102, 241, ' + (1 - dist / LINK_DIST) * 0.35 + ')';
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(a.x, a.y);
+                        ctx.lineTo(b.x, b.y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+        requestAnimationFrame(step);
+    };
+
+    resize();
+    window.addEventListener('resize', resize);
+    requestAnimationFrame(step);
+})();
 
 console.log('🚀 coder程 官方网站已加载完成！');
 console.log('📧 欢迎订阅获取更多精彩内容');
