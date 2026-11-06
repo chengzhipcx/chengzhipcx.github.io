@@ -435,7 +435,7 @@ section {
 /* ===== 平台区域 ===== */
 .platform-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 24px;
 }
 
@@ -505,6 +505,10 @@ section {
 
 .platform-card.video .platform-icon {
     color: #07c160;
+}
+
+.platform-card.github .platform-icon {
+    color: #e6edf3;
 }
 
 .platform-card h3 {
@@ -711,7 +715,7 @@ section {
     }
     
     .platform-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
